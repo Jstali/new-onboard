@@ -14,6 +14,8 @@ const documentsRoutes = require("./routes/documents");
 const expensesRoutes = require("./routes/expenses");
 const managerRoutes = require("./routes/manager");
 const adpPayrollRoutes = require("./routes/adpPayroll");
+const employeesCombinedRoutes = require("./routes/employeesCombined");
+const employeePayrollRoutes = require("./routes/employeePayroll");
 const { connectDB } = require("./config/database");
 
 const app = express();
@@ -151,6 +153,8 @@ app.use("/api/leave", leaveRoutes);
 app.use("/api/documents", documentsRoutes);
 app.use("/api/expenses", expensesRoutes);
 app.use("/api/adp-payroll", adpPayrollRoutes);
+app.use("/api/employees-combined", employeesCombinedRoutes);
+app.use("/api/employee-payroll", employeePayrollRoutes);
 
 // Health check
 app.get("/api/health", (req, res) => {

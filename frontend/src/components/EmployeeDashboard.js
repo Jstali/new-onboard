@@ -20,6 +20,7 @@ import OnboardingForm from "./OnboardingForm";
 import OnboardingStatus from "./OnboardingStatus";
 import DocumentStatus from "./DocumentStatus";
 import EmployeeExpensePortal from "./EmployeeExpensePortal";
+import EmployeePayroll from "./EmployeePayroll";
 import { Link } from "react-router-dom";
 
 const EmployeeDashboard = () => {
@@ -223,7 +224,11 @@ const EmployeeDashboard = () => {
               <div className="flex items-center space-x-3 cursor-pointer transition-all duration-300 ease-in-out transform hover:scale-105">
                 <div className="w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg bg-lumen-green">
                   <span className="text-xl font-bold text-deep-space-black">
-                    <img src="/favicon.png" alt="favicon" className="w-12 h-12" />
+                    <img
+                      src="/favicon.png"
+                      alt="favicon"
+                      className="w-12 h-12"
+                    />
                   </span>
                 </div>
                 <div className="text-deep-space-black font-bold text-xl transition-colors duration-300 hover:text-lumen-green">
@@ -231,9 +236,9 @@ const EmployeeDashboard = () => {
                 </div>
               </div>
               <div className="border-l border-gray-300 h-8"></div>
-                <h1 className="brand-heading-md text-deep-space-black">
-                  Employee Portal
-                </h1>
+              <h1 className="brand-heading-md text-deep-space-black">
+                Employee Portal
+              </h1>
             </div>
             <div className="flex items-center space-x-3">
               <Link
@@ -262,6 +267,25 @@ const EmployeeDashboard = () => {
           <EmployeeExpensePortal
             onBackToDashboard={() => setActiveTab("dashboard")}
           />
+        )}
+
+        {/* Payroll Information - Full screen */}
+        {isOnboarded && activeTab === "payroll" && (
+          <div className="space-y-6">
+            <div className="flex items-center justify-between">
+              <h1 className="text-2xl font-bold text-deep-space-black">
+                Payroll Information
+              </h1>
+              <button
+                onClick={() => setActiveTab("dashboard")}
+                className="inline-flex items-center px-4 py-2 text-sm font-medium text-deep-space-black bg-white border border-deep-space-black/20 hover:bg-purple-500/20 rounded-lg transition-all duration-200 transform hover:scale-105"
+              >
+                <FaHome className="mr-2" />
+                Back to Dashboard
+              </button>
+            </div>
+            <EmployeePayroll />
+          </div>
         )}
 
         {/* Dashboard Content */}
@@ -368,6 +392,26 @@ const EmployeeDashboard = () => {
                         </div>
                       </div>
                     </button>
+
+                    {/* Payroll Information - Hidden as requested */}
+                    {/* <button
+                      onClick={() => setActiveTab("payroll")}
+                      className="bg-white rounded-xl shadow-lg p-6 border border-gray-200 hover:shadow-2xl hover:scale-105 transition-all duration-300 cursor-pointer text-left w-full"
+                    >
+                      <div className="flex items-center">
+                        <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-purple-500">
+                          <FaDollarSign className="text-2xl text-white" />
+                        </div>
+                        <div className="ml-4">
+                          <h3 className="text-lg font-semibold text-deep-space-black">
+                            Payroll Information
+                          </h3>
+                          <p className="text-sm text-deep-space-black/70">
+                            View payroll details
+                          </p>
+                        </div>
+                      </div>
+                    </button> */}
 
                     <Link
                       to="/company-policies"

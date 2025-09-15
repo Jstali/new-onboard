@@ -367,7 +367,7 @@ const EmployeeMaster = ({ employees, onRefresh }) => {
               >
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="flex items-center">
-                    <FaIdCard className="w-4 h-4 text-brand-green mr-2" />
+                    <FaIdCard className="w-4 h-4 text-black mr-2" />
                     <span className="text-sm font-medium text-brand-black">
                       {employee.employee_id}
                     </span>
@@ -377,7 +377,7 @@ const EmployeeMaster = ({ employees, onRefresh }) => {
                   <div className="flex items-center">
                     <div className="flex-shrink-0 h-8 w-8">
                       <div className="h-8 w-8 rounded-full bg-brand-green/20 flex items-center justify-center">
-                        <FaUser className="h-4 w-4 text-brand-green" />
+                        <FaUser className="h-4 w-4 text-black" />
                       </div>
                     </div>
                     <div className="ml-3">
@@ -389,7 +389,7 @@ const EmployeeMaster = ({ employees, onRefresh }) => {
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="flex items-center">
-                    <FaEnvelope className="w-4 h-4 text-brand-green mr-2" />
+                    <FaEnvelope className="w-4 h-4 text-black mr-2" />
                     <span className="text-sm text-brand-black">
                       {employee.company_email}
                     </span>
@@ -402,7 +402,7 @@ const EmployeeMaster = ({ employees, onRefresh }) => {
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="flex items-center">
-                    <FaCalendarAlt className="w-4 h-4 text-brand-green mr-2" />
+                    <FaCalendarAlt className="w-4 h-4 text-black mr-2" />
                     <span className="text-sm text-brand-black">
                       {new Date(employee.doj).toLocaleDateString()}
                     </span>

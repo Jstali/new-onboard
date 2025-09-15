@@ -14,6 +14,7 @@ const HRDocumentCollection = () => {
   const [editingDocument, setEditingDocument] = useState(null);
   const [showStatusModal, setShowStatusModal] = useState(false);
   const [selectedDocument, setSelectedDocument] = useState(null);
+  const [sendingReminder, setSendingReminder] = useState(false);
   const [filters, setFilters] = useState({
     status: "",
     documentType: "",
@@ -266,6 +267,29 @@ const HRDocumentCollection = () => {
     }
   };
 
+  const handleSendReminder = async (employee) => {
+    try {
+      setSendingReminder(true);
+
+      const response = await axios.post(
+        "/hr/document-collection/send-reminder",
+        {
+          employeeId: employee.employee_id,
+          employeeEmail: employee.employee_email || employee.user_email,
+          employeeName: `${employee.first_name} ${employee.last_name}`.trim(),
+        }
+      );
+
+      toast.success(response.data.message);
+      fetchData(); // Refresh the data to update mail count
+    } catch (error) {
+      console.error("Send reminder error:", error);
+      toast.error("Failed to send reminder email");
+    } finally {
+      setSendingReminder(false);
+    }
+  };
+
   const getStatusBadge = (status) => {
     const baseClasses = "px-2 py-1 rounded-full text-xs font-medium";
     switch (status) {
@@ -332,6 +356,12 @@ const HRDocumentCollection = () => {
     const employeeDocuments = documents.filter(
       (doc) => doc.employee_id === form.employee_id
     );
+
+    // Get reminder mail count from the first document (all documents for an employee have the same count)
+    const reminderMailCount =
+      employeeDocuments.length > 0
+        ? employeeDocuments[0].reminder_mail_count || 0
+        : 0;
 
     // Get employment type for filtering
     const employmentType =
@@ -454,6 +484,10 @@ const HRDocumentCollection = () => {
       form_submitted_at: form.submitted_at || null,
       assigned_manager: form.assigned_manager || "Not assigned",
       user_email: form.user_email || "N/A",
+      employee_email:
+        employeeDocuments.length > 0
+          ? employeeDocuments[0].employee_email || form.user_email
+          : form.user_email,
       // All form details from employee form
       first_name: form.first_name || "",
       last_name: form.last_name || "",
@@ -477,6 +511,8 @@ const HRDocumentCollection = () => {
       pending_documents: documentsWithStatus.filter(
         (doc) => doc.display_status === "Pending"
       ).length,
+      // Email reminder count
+      reminder_mail_count: reminderMailCount,
     };
 
     return acc;
@@ -713,6 +749,12 @@ const HRDocumentCollection = () => {
                 >
                   Document Summary
                 </th>
+                <th
+                  className="px-6 py-3 text-left text-xs font-medium text-brand-black uppercase tracking-wider border border-brand-black/10"
+                  style={{ width: "120px", minWidth: "120px" }}
+                >
+                  Email & Reminders
+                </th>
                 {/* Dynamic document type columns */}
                 {templates.map((template) => (
                   <th
@@ -832,6 +874,30 @@ const HRDocumentCollection = () => {
                       </div>
                       <div className="text-brand-black/70">
                         {group.pending_documents} Pending
+                      </div>
+                    </div>
+                  </td>
+
+                  {/* Email & Reminders */}
+                  <td
+                    className="px-6 py-4 whitespace-nowrap text-sm text-brand-black border border-brand-black/10"
+                    style={{ width: "120px", minWidth: "120px" }}
+                  >
+                    <div className="flex flex-col space-y-2">
+                      <div className="text-xs text-gray-600">
+                        {group.employee_email || group.user_email}
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
+                          Mails: {group.reminder_mail_count || 0}
+                        </span>
+                        <button
+                          onClick={() => handleSendReminder(group)}
+                          className="text-xs bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600 transition-colors"
+                          disabled={sendingReminder}
+                        >
+                          Send
+                        </button>
                       </div>
                     </div>
                   </td>

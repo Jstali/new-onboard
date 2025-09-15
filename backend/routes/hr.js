@@ -3,7 +3,10 @@ const bcrypt = require("bcryptjs");
 const { body, validationResult } = require("express-validator");
 const { pool } = require("../config/database");
 const { authenticateToken, requireHR } = require("../middleware/auth");
-const { sendOnboardingEmail } = require("../utils/mailer");
+const {
+  sendOnboardingEmail,
+  sendDocumentReminderEmail,
+} = require("../utils/mailer");
 const {
   generateEmployeeId,
   validateEmployeeId,
@@ -229,6 +232,19 @@ function generateTempPassword() {
   return result;
 }
 
+// Helper function to clear P&C monitoring cache
+const clearPNCCache = async () => {
+  try {
+    console.log("🧹 Clearing P&C monitoring cache...");
+    await pool.query(
+      "DELETE FROM pnc_monitoring_reports WHERE is_active = true"
+    );
+    console.log("✅ P&C cache cleared successfully");
+  } catch (error) {
+    console.error("❌ Error clearing P&C cache:", error);
+  }
+};
+
 // Helper function to create document collection records for an employee
 async function createDocumentCollectionForEmployee(
   employeeId,
@@ -450,6 +466,9 @@ router.post(
           .json({ error: "Failed to send onboarding email" });
       }
       console.log("✅ Email sent successfully");
+
+      // Clear P&C cache to ensure reports are updated
+      await clearPNCCache();
 
       res.status(201).json({
         message: "Employee added successfully",
@@ -2822,6 +2841,9 @@ router.delete("/employees/:id", async (req, res) => {
       throw deleteError;
     }
 
+    // Clear P&C cache to ensure reports are updated
+    await clearPNCCache();
+
     res.json({ message: "Employee deleted successfully" });
   } catch (error) {
     console.error("❌ Delete employee error:", error);
@@ -3005,6 +3027,9 @@ router.post(
           "Failed to send onboarding email, but employee was created"
         );
       }
+
+      // Clear P&C cache to ensure reports are updated
+      await clearPNCCache();
 
       res.status(201).json({
         message: "Employee added to master table successfully",
@@ -3613,6 +3638,9 @@ router.get("/document-collection", async (req, res) => {
       SELECT 
         dc.*,
         u.email as employee_email,
+        u.first_name,
+        u.last_name,
+        COALESCE(mail_count.count, 0) as reminder_mail_count,
         CASE 
           WHEN EXISTS (
             SELECT 1 FROM employee_documents ed 
@@ -3641,6 +3669,13 @@ router.get("/document-collection", async (req, res) => {
         END as effective_status
       FROM document_collection dc
       LEFT JOIN users u ON dc.employee_id = u.id
+      LEFT JOIN (
+        SELECT 
+          employee_id, 
+          COUNT(*) as count 
+        FROM document_reminder_mails 
+        GROUP BY employee_id
+      ) mail_count ON dc.employee_id = mail_count.employee_id
       ORDER BY dc.created_at DESC
     `);
 
@@ -4121,6 +4156,9 @@ router.post(
         temp_password: generatedPassword,
       });
 
+      // Clear P&C cache to ensure reports are updated
+      await clearPNCCache();
+
       res.status(201).json({
         message: "Employee manually added successfully",
         employee: {
@@ -4555,5 +4593,144 @@ router.post("/pnc-monitoring/recalculate", async (req, res) => {
     });
   }
 });
+
+// Send document reminder email to employee
+router.post(
+  "/document-collection/send-reminder",
+  authenticateToken,
+  async (req, res) => {
+    console.log("📧 Document reminder API called - START");
+    try {
+      console.log("📧 Document reminder API called");
+      console.log("📧 Request body:", req.body);
+      console.log("📧 User info:", req.user);
+
+      const { employeeId, employeeEmail, employeeName } = req.body;
+      const hrId = req.user.userId;
+      const hrName = req.user.firstName + " " + req.user.lastName;
+
+      // Validate required fields
+      if (!employeeId || !employeeEmail || !employeeName) {
+        return res.status(400).json({
+          error: "Employee ID, email, and name are required",
+        });
+      }
+
+      // Generate document upload link
+      const documentUploadLink = `${
+        process.env.FRONTEND_URL || "http://localhost:3001"
+      }/employee/documents`;
+
+      // Create email content
+      const emailSubject = `Document Upload Reminder - ${employeeName}`;
+      const emailContent = `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h2 style="color: #2563eb;">Document Upload Reminder</h2>
+        <p>Dear ${employeeName},</p>
+        <p>This is a friendly reminder that you have pending documents to upload for your onboarding process.</p>
+        <p>Please click the link below to access the document upload page and complete your document submission:</p>
+        <div style="text-align: center; margin: 30px 0;">
+          <a href="${documentUploadLink}" 
+             style="background-color: #2563eb; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; display: inline-block;">
+            Upload Documents
+          </a>
+        </div>
+        <p>If you have any questions or need assistance, please contact the HR department.</p>
+        <p>Best regards,<br>HR Team</p>
+        <hr style="margin-top: 30px; border: none; border-top: 1px solid #e5e7eb;">
+        <p style="color: #6b7280; font-size: 12px;">
+          This is an automated reminder. Please do not reply to this email.
+        </p>
+      </div>
+    `;
+
+      // Send the actual email
+      console.log("📧 Sending document reminder email to:", employeeEmail);
+      console.log("📧 Document upload link:", documentUploadLink);
+
+      try {
+        const emailSent = await sendDocumentReminderEmail(
+          employeeEmail,
+          employeeName,
+          documentUploadLink
+        );
+
+        console.log("📧 Email sent result:", emailSent);
+
+        if (!emailSent) {
+          console.log("❌ Email sending returned false");
+          return res.status(500).json({
+            error: "Failed to send document reminder email",
+          });
+        }
+      } catch (emailError) {
+        console.error("❌ Email sending error:", emailError);
+        return res.status(500).json({
+          error:
+            "Failed to send document reminder email: " + emailError.message,
+        });
+      }
+
+      // Record the email in database
+      const mailRecord = await pool.query(
+        `INSERT INTO document_reminder_mails 
+       (employee_id, employee_email, employee_name, sent_by_hr_id, sent_by_hr_name, document_upload_link)
+       VALUES ($1, $2, $3, $4, $5, $6)
+       RETURNING *`,
+        [
+          employeeId,
+          employeeEmail,
+          employeeName,
+          hrId,
+          hrName,
+          documentUploadLink,
+        ]
+      );
+
+      res.json({
+        message: "Document reminder email sent successfully",
+        mailRecord: mailRecord.rows[0],
+        emailSent: true,
+      });
+    } catch (error) {
+      console.error("❌ Send document reminder error:", error);
+      console.error("❌ Error stack:", error.stack);
+      res.status(500).json({
+        error: "Failed to send document reminder email",
+        details: error.message,
+      });
+    }
+  }
+);
+
+// Get document reminder mail history for an employee
+router.get(
+  "/document-collection/reminder-history/:employeeId",
+  authenticateToken,
+  async (req, res) => {
+    try {
+      const { employeeId } = req.params;
+
+      const result = await pool.query(
+        `SELECT 
+        drm.*,
+        hr.first_name as hr_first_name,
+        hr.last_name as hr_last_name
+       FROM document_reminder_mails drm
+       LEFT JOIN users hr ON drm.sent_by_hr_id = hr.id
+       WHERE drm.employee_id = $1
+       ORDER BY drm.sent_at DESC`,
+        [employeeId]
+      );
+
+      res.json({ reminderHistory: result.rows });
+    } catch (error) {
+      console.error("Get reminder history error:", error);
+      res.status(500).json({
+        error: "Failed to get reminder history",
+      });
+    }
+  }
+);
 
 module.exports = router;

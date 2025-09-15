@@ -115,7 +115,7 @@ const HRPayoutManagement = () => {
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
         <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto">
-          <div className="p-6">
+          <div className="p-8">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-xl font-semibold">
                 Employee Payroll Details
@@ -128,38 +128,38 @@ const HRPayoutManagement = () => {
               </button>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               {/* Onboarding Information */}
-              <div className="space-y-4">
-                <h4 className="text-lg font-medium text-gray-800 border-b pb-2">
+              <div className="space-y-6">
+                <h4 className="text-lg font-medium text-gray-800 border-b pb-3">
                   Onboarding Information
                 </h4>
-                <div className="space-y-2">
-                  <div className="flex justify-between">
+                <div className="space-y-4">
+                  <div className="flex justify-between py-2">
                     <span className="font-medium">Employee ID:</span>
                     <span>{onboarding.employee_id}</span>
                   </div>
-                  <div className="flex justify-between">
+                  <div className="flex justify-between py-2">
                     <span className="font-medium">Name:</span>
                     <span>{onboarding.employee_name}</span>
                   </div>
-                  <div className="flex justify-between">
+                  <div className="flex justify-between py-2">
                     <span className="font-medium">Email:</span>
                     <span>{onboarding.company_email}</span>
                   </div>
-                  <div className="flex justify-between">
+                  <div className="flex justify-between py-2">
                     <span className="font-medium">Department:</span>
                     <span>{onboarding.department}</span>
                   </div>
-                  <div className="flex justify-between">
+                  <div className="flex justify-between py-2">
                     <span className="font-medium">Designation:</span>
                     <span>{onboarding.designation}</span>
                   </div>
-                  <div className="flex justify-between">
+                  <div className="flex justify-between py-2">
                     <span className="font-medium">Type:</span>
                     <span>{onboarding.type}</span>
                   </div>
-                  <div className="flex justify-between">
+                  <div className="flex justify-between py-2">
                     <span className="font-medium">Status:</span>
                     <span
                       className={`px-2 py-1 text-xs rounded-full ${
@@ -171,11 +171,11 @@ const HRPayoutManagement = () => {
                       {onboarding.status}
                     </span>
                   </div>
-                  <div className="flex justify-between">
+                  <div className="flex justify-between py-2">
                     <span className="font-medium">DOJ:</span>
                     <span>{onboarding.doj}</span>
                   </div>
-                  <div className="flex justify-between">
+                  <div className="flex justify-between py-2">
                     <span className="font-medium">Manager:</span>
                     <span>{onboarding.manager_name || "Not assigned"}</span>
                   </div>
@@ -183,21 +183,24 @@ const HRPayoutManagement = () => {
               </div>
 
               {/* ADP Payroll Information */}
-              <div className="space-y-4">
+              <div className="space-y-6">
                 <div className="flex items-center justify-between">
-                  <h4 className="text-lg font-medium text-gray-800 border-b pb-2">
+                  <h4 className="text-lg font-medium text-gray-800 border-b pb-3">
                     ADP Payroll Information
                   </h4>
                   {has_adp_data && getStatusBadge(adp_is_draft)}
                 </div>
 
                 {has_adp_data ? (
-                  <div className="space-y-2 max-h-96 overflow-y-auto">
+                  <div className="space-y-3 max-h-96 overflow-y-auto">
                     {Object.entries(adp_payroll).map(([key, value]) => {
                       if (value === null || value === undefined || value === "")
                         return null;
                       return (
-                        <div key={key} className="flex justify-between text-sm">
+                        <div
+                          key={key}
+                          className="flex justify-between text-sm py-2 border-b border-gray-100 last:border-b-0"
+                        >
                           <span className="font-medium text-gray-600">
                             {key}:
                           </span>
@@ -217,10 +220,10 @@ const HRPayoutManagement = () => {
               </div>
             </div>
 
-            <div className="flex justify-end space-x-3 mt-6 pt-4 border-t">
+            <div className="flex justify-end space-x-4 mt-8 pt-6 border-t border-gray-200">
               <button
                 onClick={() => setShowModal(false)}
-                className="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600"
+                className="px-6 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 transition-colors"
               >
                 Close
               </button>
@@ -228,9 +231,9 @@ const HRPayoutManagement = () => {
                 <button
                   onClick={() => {
                     // Navigate to edit page or open edit modal
-                    toast.info("Edit functionality coming soon");
+                    toast("Edit functionality coming soon");
                   }}
-                  className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+                  className="px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
                 >
                   Edit ADP Data
                 </button>
@@ -384,7 +387,7 @@ const HRPayoutManagement = () => {
                       <button
                         onClick={() => {
                           // Navigate to edit page
-                          toast.info("Edit functionality coming soon");
+                          toast("Edit functionality coming soon");
                         }}
                         className="text-green-600 hover:text-green-900"
                       >

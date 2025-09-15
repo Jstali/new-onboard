@@ -651,6 +651,79 @@ async function sendExpenseApprovalToEmployee(
   }
 }
 
+async function sendDocumentReminderEmail(
+  employeeEmail,
+  employeeName,
+  documentUploadLink
+) {
+  const mailOptions = {
+    from: process.env.EMAIL_USER,
+    to: employeeEmail,
+    subject: `Document Upload Reminder - ${employeeName}`,
+    text: `Dear ${employeeName},\n\nThis is a friendly reminder that you have pending documents to upload for your onboarding process.\n\nPlease click the link below to access the document upload page and complete your document submission:\n\n${documentUploadLink}\n\nIf you have any questions or need assistance, please contact the HR department.\n\nBest regards,\nHR Team`,
+    html: `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <!-- Logo Section -->
+        <div style="text-align: center; margin: 20px 0; padding: 20px; background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); border-radius: 12px;">
+          <div style="display: inline-block; text-align: center;">
+            <!-- nxzen Logo -->
+            <div style="margin: 0 auto 15px; position: relative;">
+              <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMAAAADACAYAAABS3GwHAAAACXBIWXMAAAsTAAALEwEAmpwYAAAF0WlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78i iglkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNy4yLWMwMDAgNzkuMWI2NWE3OWI0LCAyMDIyLzA2LzEzLTIyOjAxOjAxICAgICAgICAiPiA8cmRmOlJERiB4bWxuczpypmY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPiA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIiB4bWxuczpzdEV2dD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL3NUeXBlL1Jlc291cmNlRXZlbnQjIiB4bWxuczpkYz0iaHR0cDovL3B1cmwub3JnL2RjL2VsZW1lbnRzLzEuMS8iIHhtbG5zOnBob3Rvc2hvcD0iaHR0cDovL25zLmFkb2JlLmNvbS9waG90b3Nob3AvMS4wLyIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgMjQuMCAoTWFjaW50b3NoKSIgeG1wOkNyZWF0ZURhdGU9IjIwMjQtMDMtMTlUMTU6NDc6NDErMDU6MzAiIHhtcDpNZXRhZGF0YURhdGU9IjIwMjQtMDMtMTlUMTU6NDc6NDErMDU6MzAiIHhtcDpNb2RpZnlEYXRlPSIyMDI0LTAzLTE5VDE1OjQ3OjQxKzA1OjMwIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjY5ZDM4YzM5LTM4ZTAtNDZiZC1hMzA0LTNmYzM5YzM5YzM5YyIgeG1wTU06RG9jdW1lbnRJRD0iYWRvYmU6ZG9jaWQ6cGhvdG9zaG9wOjY5ZDM4YzM5LTM4ZTAtNDZiZC1hMzA0LTNmYzM5YzM5YzM5YyIgeG1wTU06T3JpZ2luYWxEb2N1bWVudElEPSJ4bXA6ZGlkOjY5ZDM4YzM5LTM4ZTAtNDZiZC1hMzA0LTNmYzM5YzM5YzM5YyIgZGM6Zm9ybWF0PSJpbWFnZS9wbmciIHBob3Rvc2hvcDpDb2xvck1vZGU9IjMiPiA8eG1wTU06SGlzdG9yeT4gPHJkZjpTZXE+IDxyZGY6bGkgc3RFdnQ6YWN0aW9uPSJjcmVhdGVkIiBzdEV2dDppbnN0YW5jZUlEPSJ4bXAuaWlkOjY5ZDM4YzM5LTM4ZTAtNDZiZC1hMzA0LTNmYzM5YzM5YzM5YyIgc3RFdnQ6d2hlbj0iMjAyNC0wMy0xOVQxNTo0Nzo0MSswNTozMCIgc3RFdnQ6c29mdHdhcmVBZ2VudD0iQWRvYmUgUGhvdG9zaG9wIDI0LjAgKE1hY2ludG9zaCkiLz4gPC9yZGY6U2VxPiA8L3htcE1NOkhpc3Rvcnk+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+4cqj8wAAABl0RVh0Q29tbWVudABDcmVhdGVkIHdpdGggR0lNUFeBDhcAAAAASUVORK5CYII=" alt="nxzen" style="width: 120px; height: auto; display: block; margin: 0 auto;">
+            </div>
+            <!-- nxzen text -->
+            <div style="color: white; font-size: 24px; font-weight: 300; letter-spacing: 2px; margin-top: 10px;">
+              nxzen
+            </div>
+          </div>
+        </div>
+        
+        <h2 style="color: #2563eb; text-align: center; margin: 30px 0 20px;">Document Upload Reminder</h2>
+        <p style="color: #333; font-size: 16px;">Dear ${employeeName},</p>
+        <p style="color: #666; line-height: 1.6;">This is a friendly reminder that you have pending documents to upload for your onboarding process.</p>
+        <p style="color: #666; line-height: 1.6;">Please click the button below to access the document upload page and complete your document submission:</p>
+        
+        <div style="text-align: center; margin: 30px 0;">
+          <a href="${documentUploadLink}" 
+             style="background-color: #2563eb; color: white; padding: 15px 30px; text-decoration: none; border-radius: 8px; display: inline-block; font-weight: 500; font-size: 16px; box-shadow: 0 4px 6px rgba(37, 99, 235, 0.3);">
+            📄 Upload Documents
+          </a>
+        </div>
+        
+        <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin: 25px 0; border-left: 4px solid #2563eb;">
+          <h3 style="color: #333; margin-top: 0; margin-bottom: 15px;">📋 Required Documents</h3>
+          <p style="color: #666; margin: 0; line-height: 1.6;">Please ensure you have uploaded all the required documents for your employment type. You can check the status of your document submissions in the employee portal.</p>
+        </div>
+        
+        <div style="background-color: #e7f3ff; border: 1px solid #b3d9ff; padding: 20px; border-radius: 8px; margin: 25px 0;">
+          <p style="margin: 0; color: #0066cc; line-height: 1.6;">
+            <strong>💬 Need Help?</strong> If you have any questions or need assistance with document uploads, please contact the HR department.
+          </p>
+        </div>
+        
+        <div style="background-color: #fff3cd; border: 1px solid #ffeaa7; padding: 15px; border-radius: 8px; margin: 25px 0;">
+          <p style="margin: 0; color: #856404; font-size: 14px;">
+            <strong>⏰ Important:</strong> Please complete your document uploads as soon as possible to avoid delays in your onboarding process.
+          </p>
+        </div>
+        
+        <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;">
+        <p style="color: #666; font-size: 12px; text-align: center;">This is an automated reminder from nxzen. Please do not reply to this email.</p>
+      </div>
+    `,
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+    console.log(
+      "✅ Document reminder email sent successfully to " + employeeEmail
+    );
+    return true;
+  } catch (err) {
+    console.error("❌ Failed to send document reminder email:", err);
+    return false;
+  }
+}
+
 module.exports = {
   sendOnboardingEmail,
   sendPasswordResetEmail,
@@ -659,4 +732,5 @@ module.exports = {
   sendLeaveApprovalToEmployee,
   sendExpenseRequestToManager,
   sendExpenseApprovalToEmployee,
+  sendDocumentReminderEmail,
 };

@@ -26,7 +26,7 @@ const ManagerDashboard = () => {
   const [showTooltip, setShowTooltip] = useState({
     employeeId: null,
     type: null, // 'taken' or 'remaining'
-    position: { x: 0, y: 0 }
+    position: { x: 0, y: 0 },
   });
 
   const fetchEmployees = useCallback(async () => {
@@ -36,7 +36,6 @@ const ManagerDashboard = () => {
         navigate("/login");
         return;
       }
-      
 
       const response = await fetch(
         "http://localhost:5001/api/manager/dashboard",
@@ -113,9 +112,9 @@ const ManagerDashboard = () => {
 
       if (response.ok) {
         const data = await response.json();
-        setLeaveDetails(prev => ({
+        setLeaveDetails((prev) => ({
           ...prev,
-          [employeeId]: data
+          [employeeId]: data,
         }));
       }
     } catch (error) {
@@ -128,7 +127,6 @@ const ManagerDashboard = () => {
     fetchManagerProfile();
   }, [fetchEmployees, fetchManagerProfile]);
 
-
   const handleMouseEnter = (employeeId, type) => {
     setShowTooltip({ employeeId, type, position: { x: 0, y: 0 } });
     if (!leaveDetails[employeeId]) {
@@ -139,7 +137,6 @@ const ManagerDashboard = () => {
   const handleMouseLeave = () => {
     setShowTooltip({ employeeId: null, type: null, position: { x: 0, y: 0 } });
   };
-
 
   const handleLogout = () => {
     logout();
@@ -242,7 +239,6 @@ const ManagerDashboard = () => {
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <div className="bg-white rounded-lg shadow border border-deep-space-black/10 p-6 hover:shadow-md hover:border-neon-violet/30 transition-all duration-200">
@@ -286,7 +282,9 @@ const ManagerDashboard = () => {
                 <FaBed className="h-6 w-6" />
               </div>
               <div className="ml-4">
-                <p className="text-sm font-medium text-deep-space-black/70">On Leave</p>
+                <p className="text-sm font-medium text-deep-space-black/70">
+                  On Leave
+                </p>
                 <p className="text-2xl font-semibold text-deep-space-black">
                   {employees.filter((emp) => emp.leaves_taken > 0).length}
                 </p>
@@ -298,7 +296,9 @@ const ManagerDashboard = () => {
         {/* Employees Table */}
         <div className="bg-white rounded-lg shadow border border-deep-space-black/10">
           <div className="px-6 py-4 border-b border-deep-space-black/10">
-            <h2 className="text-lg font-medium text-deep-space-black">My Team</h2>
+            <h2 className="text-lg font-medium text-deep-space-black">
+              My Team
+            </h2>
             <p className="text-sm text-deep-space-black/70">
               Manage your team's attendance and leave
             </p>
@@ -343,7 +343,10 @@ const ManagerDashboard = () => {
                   </tr>
                 ) : (
                   employees.map((employee) => (
-                    <tr key={employee.id} className="hover:bg-iridescent-pearl/50">
+                    <tr
+                      key={employee.id}
+                      className="hover:bg-iridescent-pearl/50"
+                    >
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center">
                           <div className="flex-shrink-0 h-10 w-10">
@@ -385,17 +388,19 @@ const ManagerDashboard = () => {
                               <div className="font-semibold mb-2">
                                 Leaves Taken:
                               </div>
-                              {leaveDetails[employee.id]?.leaveBalances?.map((balance, index) => (
-                                <div
-                                  key={index}
-                                  className="flex justify-between mb-1"
-                                >
-                                  <span>{balance.leave_type}:</span>
-                                  <span className="font-medium">
-                                    {balance.leaves_taken || 0}
-                                  </span>
-                                </div>
-                              )) || <div>Loading...</div>}
+                              {leaveDetails[employee.id]?.leaveBalances?.map(
+                                (balance, index) => (
+                                  <div
+                                    key={index}
+                                    className="flex justify-between mb-1"
+                                  >
+                                    <span>{balance.leave_type}:</span>
+                                    <span className="font-medium">
+                                      {balance.leaves_taken || 0}
+                                    </span>
+                                  </div>
+                                )
+                              ) || <div>Loading...</div>}
                             </div>
                           )}
                       </td>
@@ -414,17 +419,19 @@ const ManagerDashboard = () => {
                               <div className="font-semibold mb-2">
                                 Leaves Remaining:
                               </div>
-                              {leaveDetails[employee.id]?.leaveBalances?.map((balance, index) => (
-                                <div
-                                  key={index}
-                                  className="flex justify-between mb-1"
-                                >
-                                  <span>{balance.leave_type}:</span>
-                                  <span className="font-medium">
-                                    {balance.leaves_remaining || 0}
-                                  </span>
-                                </div>
-                              )) || <div>Loading...</div>}
+                              {leaveDetails[employee.id]?.leaveBalances?.map(
+                                (balance, index) => (
+                                  <div
+                                    key={index}
+                                    className="flex justify-between mb-1"
+                                  >
+                                    <span>{balance.leave_type}:</span>
+                                    <span className="font-medium">
+                                      {balance.leaves_remaining || 0}
+                                    </span>
+                                  </div>
+                                )
+                              ) || <div>Loading...</div>}
                             </div>
                           )}
                       </td>
@@ -499,7 +506,9 @@ const ManagerDashboard = () => {
           <div className="relative top-20 mx-auto p-5 border border-deep-space-black/10 w-11/12 md:w-3/4 lg:w-1/2 shadow-lg rounded-md bg-white">
             <div className="mt-3">
               <div className="flex justify-between items-center mb-6">
-                <h3 className="brand-subheading-md text-deep-space-black">Manager Profile</h3>
+                <h3 className="brand-subheading-md text-deep-space-black">
+                  Manager Profile
+                </h3>
                 <button
                   onClick={() => setShowProfileModal(false)}
                   className="text-deep-space-black/70 hover:text-deep-space-black transition-colors duration-200"
@@ -507,22 +516,26 @@ const ManagerDashboard = () => {
                   <FaArrowLeft />
                 </button>
               </div>
-              
+
               <div className="space-y-6">
                 {/* Profile Avatar */}
                 <div className="flex items-center space-x-4">
                   <div className="h-20 w-20 rounded-full bg-lumen-green/20 flex items-center justify-center">
                     <span className="text-3xl font-bold text-deep-space-black">
-                      {user?.first_name?.charAt(0) || 'M'}
-                      {user?.last_name?.charAt(0) || 'D'}
+                      {user?.first_name?.charAt(0) || "M"}
+                      {user?.last_name?.charAt(0) || "D"}
                     </span>
                   </div>
                   <div>
                     <h4 className="brand-subheading-sm text-deep-space-black">
                       {user?.first_name} {user?.last_name}
                     </h4>
-                    <p className="brand-body-sm text-deep-space-black/70">Manager</p>
-                    <p className="brand-body-sm text-deep-space-black/70">{user?.email}</p>
+                    <p className="brand-body-sm text-deep-space-black/70">
+                      Manager
+                    </p>
+                    <p className="brand-body-sm text-deep-space-black/70">
+                      {user?.email}
+                    </p>
                   </div>
                 </div>
 
@@ -530,40 +543,57 @@ const ManagerDashboard = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-4">
                     <div>
-                      <label className="brand-body-sm text-deep-space-black/70 block mb-1">Manager ID</label>
+                      <label className="brand-body-sm text-deep-space-black/70 block mb-1">
+                        Manager ID
+                      </label>
                       <p className="brand-body-md text-deep-space-black">
-                        {managerProfile?.manager_id || 'N/A'}
+                        {managerProfile?.manager_id || "N/A"}
                       </p>
                     </div>
                     <div>
-                      <label className="brand-body-sm text-deep-space-black/70 block mb-1">Department</label>
+                      <label className="brand-body-sm text-deep-space-black/70 block mb-1">
+                        Department
+                      </label>
                       <p className="brand-body-md text-deep-space-black">
-                        {managerProfile?.department || 'N/A'}
+                        {managerProfile?.department || "N/A"}
                       </p>
                     </div>
                     <div>
-                      <label className="brand-body-sm text-deep-space-black/70 block mb-1">Designation</label>
+                      <label className="brand-body-sm text-deep-space-black/70 block mb-1">
+                        Designation
+                      </label>
                       <p className="brand-body-md text-deep-space-black">
-                        {managerProfile?.designation || 'N/A'}
+                        {managerProfile?.designation || "N/A"}
                       </p>
                     </div>
                   </div>
-                  
+
                   <div className="space-y-4">
                     <div>
-                      <label className="brand-body-sm text-deep-space-black/70 block mb-1">Team Size</label>
+                      <label className="brand-body-sm text-deep-space-black/70 block mb-1">
+                        Team Size
+                      </label>
                       <p className="brand-body-md text-deep-space-black">
-                        {employees.length} employee{employees.length !== 1 ? 's' : ''}
+                        {employees.length} employee
+                        {employees.length !== 1 ? "s" : ""}
                       </p>
                     </div>
                     <div>
-                      <label className="brand-body-sm text-deep-space-black/70 block mb-1">Active Employees</label>
+                      <label className="brand-body-sm text-deep-space-black/70 block mb-1">
+                        Active Employees
+                      </label>
                       <p className="brand-body-md text-deep-space-black">
-                        {employees.filter((emp) => emp.employee_status === "active").length}
+                        {
+                          employees.filter(
+                            (emp) => emp.employee_status === "active"
+                          ).length
+                        }
                       </p>
                     </div>
                     <div>
-                      <label className="brand-body-sm text-deep-space-black/70 block mb-1">Status</label>
+                      <label className="brand-body-sm text-deep-space-black/70 block mb-1">
+                        Status
+                      </label>
                       <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-lumen-green/20 text-deep-space-black">
                         Active
                       </span>
@@ -583,7 +613,7 @@ const ManagerDashboard = () => {
                     onClick={() => {
                       setShowProfileModal(false);
                       // Navigate to profile edit page or show edit form
-                      toast.info("Profile editing feature coming soon!");
+                      toast("Profile editing feature coming soon!");
                     }}
                     className="bg-lumen-green text-deep-space-black px-4 py-2 rounded-lg hover:bg-neon-violet hover:text-white transition-all duration-200 transform hover:scale-105"
                   >

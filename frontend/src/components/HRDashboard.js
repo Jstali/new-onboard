@@ -30,6 +30,7 @@ import HRExpenseAnalytics from "./HRExpenseAnalytics";
 import HRDocumentCollection from "./HRDocumentCollection";
 import HRPayoutManagement from "./HRPayoutManagement";
 import HRPNCMonitoring from "./HRPNCMonitoring";
+// import CombinedEmployeeManagement from "./CombinedEmployeeManagement"; // Hidden as requested
 
 const HRDashboard = () => {
   const { logout } = useAuth();
@@ -111,6 +112,7 @@ const HRDashboard = () => {
 
   const managementTabs = [
     { id: "master", label: "Employee Master", icon: FaUsers },
+    // { id: "combined-employees", label: "Combined Employees", icon: FaUsers }, // Hidden as requested
     { id: "attendance", label: "Attendance", icon: FaCalendarAlt },
     { id: "leave", label: "Leave Management", icon: FaCalendarCheck },
     { id: "expenses", label: "Expense Management", icon: FaReceipt },
@@ -305,6 +307,13 @@ const HRDashboard = () => {
             />
           </div>
         )}
+
+        {/* Combined Employees Tab - Hidden as requested */}
+        {/* {activeTab === "combined-employees" && (
+          <div>
+            <CombinedEmployeeManagement />
+          </div>
+        )} */}
 
         {/* Attendance Tab (statistics removed per request) */}
         {activeTab === "attendance" && (

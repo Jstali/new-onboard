@@ -316,12 +316,14 @@ const EmployeeCRUD = () => {
                 {filteredEmployees.map((employee, index) => (
                   <tr
                     key={employee.id}
-                    className={`${index % 2 === 0 ? 'bg-brand-pearl' : 'bg-ui-secondary'} border-b border-brand-black/5 hover:bg-ui-secondary transition-colors`}
+                    className={`${
+                      index % 2 === 0 ? "bg-brand-pearl" : "bg-ui-secondary"
+                    } border-b border-brand-black/5 hover:bg-ui-secondary transition-colors`}
                   >
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
                         <div className="w-8 h-8 bg-brand-green/20 rounded-full flex items-center justify-center">
-                          <FaUser className="text-brand-green" />
+                          <FaUser className="text-black" />
                         </div>
                         <div className="ml-3">
                           <div className="text-sm font-medium text-brand-black">

@@ -396,7 +396,7 @@ router.post(
           paymentMode || null,
           taxIncluded === "true" || taxIncluded === true,
           totalReimbursable,
-          "pending_manager_approval",
+          "Pending Manager Approval",
           approvalToken,
           managers[0]?.manager_id || null,
           managers[0]?.manager_name || null,
@@ -570,7 +570,7 @@ router.get("/manager/pending", authenticateToken, async (req, res) => {
           u.email as employee_email
         FROM expenses e
         JOIN users u ON e.employee_id = u.id
-        WHERE e.status = 'pending_manager_approval' 
+        WHERE e.status = 'Pending Manager Approval' 
           AND (e.manager1_id = $1 OR e.manager2_id = $1 OR e.manager3_id = $1)
         ORDER BY e.created_at ASC
       `,
@@ -594,7 +594,7 @@ router.get("/manager/pending", authenticateToken, async (req, res) => {
       JOIN users u ON e.employee_id = u.id
       JOIN employee_master em ON em.company_email = u.email
       JOIN departments d ON em.department_id = d.id
-      WHERE e.status = 'pending_manager_approval' 
+      WHERE e.status = 'Pending Manager Approval' 
         AND d.id = $1
         AND d.manager_id = $2
       ORDER BY e.created_at ASC
@@ -875,7 +875,7 @@ router.put(
       const hrName = `${hrResult.rows[0].first_name} ${hrResult.rows[0].last_name}`;
 
       // Update expense request with timeout
-      const status = action === "approve" ? "approved" : "rejected";
+      const status = action === "approve" ? "HR Approved" : "rejected";
 
       // Add timeout wrapper for database operations
       const dbTimeoutPromise = new Promise((_, reject) => {
@@ -1102,7 +1102,7 @@ router.get("/approve/:id", async (req, res) => {
 
     // Check if the expense is still in a state where manager approvals are valid
     if (
-      expense.status !== "pending_manager_approval" &&
+      expense.status !== "Pending Manager Approval" &&
       expense.status !== "pending"
     ) {
       return res.status(400).json({
@@ -1134,7 +1134,7 @@ router.get("/approve/:id", async (req, res) => {
     );
 
     const expenseData = updatedExpense.rows[0];
-    let finalStatus = "pending_manager_approval"; // Default to pending manager approval
+    let finalStatus = "Pending Manager Approval"; // Default to pending manager approval
 
     if (action === "approve") {
       // Check if all assigned managers have approved
@@ -1337,7 +1337,7 @@ router.get("/analytics", authenticateToken, async (req, res) => {
           AVG(amount) as avg_amount
         FROM expenses 
         ${dateFilter}
-        AND status = 'approved'
+        AND status IN ('HR Approved', 'approved')
         GROUP BY expense_category
         ORDER BY total_amount DESC
       `),
@@ -1351,7 +1351,7 @@ router.get("/analytics", authenticateToken, async (req, res) => {
           AVG(amount) as avg_amount
         FROM expenses 
         ${dateFilter}
-        AND status = 'approved'
+        AND status IN ('HR Approved', 'approved')
         GROUP BY project_reference
         ORDER BY total_amount DESC
         LIMIT 10
@@ -1366,7 +1366,7 @@ router.get("/analytics", authenticateToken, async (req, res) => {
           AVG(amount) as avg_amount
         FROM expenses 
         ${dateFilter}
-        AND status = 'approved'
+        AND status IN ('HR Approved', 'approved')
         GROUP BY client_code
         ORDER BY total_amount DESC
         LIMIT 10
@@ -1381,7 +1381,7 @@ router.get("/analytics", authenticateToken, async (req, res) => {
           SUM(amount) as total_amount
         FROM expenses 
         ${dateFilter}
-        AND status = 'approved'
+        AND status IN ('HR Approved', 'approved')
         GROUP BY EXTRACT(YEAR FROM expense_date), EXTRACT(MONTH FROM expense_date)
         ORDER BY year, month
       `),
@@ -1396,7 +1396,7 @@ router.get("/analytics", authenticateToken, async (req, res) => {
           MAX(amount) as max_amount
         FROM expenses 
         ${dateFilter}
-        AND status = 'approved'
+        AND status IN ('HR Approved', 'approved')
       `),
     ]);
 

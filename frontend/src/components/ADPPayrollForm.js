@@ -450,7 +450,7 @@ const ADPPayrollForm = ({ employeeId, isReadOnly = false }) => {
     <div className="bg-white rounded-lg shadow-md p-6">
       <div className="flex items-center justify-between mb-6">
         <h3 className="text-xl font-semibold text-gray-800">
-          ADP Payroll Information
+          Payroll Information
         </h3>
         <div className="flex items-center space-x-2">
           {isDraft && (

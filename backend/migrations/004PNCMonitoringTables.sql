@@ -390,9 +390,10 @@ COMMENT ON COLUMN recruitment_requisitions.requisition_id IS 'Unique identifier 
 -- MIGRATION COMPLETION
 -- =============================================================================
 
-INSERT INTO migration_log (migration_name, applied_at, description) 
+INSERT INTO migration_log (migration_name, executed_at, status, details) 
 VALUES (
     '004_pnc_monitoring_tables', 
     CURRENT_TIMESTAMP, 
+    'completed',
     'Created P&C Monthly Monitoring Report tables and functions'
 ) ON CONFLICT (migration_name) DO NOTHING;

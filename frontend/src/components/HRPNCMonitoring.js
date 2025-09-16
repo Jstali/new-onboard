@@ -398,9 +398,9 @@ const HRPNCMonitoring = () => {
               {/* Age Distribution */}
               <DistributionChart
                 data={reportData.ageDistribution?.groups || []}
-                title={`Age Distribution (Avg: ${
+                title={`Age Distribution (Avg: ${Math.round(
                   reportData.ageDistribution?.averageAge || 0
-                } years)`}
+                )} years)`}
                 type="bar"
               />
 
@@ -498,7 +498,10 @@ const HRPNCMonitoring = () => {
                         Average Age
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {reportData.ageDistribution?.averageAge || 0} years
+                        {Math.round(
+                          reportData.ageDistribution?.averageAge || 0
+                        )}{" "}
+                        years
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                         -

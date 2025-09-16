@@ -223,7 +223,11 @@ const EmployeeFormManagement = ({ onRefresh }) => {
       if (onRefresh) onRefresh();
     } catch (error) {
       console.error("Update employee error:", error);
-      toast.error(error.response?.data?.error || "Failed to update employee");
+      const errorMessage =
+        error.response?.data?.error ||
+        error.response?.data?.message ||
+        "Failed to update employee";
+      toast.error(errorMessage);
     }
   };
 
@@ -266,24 +270,30 @@ const EmployeeFormManagement = ({ onRefresh }) => {
         console.log("🔍 Approval response:", response.data);
 
         // Check if the current user's role was updated
-        if (response.data.roleUpdated && response.data.newRole === 'manager') {
+        if (response.data.roleUpdated && response.data.newRole === "manager") {
           console.log("🔍 Current user's role was updated to manager");
-          
+
           // Refresh user data to get the updated role
           const updatedUser = await refreshUserData();
-          
-          if (updatedUser && updatedUser.role === 'manager') {
-            toast.success("Employee form approved! Your role has been updated to Manager. Redirecting to Manager Dashboard...");
-            
+
+          if (updatedUser && updatedUser.role === "manager") {
+            toast.success(
+              "Employee form approved! Your role has been updated to Manager. Redirecting to Manager Dashboard..."
+            );
+
             // Small delay to show the success message
             setTimeout(() => {
-              navigate('/manager/dashboard');
+              navigate("/manager/dashboard");
             }, 2000);
           } else {
-            toast.success("Employee form approved! Employee moved to onboarded list.");
+            toast.success(
+              "Employee form approved! Employee moved to onboarded list."
+            );
           }
         } else {
-          toast.success("Employee form approved! Employee moved to onboarded list.");
+          toast.success(
+            "Employee form approved! Employee moved to onboarded list."
+          );
         }
 
         fetchEmployeeForms();
@@ -323,15 +333,35 @@ const EmployeeFormManagement = ({ onRefresh }) => {
     const base = "px-2 py-1 text-xs font-medium rounded-full";
     switch (status) {
       case "pending":
-        return <span className={`${base} bg-brand-yellow text-brand-black`}>Pending</span>;
+        return (
+          <span className={`${base} bg-brand-yellow text-brand-black`}>
+            Pending
+          </span>
+        );
       case "submitted":
-        return <span className={`${base} bg-brand-blue text-brand-black`}>Submitted</span>;
+        return (
+          <span className={`${base} bg-brand-blue text-brand-black`}>
+            Submitted
+          </span>
+        );
       case "approved":
-        return <span className={`${base} bg-brand-green text-brand-black`}>Approved</span>;
+        return (
+          <span className={`${base} bg-brand-green text-brand-black`}>
+            Approved
+          </span>
+        );
       case "rejected":
-        return <span className={`${base} bg-brand-red text-brand-black`}>Rejected</span>;
+        return (
+          <span className={`${base} bg-brand-red text-brand-black`}>
+            Rejected
+          </span>
+        );
       default:
-        return <span className={`${base} bg-brand-pearl text-brand-black`}>{status || "Unknown"}</span>;
+        return (
+          <span className={`${base} bg-brand-pearl text-brand-black`}>
+            {status || "Unknown"}
+          </span>
+        );
     }
   };
 
@@ -418,8 +448,12 @@ const EmployeeFormManagement = ({ onRefresh }) => {
   return (
     <div className="min-h-screen bg-brand-pearl p-6 rounded-lg">
       <div className="mb-6">
-        <h2 className="text-2xl font-bold text-brand-black mb-2">Employee Form Management</h2>
-        <p className="text-brand-black/70">View and manage all employee onboarding forms submitted by candidates.</p>
+        <h2 className="text-2xl font-bold text-brand-black mb-2">
+          Employee Form Management
+        </h2>
+        <p className="text-brand-black/70">
+          View and manage all employee onboarding forms submitted by candidates.
+        </p>
       </div>
 
       {/* Search and Filter Controls */}
@@ -455,8 +489,14 @@ const EmployeeFormManagement = ({ onRefresh }) => {
       {filteredForms.length === 0 ? (
         <div className="text-center py-8 bg-brand-pearl rounded-lg border border-brand-black/10">
           <div className="text-brand-green text-6xl mb-4">📋</div>
-          <h3 className="text-lg font-medium text-brand-black mb-2">No Employee Forms Found</h3>
-          <p className="text-brand-black/60">{searchTerm || statusFilter !== "all" ? "Try adjusting your search or filter criteria." : "No employee forms have been submitted yet."}</p>
+          <h3 className="text-lg font-medium text-brand-black mb-2">
+            No Employee Forms Found
+          </h3>
+          <p className="text-brand-black/60">
+            {searchTerm || statusFilter !== "all"
+              ? "Try adjusting your search or filter criteria."
+              : "No employee forms have been submitted yet."}
+          </p>
         </div>
       ) : (
         <div className="overflow-x-auto bg-brand-pearl shadow-md rounded-lg border border-brand-black/10">
@@ -488,7 +528,12 @@ const EmployeeFormManagement = ({ onRefresh }) => {
             </thead>
             <tbody className="bg-brand-pearl divide-y divide-brand-black/10">
               {filteredForms.map((form, index) => (
-                <tr key={form.id} className={`${index % 2 === 0 ? 'bg-brand-pearl' : 'bg-ui-secondary'} hover:bg-ui-secondary`}>
+                <tr
+                  key={form.id}
+                  className={`${
+                    index % 2 === 0 ? "bg-brand-pearl" : "bg-ui-secondary"
+                  } hover:bg-ui-secondary`}
+                >
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div>
                       <div className="text-sm font-medium text-brand-black">
@@ -1010,9 +1055,9 @@ const EmployeeFormManagement = ({ onRefresh }) => {
                     },
                   },
                   employee_type: formData.get("employment_type"),
-                  manager1: selectedManager1,
-                  manager2: selectedManager2,
-                  manager3: selectedManager3,
+                  manager1: selectedManager1 || null,
+                  manager2: selectedManager2 || null,
+                  manager3: selectedManager3 || null,
                 };
                 handleUpdateEmployee(updatedData);
               }}

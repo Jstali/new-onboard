@@ -61,16 +61,29 @@ const Login = () => {
     try {
       const result = await resetPassword(resetData.userId, newPassword);
       if (result.success) {
-        toast.success(
-          "Password set successfully! Please login with your new password."
-        );
-        // Reset the form and show login again
-        setShowPasswordChange(false);
-        setNewPassword("");
-        setConfirmPassword("");
-        setResetData(null);
-        setEmail("");
-        setPassword("");
+        toast.success("Password set successfully! Logging you in...");
+        // Automatically login with the new password
+        try {
+          const loginResult = await login(resetData.email, newPassword);
+          if (loginResult.success) {
+            // User is now logged in, no need to show login form again
+            setShowPasswordChange(false);
+            setNewPassword("");
+            setConfirmPassword("");
+            setResetData(null);
+            setEmail("");
+            setPassword("");
+          }
+        } catch (loginError) {
+          console.error("Auto-login after password reset failed:", loginError);
+          // If auto-login fails, show the login form
+          setShowPasswordChange(false);
+          setNewPassword("");
+          setConfirmPassword("");
+          setResetData(null);
+          setEmail(resetData.email);
+          setPassword("");
+        }
       }
     } catch (error) {
       console.error("Password change error:", error);
@@ -89,18 +102,18 @@ const Login = () => {
   };
 
   return (
-    <div 
+    <div
       className="min-h-screen flex items-center justify-center relative overflow-hidden"
       style={{
         backgroundImage: `url('/ChatGPT Image Sep 4, 2025, 07_15_39 PM.png')`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat'
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
       }}
     >
       {/* Dark overlay for better text readability */}
       <div className="absolute inset-0 bg-deep-space-black/40"></div>
-      
+
       {/* Logo in top left */}
       {/* <div className="absolute top-8 left-10">
         <img 
@@ -113,10 +126,10 @@ const Login = () => {
       <div className="absolute z-10 w-full max-w-md mx-4">
         <div className="bg-deep-space-black/95 rounded-2xl p-8 shadow-2xl border border-deep-space-black/20 backdrop-blur-sm">
           <div className="text-center mb-8 ">
-          <img 
-          src="/nxzen-logo.png" 
-          alt="nxzen logo" 
-          className="h-20 w-auto"
+            <img
+              src="/nxzen-logo.png"
+              alt="nxzen logo"
+              className="h-20 w-auto"
             />
           </div>
 
@@ -141,7 +154,9 @@ const Login = () => {
                 </div>
 
                 <div className="form-group">
-                  <label className="brand-body-sm text-white mb-2 block">Password</label>
+                  <label className="brand-body-sm text-white mb-2 block">
+                    Password
+                  </label>
                   <div className="relative">
                     <input
                       type={showPassword ? "text" : "password"}
@@ -184,7 +199,9 @@ const Login = () => {
                 <div className="w-16 h-16 mx-auto mb-4 bg-lumen-green rounded-2xl flex items-center justify-center shadow-lg">
                   <FaCheck className="text-2xl text-deep-space-black" />
                 </div>
-                <h2 className="text-2xl font-semibold text-white mb-2">Set New Password</h2>
+                <h2 className="text-2xl font-semibold text-white mb-2">
+                  Set New Password
+                </h2>
                 <p className="text-white/70 mb-2">
                   Welcome! Please set your new password to continue
                 </p>

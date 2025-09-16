@@ -29,16 +29,20 @@ const OnboardedEmployees = ({ onRefresh }) => {
 
   // Ensure form data is properly initialized when modal opens
   useEffect(() => {
-    if (showAssignmentModal) {
+    if (showAssignmentModal && selectedEmployee) {
+      // Pre-populate employee name from the selected employee data
+      const fullName = `${selectedEmployee.first_name || ""} ${
+        selectedEmployee.last_name || ""
+      }`.trim();
       setAssignmentData({
-        name: "",
+        name: fullName, // Auto-fill the name
         companyEmail: "",
         manager: "",
         manager2: "",
         manager3: "",
       });
     }
-  }, [showAssignmentModal]);
+  }, [showAssignmentModal, selectedEmployee]);
 
   const fetchOnboardedEmployees = async () => {
     try {
@@ -70,8 +74,12 @@ const OnboardedEmployees = ({ onRefresh }) => {
 
   const handleAssignDetails = (employee) => {
     setSelectedEmployee(employee);
+    // Pre-populate employee name from the selected employee data
+    const fullName = `${employee.first_name || ""} ${
+      employee.last_name || ""
+    }`.trim();
     setAssignmentData({
-      name: "",
+      name: fullName, // Auto-fill the name
       companyEmail: "",
       manager: "",
       employeeId: "",
@@ -99,18 +107,20 @@ const OnboardedEmployees = ({ onRefresh }) => {
       console.log("🔍 Assignment response:", response.data);
 
       // Check if the current user's role was updated
-      if (response.data.roleUpdated && response.data.newRole === 'manager') {
+      if (response.data.roleUpdated && response.data.newRole === "manager") {
         console.log("🔍 Current user's role was updated to manager");
-        
+
         // Refresh user data to get the updated role
         const updatedUser = await refreshUserData();
-        
-        if (updatedUser && updatedUser.role === 'manager') {
-          toast.success("Employee details assigned successfully! Your role has been updated to Manager. Redirecting to Manager Dashboard...");
-          
+
+        if (updatedUser && updatedUser.role === "manager") {
+          toast.success(
+            "Employee details assigned successfully! Your role has been updated to Manager. Redirecting to Manager Dashboard..."
+          );
+
           // Small delay to show the success message
           setTimeout(() => {
-            navigate('/manager/dashboard');
+            navigate("/manager/dashboard");
           }, 2000);
         } else {
           toast.success("Employee details assigned successfully!");
@@ -331,16 +341,14 @@ const OnboardedEmployees = ({ onRefresh }) => {
                 <input
                   type="text"
                   value={assignmentData.name}
-                  onChange={(e) =>
-                    setAssignmentData((prev) => ({
-                      ...prev,
-                      name: e.target.value,
-                    }))
-                  }
-                  className="w-full px-3 py-2 bg-brand-pearl border border-brand-black/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-green focus:border-brand-green text-brand-black"
-                  placeholder="Enter employee name"
+                  readOnly
+                  className="w-full px-3 py-2 bg-gray-100 border border-brand-black/20 rounded-lg text-brand-black cursor-not-allowed"
+                  placeholder="Employee name (auto-filled)"
                   required
                 />
+                <p className="text-xs text-gray-500 mt-1">
+                  Name is pre-filled from employee data and cannot be changed
+                </p>
               </div>
 
               <div>

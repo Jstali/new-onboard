@@ -123,7 +123,7 @@ const Profile = () => {
                     : "border-transparent text-deep-space-black/70 hover:text-deep-space-black hover:border-gray-300"
                 }`}
               >
-                ADP Payroll
+                Payroll
               </button>
             </nav>
           </div>

@@ -758,7 +758,10 @@ const DocumentStatus = ({
                     className="w-full h-auto max-h-96 object-contain mx-auto"
                     onError={(e) => {
                       console.error("❌ Image load error:", e);
-                      toast.error("Failed to load image preview");
+                      // Don't show toast for every image load error to avoid spam
+                      console.log(
+                        "Image preview failed, this might be due to CORS or file not found"
+                      );
                     }}
                   />
                   <div className="mt-4">

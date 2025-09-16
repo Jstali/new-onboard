@@ -28,6 +28,7 @@ const EmployeeCRUD = () => {
     email: "",
     type: "Full-Time",
     status: "active",
+    doj: "",
   });
 
   useEffect(() => {
@@ -62,12 +63,19 @@ const EmployeeCRUD = () => {
       last_name: "",
       email: "",
       type: "Full-Time",
+      status: "active",
+      doj: "",
     });
   };
 
   const handleCreate = async () => {
     try {
-      if (!formData.email || !formData.first_name || !formData.last_name) {
+      if (
+        !formData.email ||
+        !formData.first_name ||
+        !formData.last_name ||
+        !formData.doj
+      ) {
         toast.error("Please fill in all required fields");
         return;
       }
@@ -83,7 +91,7 @@ const EmployeeCRUD = () => {
         name: `${formData.first_name} ${formData.last_name}`,
         email: formData.email, // Personal email
         type: formData.type,
-        doj: new Date().toISOString().split("T")[0], // Send only date part (YYYY-MM-DD)
+        doj: formData.doj, // Use the joining date from the form
       };
 
       console.log("Sending employee data:", employeeData);
@@ -505,6 +513,20 @@ const EmployeeCRUD = () => {
                     <option value="Intern">Intern</option>
                     <option value="Manager">Manager</option>
                   </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-brand-black mb-1">
+                    Date of Joining *
+                  </label>
+                  <input
+                    type="date"
+                    name="doj"
+                    value={formData.doj}
+                    onChange={handleInputChange}
+                    className="w-full border border-brand-black/20 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-green bg-brand-pearl text-brand-black"
+                    required
+                  />
                 </div>
               </div>
 

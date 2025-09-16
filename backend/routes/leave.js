@@ -1380,7 +1380,7 @@ router.put(
       const hrName = `${hrResult.rows[0].first_name} ${hrResult.rows[0].last_name}`;
 
       // Update leave request
-      const status = action === "approve" ? "approved" : "rejected";
+      const status = action === "approve" ? "HR Approved" : "rejected";
       const updateResult = await client.query(
         `UPDATE leave_requests 
          SET 

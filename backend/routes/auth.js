@@ -10,7 +10,7 @@ const router = express.Router();
 // Login
 router.post(
   "/login",
-  [body("email").isEmail().normalizeEmail(), body("password").notEmpty()],
+  [body("email").isEmail(), body("password").notEmpty()],
   async (req, res) => {
     try {
       const errors = validationResult(req);
@@ -93,7 +93,11 @@ router.post(
 router.get("/me", authenticateToken, async (req, res) => {
   try {
     const result = await pool.query(
-      "SELECT id, email, role, first_name, last_name FROM users WHERE id = $1",
+      `SELECT u.id, u.email, u.role, u.first_name, u.last_name, 
+              em.doj, em.employee_id, em.employee_name, em.designation
+       FROM users u
+       LEFT JOIN employee_master em ON u.email = em.company_email
+       WHERE u.id = $1`,
       [req.user.userId]
     );
 
@@ -101,6 +105,7 @@ router.get("/me", authenticateToken, async (req, res) => {
       return res.status(404).json({ error: "User not found" });
     }
 
+    console.log("🔍 /api/auth/me response for user:", result.rows[0]);
     res.json({
       user: result.rows[0],
     });

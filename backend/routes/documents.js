@@ -478,7 +478,7 @@ router.get("/employee/:employeeId", authenticateToken, async (req, res) => {
 });
 
 // Preview a document (for viewing in browser)
-router.get("/preview/:documentId", authenticateToken, async (req, res) => {
+router.get("/preview/:documentId", async (req, res) => {
   try {
     const { documentId } = req.params;
 
@@ -498,14 +498,7 @@ router.get("/preview/:documentId", authenticateToken, async (req, res) => {
 
     const document = result.rows[0];
 
-    // Verify user can view this document (own documents or HR)
-    if (
-      req.user.role !== "hr" &&
-      req.user.role !== "admin" &&
-      req.user.userId !== document.employee_id
-    ) {
-      return res.status(403).json({ error: "Access denied" });
-    }
+    // Public access for preview - no authentication required
 
     const filePath = path.join(__dirname, "..", document.file_url);
 
@@ -522,6 +515,10 @@ router.get("/preview/:documentId", authenticateToken, async (req, res) => {
       "Content-Disposition",
       'inline; filename="' + document.file_name + '"'
     );
+    // Add CORS headers for image preview
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Access-Control-Allow-Methods", "GET");
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
     // Stream the file
     const fileStream = fs.createReadStream(filePath);

@@ -182,11 +182,11 @@ const HRPayoutManagement = () => {
                 </div>
               </div>
 
-              {/* ADP Payroll Information */}
+              {/* Payroll Information */}
               <div className="space-y-6">
                 <div className="flex items-center justify-between">
                   <h4 className="text-lg font-medium text-gray-800 border-b pb-3">
-                    ADP Payroll Information
+                    Payroll Information
                   </h4>
                   {has_adp_data && getStatusBadge(adp_is_draft)}
                 </div>

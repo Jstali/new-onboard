@@ -453,14 +453,37 @@ router.post(
       );
       console.log("✅ Initial employee form created with type");
 
+      // Create employee master record
+      console.log("🔍 Creating employee master record");
+      const employeeId = await generateEmployeeId();
+      await pool.query(
+        `INSERT INTO employee_master (
+          employee_id, employee_name, company_email, type, doj, status,
+          created_at, updated_at
+        ) VALUES ($1, $2, $3, $4, $5, 'pending', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)`,
+        [employeeId, name, email, type, doj]
+      );
+      console.log("✅ Employee master record created with ID:", employeeId);
+
       // Send onboarding email
       console.log("🔍 Sending onboarding email to:", email);
-      const emailSent = await sendOnboardingEmail(email, tempPassword, type);
+      const emailSent = await sendOnboardingEmail(
+        email,
+        tempPassword,
+        type,
+        doj
+      );
 
       if (!emailSent) {
-        console.log("❌ Email sending failed, deleting user");
-        // If email fails, delete the user and return error
+        console.log(
+          "❌ Email sending failed, deleting user and employee master record"
+        );
+        // If email fails, delete both user and employee master record
         await pool.query("DELETE FROM users WHERE id = $1", [userId]);
+        await pool.query(
+          "DELETE FROM employee_master WHERE company_email = $1",
+          [email]
+        );
         return res
           .status(500)
           .json({ error: "Failed to send onboarding email" });
@@ -482,8 +505,21 @@ router.post(
         },
       });
     } catch (error) {
-      console.error("Add employee error:", error);
-      res.status(500).json({ error: "Failed to add employee" });
+      console.error("❌ Add employee error:", error);
+      console.error("❌ Error details:", {
+        message: error.message,
+        code: error.code,
+        detail: error.detail,
+        stack: error.stack,
+        name: error.name,
+      });
+      res.status(500).json({
+        error: "Failed to add employee",
+        details:
+          process.env.NODE_ENV === "development"
+            ? error.message
+            : "Internal server error",
+      });
     }
   }
 );
@@ -1864,6 +1900,10 @@ router.delete("/master/:id", async (req, res) => {
       await client.query("DELETE FROM company_emails WHERE user_id = $1", [
         userId,
       ]);
+      await client.query(
+        "DELETE FROM document_reminder_mails WHERE employee_id = $1",
+        [userId]
+      );
 
       // Delete manager mappings where this user is an employee
       await client.query(
@@ -1883,6 +1923,32 @@ router.delete("/master/:id", async (req, res) => {
       await client.query("DELETE FROM onboarded_employees WHERE user_id = $1", [
         userId,
       ]);
+
+      // Delete from additional tables that reference users
+      await client.query("DELETE FROM departments WHERE manager_id = $1", [
+        userId,
+      ]);
+      await client.query("DELETE FROM managers WHERE user_id = $1", [userId]);
+      await client.query(
+        "DELETE FROM pnc_monitoring_reports WHERE generated_by = $1",
+        [userId]
+      );
+      await client.query(
+        "DELETE FROM recruitment_requisitions WHERE hiring_manager_id = $1 OR assigned_recruiter_id = $1 OR created_by = $1",
+        [userId]
+      );
+      await client.query(
+        "DELETE FROM expense_requests WHERE employee_id = $1 OR approved_by = $1",
+        [userId]
+      );
+      await client.query(
+        "DELETE FROM documents WHERE employee_id = $1 OR uploaded_by = $1 OR reviewed_by = $1",
+        [userId]
+      );
+      await client.query(
+        "DELETE FROM onboarding WHERE created_by = $1 OR updated_by = $1 OR documents_uploaded_by = $1",
+        [userId]
+      );
     }
 
     // Delete from master
@@ -2994,7 +3060,7 @@ router.post(
           "Full-Time", // Default type
           role,
           doj,
-          "active", // Default status
+          "pending", // Default status
           department,
           location || null,
         ]
@@ -3222,104 +3288,130 @@ router.get("/employees/:id", async (req, res) => {
   }
 });
 
+// Test route
+router.put("/test-route", (req, res) => {
+  console.log("🚀 TEST ROUTE HIT!");
+  res.json({ message: "Test route working" });
+});
+
+// Simple test for employee forms
+router.put("/employee-forms/test", (req, res) => {
+  console.log("🚀 EMPLOYEE FORMS TEST HIT!");
+  res.json({ message: "Employee forms test working" });
+});
+
 // Update employee form
-router.put(
-  "/employee-forms/:id",
-  [
-    body("form_data").isObject(),
-    body("employee_type").isIn(["Intern", "Contract", "Full-Time", "Manager"]),
-  ],
-  async (req, res) => {
-    try {
-      const errors = validationResult(req);
-      if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
-      }
+router.put("/employee-forms/:id", async (req, res) => {
+  console.log("🚀 UPDATE EMPLOYEE FORM ROUTE HIT!");
+  try {
+    console.log("🔍 Update employee form request:", req.body);
 
-      const { id } = req.params;
-      const { form_data, employee_type, manager1, manager2, manager3 } =
-        req.body;
+    const { id } = req.params;
+    const { form_data, employee_type, manager1, manager2, manager3 } = req.body;
 
-      // Get the current employee's email to prevent self-assignment
-      const currentEmployeeQuery = await pool.query(
-        "SELECT ef.form_data, oe.company_email FROM employee_forms ef LEFT JOIN onboarded_employees oe ON ef.employee_id = oe.user_id WHERE ef.id = $1",
-        [id]
-      );
+    console.log("🔍 Extracted parameters:", {
+      id,
+      form_data,
+      employee_type,
+      manager1,
+      manager2,
+      manager3,
+    });
 
-      if (currentEmployeeQuery.rows.length > 0) {
-        const currentEmployee = currentEmployeeQuery.rows[0];
-        const currentEmployeeEmails = [
-          currentEmployee.form_data?.email,
-          currentEmployee.company_email,
-        ].filter(Boolean);
+    // Get the current employee's email to prevent self-assignment
+    console.log("🔍 Querying current employee for ID:", id);
+    const currentEmployeeQuery = await pool.query(
+      "SELECT ef.form_data, oe.company_email FROM employee_forms ef LEFT JOIN onboarded_employees oe ON ef.employee_id = oe.user_id WHERE ef.id = $1",
+      [id]
+    );
+    console.log("🔍 Current employee query result:", currentEmployeeQuery.rows);
 
-        // Validate that managers are not the same as the employee being assigned
-        const managersToCheck = [manager1, manager2, manager3].filter(Boolean);
+    if (currentEmployeeQuery.rows.length > 0) {
+      const currentEmployee = currentEmployeeQuery.rows[0];
+      const currentEmployeeEmails = [
+        currentEmployee.form_data?.email,
+        currentEmployee.company_email,
+      ].filter(Boolean);
 
-        for (const managerName of managersToCheck) {
-          // Get manager email from employee_master table
-          const managerResult = await pool.query(
-            "SELECT company_email as email FROM employee_master WHERE employee_name = $1 AND type = 'Manager'",
-            [managerName]
-          );
+      // Validate that managers are not the same as the employee being assigned
+      const managersToCheck = [manager1, manager2, manager3].filter(Boolean);
 
-          if (managerResult.rows.length > 0) {
-            const managerEmail = managerResult.rows[0].email;
+      for (const managerName of managersToCheck) {
+        // Get manager email from employee_master table
+        const managerResult = await pool.query(
+          "SELECT company_email as email FROM employee_master WHERE employee_name = $1 AND type = 'Manager'",
+          [managerName]
+        );
 
-            // Check if manager email matches employee email
-            if (currentEmployeeEmails.includes(managerEmail)) {
-              return res.status(400).json({
-                error: `Employee cannot be assigned as their own manager. Manager "${managerName}" has the same email as the employee.`,
-              });
-            }
+        if (managerResult.rows.length > 0) {
+          const managerEmail = managerResult.rows[0].email;
+
+          // Check if manager email matches employee email
+          if (currentEmployeeEmails.includes(managerEmail)) {
+            return res.status(400).json({
+              error: `Employee cannot be assigned as their own manager. Manager "${managerName}" has the same email as the employee.`,
+            });
           }
         }
       }
+    }
 
-      // Validate phone number uniqueness on server side
-      const phoneNumbers = [
-        form_data.phone,
-        form_data.emergencyContact?.phone,
-        form_data.emergencyContact2?.phone,
-      ].filter((phone) => phone && phone.trim() !== "");
+    // Validate phone number uniqueness on server side
+    const phoneNumbers = [
+      form_data.phone,
+      form_data.emergencyContact?.phone,
+      form_data.emergencyContact2?.phone,
+    ].filter((phone) => phone && phone.trim() !== "");
 
-      const uniquePhoneNumbers = new Set(phoneNumbers);
-      if (uniquePhoneNumbers.size !== phoneNumbers.length) {
-        return res.status(400).json({
-          error:
-            "All phone numbers (employee, emergency contact 1, and emergency contact 2) must be different",
-        });
-      }
+    const uniquePhoneNumbers = new Set(phoneNumbers);
+    if (uniquePhoneNumbers.size !== phoneNumbers.length) {
+      return res.status(400).json({
+        error:
+          "All phone numbers (employee, emergency contact 1, and emergency contact 2) must be different",
+      });
+    }
 
-      // Check if form exists
-      const existingForm = await pool.query(
-        "SELECT * FROM employee_forms WHERE id = $1",
-        [id]
-      );
+    // Check if form exists
+    const existingForm = await pool.query(
+      "SELECT * FROM employee_forms WHERE id = $1",
+      [id]
+    );
 
-      if (existingForm.rows.length === 0) {
-        return res.status(404).json({ error: "Employee form not found" });
-      }
+    if (existingForm.rows.length === 0) {
+      return res.status(404).json({ error: "Employee form not found" });
+    }
 
-      // Update form with manager assignments
-      await pool.query(
-        `
+    // Update form with manager assignments
+    console.log("🔍 Query parameters:", {
+      form_data,
+      employee_type,
+      manager1,
+      manager2,
+      manager3,
+      id,
+    });
+
+    const result = await pool.query(
+      `
         UPDATE employee_forms 
         SET form_data = $1, type = $2, assigned_manager = $3, manager2_name = $4, manager3_name = $5, updated_at = CURRENT_TIMESTAMP
         WHERE id = $6
       `,
-        [form_data, employee_type, manager1, manager2, manager3, id]
-      );
+      [form_data, employee_type, manager1, manager2, manager3, id]
+    );
 
-      res.json({
-        message: "Employee form updated successfully",
-      });
-    } catch (error) {
-      console.error("Update employee form error:", error);
-      res.status(500).json({ error: "Failed to update employee form" });
-    }
+    console.log("🔍 Update result:", result);
+
+    res.json({
+      message: "Employee form updated successfully",
+    });
+  } catch (error) {
+    console.error("❌ Update employee form error:", error);
+    console.error("❌ Error details:", error.message);
+    console.error("❌ Error stack:", error.stack);
+    res.status(500).json({ error: "Failed to update employee form" });
   }
-);
+});
 
 // Update employee in master table
 router.put("/master/:id", async (req, res) => {

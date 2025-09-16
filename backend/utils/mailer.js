@@ -16,13 +16,21 @@ const transporter = nodemailer.createTransport({
 async function sendOnboardingEmail(
   to,
   tempPassword,
-  employmentType = "Full-Time"
+  employmentType = "Full-Time",
+  joiningDate = null
 ) {
   const mailOptions = {
     from: process.env.EMAIL_USER,
     to,
     subject: "Welcome to nxzen - Employee Onboarding Login Details",
-    text: `Welcome to nxzen! \n\nLogin here: https://149.102.158.71:2025/login \nEmail: ${to} \nTemporary Password: ${tempPassword}\nEmployment Type: ${employmentType}\n\nPlease reset your password after logging in.`,
+    text: `Welcome to nxzen! \n\nLogin here: https://149.102.158.71:2025/login \nEmail: ${to} \nTemporary Password: ${tempPassword}\nEmployment Type: ${employmentType}${
+      joiningDate
+        ? `\nDate of Joining: ${new Date(joiningDate).toLocaleDateString(
+            "en-US",
+            { year: "numeric", month: "long", day: "numeric" }
+          )}`
+        : ""
+    }\n\nPlease reset your password after logging in.`,
     html: `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
         <!-- Logo Section -->
@@ -49,6 +57,17 @@ async function sendOnboardingEmail(
             <p style="margin: 10px 0;"><strong>📧 Email:</strong> <span style="color: #495057;">${to}</span></p>
             <p style="margin: 10px 0;"><strong>🔑 Temporary Password:</strong> <span style="background-color: #f8f9fa; padding: 8px 12px; border-radius: 6px; font-family: 'Courier New', monospace; border: 1px solid #dee2e6; color: #495057;">${tempPassword}</span></p>
             <p style="margin: 10px 0;"><strong>💼 Employment Type:</strong> <span style="background-color: #e7f3ff; padding: 8px 12px; border-radius: 6px; border: 1px solid #b3d9ff; color: #0066cc; font-weight: 500;">${employmentType}</span></p>
+            ${
+              joiningDate
+                ? `<p style="margin: 10px 0;"><strong>📅 Date of Joining:</strong> <span style="background-color: #e8f5e8; padding: 8px 12px; border-radius: 6px; border: 1px solid #c3e6c3; color: #2d5a2d; font-weight: 500;">${new Date(
+                    joiningDate
+                  ).toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })}</span></p>`
+                : ""
+            }
           </div>
         </div>
         

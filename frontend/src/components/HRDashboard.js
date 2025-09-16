@@ -108,12 +108,12 @@ const HRDashboard = () => {
       icon: FaFileAlt,
     },
     { id: "onboarded", label: "Onboarded Employees", icon: FaUsers },
+    { id: "master", label: "Employee Master", icon: FaUsers },
+    { id: "attendance", label: "Attendance", icon: FaCalendarAlt },
   ];
 
   const managementTabs = [
-    { id: "master", label: "Employee Master", icon: FaUsers },
     // { id: "combined-employees", label: "Combined Employees", icon: FaUsers }, // Hidden as requested
-    { id: "attendance", label: "Attendance", icon: FaCalendarAlt },
     { id: "leave", label: "Leave Management", icon: FaCalendarCheck },
     { id: "expenses", label: "Expense Management", icon: FaReceipt },
   ];

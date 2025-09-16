@@ -41,22 +41,79 @@ const OnboardingForm = ({ onSuccess }) => {
   const [errors, setErrors] = useState({});
   const [hasSavedForm, setHasSavedForm] = useState(false);
 
-  // Load saved form data on component mount
+  // Debug: Log formData changes
+  useEffect(() => {
+    console.log("🔍 FormData updated:", formData);
+    console.log("🔍 DOJ field specifically:", formData.doj);
+  }, [formData]);
+
+  // Debug: Log specifically when doj changes
+  useEffect(() => {
+    console.log("🔍 DOJ field changed to:", formData.doj);
+  }, [formData.doj]);
+
+  // Load saved form data and user joining date on component mount
   useEffect(() => {
     const loadSavedForm = async () => {
       try {
         const token = localStorage.getItem("token");
         if (!token) return;
 
-        const response = await axios.get("/employee/onboarding-form", {
+        // Load saved form data
+        const formResponse = await axios.get("/employee/onboarding-form", {
           headers: { Authorization: `Bearer ${token}` },
         });
 
-        if (response.data.hasForm && response.data.form.form_data) {
-          setFormData(response.data.form.form_data);
+        if (formResponse.data.hasForm && formResponse.data.form.form_data) {
+          setFormData(formResponse.data.form.form_data);
           setHasSavedForm(true);
           toast.success("Saved form data loaded successfully!");
         }
+
+        // Load user profile to get joining date
+        const profileResponse = await axios.get("/auth/me", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        console.log("🔍 Profile response:", profileResponse.data);
+        console.log("🔍 User data:", profileResponse.data.user);
+        console.log("🔍 Joining date:", profileResponse.data.user?.doj);
+        console.log("🔍 User email:", profileResponse.data.user?.email);
+
+        if (profileResponse.data.user) {
+          const userData = profileResponse.data.user;
+
+          setFormData((prev) => {
+            const newData = {
+              ...prev,
+              // Pre-populate email from user profile
+              email: userData.email || prev.email,
+            };
+
+            // Set joining date if available
+            if (userData.doj) {
+              console.log("✅ Setting joining date:", userData.doj);
+              // Convert date to YYYY-MM-DD format for HTML date input
+              const joiningDate = new Date(userData.doj);
+              const formattedDate = joiningDate.toISOString().split("T")[0];
+              console.log("🔍 Formatted joining date:", formattedDate);
+              newData.doj = formattedDate;
+            }
+
+            if (userData.email) {
+              console.log("✅ Setting email:", userData.email);
+            }
+
+            console.log("🔍 New form data after setting user data:", newData);
+            return newData;
+          });
+        } else {
+          console.log("❌ No user data found in profile response");
+          console.log("🔍 Profile user data:", profileResponse.data.user);
+        }
+
+        // Debug: Log current form data
+        console.log("🔍 Current form data after profile load:", formData);
       } catch (error) {
         // Silently handle errors - form might not exist yet
         console.log("No saved form found or error loading:", error.message);
@@ -82,10 +139,7 @@ const OnboardingForm = ({ onSuccess }) => {
   };
 
   const validateEmail = (email) => {
-    if (!email.trim()) return "Email is required";
-    if (!email.endsWith("@gmail.com")) return "Email must end with @gmail.com";
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) return "Please enter a valid email address";
+    // Email is pre-filled from user account, no validation needed
     return "";
   };
 
@@ -107,6 +161,11 @@ const OnboardingForm = ({ onSuccess }) => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+
+    // Prevent changes to email field (it's pre-filled and read-only)
+    if (name === "email") {
+      return;
+    }
 
     // Clear error for this field when user starts typing
     setErrors((prev) => ({ ...prev, [name]: "" }));
@@ -155,9 +214,7 @@ const OnboardingForm = ({ onSuccess }) => {
     const nameError = validateName(formData.name);
     if (nameError) newErrors.name = nameError;
 
-    // Validate email
-    const emailError = validateEmail(formData.email);
-    if (emailError) newErrors.email = emailError;
+    // Email is pre-filled from user account, no validation needed
 
     // Validate phone
     const phoneError = validatePhone(formData.phone);
@@ -355,13 +412,14 @@ const OnboardingForm = ({ onSuccess }) => {
                 type="email"
                 name="email"
                 value={formData.email}
-                onChange={handleInputChange}
-                className={`input-field pl-10 ${
-                  errors.email ? "border-red-500" : ""
-                }`}
+                readOnly
+                className="input-field pl-10 bg-gray-100 cursor-not-allowed"
                 required
               />
             </div>
+            <p className="text-sm text-gray-500 mt-1">
+              Email is pre-filled from your account and cannot be changed
+            </p>
             {errors.email && (
               <p className="text-red-500 text-sm mt-1">{errors.email}</p>
             )}
@@ -408,9 +466,10 @@ const OnboardingForm = ({ onSuccess }) => {
                 type="date"
                 name="doj"
                 value={formData.doj}
-                onChange={handleInputChange}
-                className="input-field pl-10"
+                className="input-field pl-10 bg-gray-100 cursor-not-allowed"
                 required
+                readOnly
+                title="Date of joining is set by HR and cannot be modified"
               />
             </div>
           </div>

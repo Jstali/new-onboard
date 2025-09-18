@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import {
   FaEye,
@@ -16,6 +15,7 @@ import {
 } from "react-icons/fa";
 import axios from "axios";
 import toast from "react-hot-toast";
+import ImageWithFallback from "./ImageWithFallback";
 
 const EmployeeDocuments = ({ employeeId, employeeName, employmentType }) => {
   const [documents, setDocuments] = useState({});
@@ -287,15 +287,6 @@ const EmployeeDocuments = ({ employeeId, employeeName, employmentType }) => {
                               <FaEye className="mr-1" />
                               View
                             </button>
-                            <button
-                              onClick={() =>
-                                handleDownload(document.id, document.file_name)
-                              }
-                              className="inline-flex items-center px-3 py-1 border border-transparent rounded-md text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                            >
-                              <FaDownload className="mr-1" />
-                              Download
-                            </button>
                           </div>
                         </div>
                       </div>
@@ -384,17 +375,22 @@ const EmployeeDocuments = ({ employeeId, employeeName, employmentType }) => {
               {/* Preview Area */}
               <div className="border border-gray-300 rounded-lg p-4 bg-gray-50 text-center">
                 {selectedDocument.mime_type?.includes("image") ? (
-                  <img
-                    src={`http://localhost:5001/${selectedDocument.file_url}`}
+                  <ImageWithFallback
+                    src={`http://localhost:5001/api/documents/preview/${selectedDocument.id}`}
                     alt={selectedDocument.file_name}
                     className="max-w-full max-h-96 mx-auto rounded"
+                    onError={(e) => {
+                      console.log(
+                        "Image preview failed, this might be due to CORS or file not found"
+                      );
+                    }}
                   />
                 ) : selectedDocument.mime_type?.includes("pdf") ? (
                   <div>
                     <FaFilePdf className="mx-auto h-16 w-16 text-red-500 mb-4" />
                     <p className="text-gray-600 mb-4">PDF Preview</p>
                     <iframe
-                      src={`http://localhost:5001/${selectedDocument.file_url}`}
+                      src={`http://localhost:5001/api/documents/preview/${selectedDocument.id}`}
                       className="w-full h-96 border border-gray-300 rounded"
                       title={selectedDocument.file_name}
                     />
@@ -404,35 +400,12 @@ const EmployeeDocuments = ({ employeeId, employeeName, employmentType }) => {
                     {getFileIcon(selectedDocument.mime_type)}
                     <p className="text-gray-600 mt-4">
                       Preview not available for this file type.
-                      <button
-                        onClick={() =>
-                          handleDownload(
-                            selectedDocument.id,
-                            selectedDocument.file_name
-                          )
-                        }
-                        className="text-blue-600 hover:text-blue-800 ml-2"
-                      >
-                        Download to view
-                      </button>
                     </p>
                   </div>
                 )}
               </div>
 
               <div className="flex justify-end space-x-3 mt-6">
-                <button
-                  onClick={() =>
-                    handleDownload(
-                      selectedDocument.id,
-                      selectedDocument.file_name
-                    )
-                  }
-                  className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                >
-                  <FaDownload className="mr-2" />
-                  Download
-                </button>
                 <button
                   onClick={() => setShowModal(false)}
                   className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"

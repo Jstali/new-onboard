@@ -3,7 +3,7 @@ import { useAuth } from "../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { format } from "date-fns";
-import { FaArrowLeft } from "react-icons/fa";
+import { FaHome } from "react-icons/fa";
 
 const EmployeeLeaveRequest = () => {
   const { token } = useAuth();
@@ -268,13 +268,13 @@ const EmployeeLeaveRequest = () => {
       {/* Header */}
       <div className="bg-white rounded-xl shadow-lg p-6 mb-6 border border-deep-space-black/10">
         <div className="flex items-center justify-between">
-          <div className="flex items-center">
+          <div className="flex items-center space-x-4">
             <button
-              onClick={() => navigate(-1)}
-              className="flex items-center text-deep-space-black/70 hover:text-lumen-green transition-colors duration-200 mr-4"
+              onClick={() => navigate("/employee/dashboard")}
+              className="flex items-center px-3 py-2 text-sm font-medium text-deep-space-black bg-white border border-deep-space-black/20 hover:bg-neon-violet/20 rounded-xl transition-colors duration-200"
             >
-              <FaArrowLeft className="w-4 h-4 mr-2" />
-              Back
+              <FaHome className="w-4 h-4 mr-2" />
+              Home
             </button>
             <h2 className="text-2xl font-bold text-deep-space-black">
               Leave Request Form
@@ -585,9 +585,7 @@ const EmployeeLeaveRequest = () => {
                   <tr
                     key={request.id}
                     className={`hover:bg-neon-violet/10 transition-colors duration-200 ${
-                      index % 2 === 0
-                        ? "bg-white"
-                        : "bg-gray-50"
+                      index % 2 === 0 ? "bg-white" : "bg-gray-50"
                     }`}
                   >
                     <td className="px-6 py-4 whitespace-nowrap bg-inherit">

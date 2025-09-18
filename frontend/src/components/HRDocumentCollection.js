@@ -375,34 +375,11 @@ const HRDocumentCollection = () => {
       (template) => template.document_name
     );
 
-    // Create a complete list of required documents for this employment type
-    // This ensures we show all required documents even if they don't exist in collection yet
-    const completeDocumentList = requiredDocuments.map((docName) => {
-      // Find if this document exists in the collection
-      const existingDoc = employeeDocuments.find(
-        (doc) => doc.document_name === docName
-      );
-
-      if (existingDoc) {
-        return existingDoc;
-      } else {
-        // Create a placeholder document for missing required documents
-        return {
-          id: `placeholder-${docName}`,
-          employee_id: form.employee_id,
-          document_name: docName,
-          document_type: "Required", // Default to Required
-          status: "Pending",
-          effective_status: "Pending",
-          uploaded_file_url: null,
-          created_at: null,
-          updated_at: null,
-          is_placeholder: true, // Flag to identify placeholder documents
-        };
-      }
-    });
-
-    const filteredDocuments = completeDocumentList;
+    // Only use actual documents that exist in the collection
+    // Don't create placeholders for counting purposes
+    const filteredDocuments = employeeDocuments.filter((doc) =>
+      requiredDocuments.includes(doc.document_name)
+    );
 
     // Debug logging for intern employees
     if (employmentType === "Intern") {
@@ -411,7 +388,6 @@ const HRDocumentCollection = () => {
         employmentType: employmentType,
         totalEmployeeDocuments: employeeDocuments.length,
         requiredDocuments: requiredDocuments,
-        completeDocumentList: completeDocumentList.length,
         filteredDocuments: filteredDocuments.length,
       });
     }
@@ -871,9 +847,6 @@ const HRDocumentCollection = () => {
                       <div className="font-medium text-brand-black">
                         {group.submitted_documents}/{group.total_documents}{" "}
                         Submitted
-                      </div>
-                      <div className="text-brand-black/70">
-                        {group.pending_documents} Pending
                       </div>
                     </div>
                   </td>

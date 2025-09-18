@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import { FaLock, FaEye, FaEyeSlash, FaCheck, FaUser } from "react-icons/fa";
 import toast from "react-hot-toast";
+import ImageWithFallback from "./ImageWithFallback";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -116,7 +117,7 @@ const Login = () => {
 
       {/* Logo in top left */}
       {/* <div className="absolute top-8 left-10">
-        <img 
+        <ImageWithFallback 
           src="/favicon.png" 
           alt="favicon" 
           className="h-24 w-auto"
@@ -126,7 +127,7 @@ const Login = () => {
       <div className="absolute z-10 w-full max-w-md mx-4">
         <div className="bg-deep-space-black/95 rounded-2xl p-8 shadow-2xl border border-deep-space-black/20 backdrop-blur-sm">
           <div className="text-center mb-8 ">
-            <img
+            <ImageWithFallback
               src="/nxzen-logo.png"
               alt="nxzen logo"
               className="h-20 w-auto"

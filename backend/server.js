@@ -1,7 +1,7 @@
 const express = require("express");
 const cors = require("cors");
-const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
+const { securityConfig } = require("./middleware/security");
 require("dotenv").config({ path: "./config.env" });
 
 const authRoutes = require("./routes/auth");
@@ -21,8 +21,8 @@ const { connectDB } = require("./config/database");
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Security middleware
-app.use(helmet());
+// Security middleware with iframe support
+securityConfig(app);
 
 // Rate limiting - Much more lenient for development
 const limiter = rateLimit({
@@ -36,33 +36,57 @@ const limiter = rateLimit({
 });
 app.use(limiter);
 
-// CORS - Allow all origins for development
-app.use(
-  cors({
-    origin: "*",
-    credentials: false,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH", "HEAD"],
-    allowedHeaders: [
-      "Content-Type",
-      "Authorization",
-      "X-Requested-With",
-      "Accept",
-      "Origin",
-      "Access-Control-Request-Method",
-      "Access-Control-Request-Headers",
-    ],
-    exposedHeaders: ["Authorization"],
-    optionsSuccessStatus: 200,
-    preflightContinue: false,
-  })
-);
+// CORS configuration for development and production
+const corsOptions = {
+  origin:
+    process.env.NODE_ENV === "production"
+      ? [process.env.FRONTEND_URL || "https://yourdomain.com"]
+      : [
+          "http://localhost:3000",
+          "http://localhost:5001",
+          "http://localhost:3001",
+        ],
+  credentials: false,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH", "HEAD"],
+  allowedHeaders: [
+    "Content-Type",
+    "Authorization",
+    "X-Requested-With",
+    "Accept",
+    "Origin",
+    "Access-Control-Request-Method",
+    "Access-Control-Request-Headers",
+  ],
+  exposedHeaders: ["Authorization"],
+  optionsSuccessStatus: 200,
+  preflightContinue: false,
+};
+
+app.use(cors(corsOptions));
 
 // Handle preflight requests
 app.options("*", cors());
 
 // Additional CORS headers for all responses
 app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "*");
+  const allowedOrigins =
+    process.env.NODE_ENV === "production"
+      ? [process.env.FRONTEND_URL || "https://yourdomain.com"]
+      : [
+          "http://localhost:3000",
+          "http://localhost:5001",
+          "http://localhost:3001",
+        ];
+
+  const origin = req.get("origin") || req.get("referer");
+  const isAllowedOrigin = allowedOrigins.some(
+    (allowed) => origin && origin.startsWith(allowed)
+  );
+
+  if (isAllowedOrigin || process.env.NODE_ENV === "development") {
+    res.header("Access-Control-Allow-Origin", origin || "*");
+  }
+
   res.header(
     "Access-Control-Allow-Methods",
     "GET, POST, PUT, DELETE, OPTIONS, PATCH, HEAD"
@@ -91,7 +115,7 @@ app.use((req, res, next) => {
   next();
 });
 
-// Static files with proper MIME types and CORS headers for iframe embedding
+// Static files with proper MIME types
 app.use(
   "/uploads",
   express.static("uploads", {
@@ -99,9 +123,6 @@ app.use(
       // Set proper MIME types for PDF files
       if (path.endsWith(".pdf")) {
         res.setHeader("Content-Type", "application/pdf");
-        // Allow iframe embedding for PDF files
-        res.setHeader("X-Frame-Options", "ALLOWALL");
-        res.setHeader("Content-Security-Policy", "frame-ancestors *");
       }
       // Set proper MIME types for image files
       else if (path.match(/\.(jpg|jpeg|png|gif|bmp|webp)$/i)) {
@@ -118,9 +139,6 @@ app.use(
           "Content-Type",
           mimeTypes[ext] || "application/octet-stream"
         );
-        // Allow iframe embedding for image files
-        res.setHeader("X-Frame-Options", "ALLOWALL");
-        res.setHeader("Content-Security-Policy", "frame-ancestors *");
       }
       // Set proper MIME types for other common file types
       else if (path.endsWith(".docx")) {

@@ -65,7 +65,7 @@ const NxzenLogo = ({ size = 32, showText = true, className = "" }) => {
         </svg>
       </div>
       {showText && (
-        <div className="text-black font-semibold text-lg">nxzen</div>
+        <div className="text-black font-extrabold text-lg">nxzen</div>
       )}
     </div>
   );

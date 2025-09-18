@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { FaArrowLeft } from "react-icons/fa";
+import { FaHome } from "react-icons/fa";
 import { toast } from "react-hot-toast";
 import ADPPayrollForm from "./ADPPayrollForm";
 import axios from "axios";
@@ -83,13 +83,13 @@ const Profile = () => {
         <div className="bg-white shadow rounded-lg border border-deep-space-black/10">
           {/* Header */}
           <div className="px-6 py-4 border-b border-deep-space-black/10">
-            <div className="flex items-center">
+            <div className="flex items-center space-x-4">
               <button
-                onClick={() => navigate(-1)}
-                className="flex items-center text-deep-space-black/70 hover:text-deep-space-black hover:bg-neon-violet/20 transition-all duration-200 mr-4 px-2 py-1 rounded-lg"
+                onClick={() => navigate("/employee/dashboard")}
+                className="flex items-center px-3 py-2 text-sm font-medium text-deep-space-black bg-white border border-deep-space-black/20 hover:bg-neon-violet/20 rounded-xl transition-colors duration-200"
               >
-                <FaArrowLeft className="w-4 h-4 mr-2" />
-                Back
+                <FaHome className="w-4 h-4 mr-2" />
+                Home
               </button>
               <div>
                 <h1 className="brand-heading-md text-deep-space-black">

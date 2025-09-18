@@ -416,17 +416,6 @@ const DocumentUploadSection = ({
                           </div>
                         </div>
                         <div className="flex items-center space-x-2">
-                          <button
-                            onClick={() =>
-                              window.open(
-                                `/documents/download/${document.id}`,
-                                "_blank"
-                              )
-                            }
-                            className="text-blue-600 hover:text-blue-800 text-sm"
-                          >
-                            Download
-                          </button>
                           {!readOnly && (
                             <button
                               onClick={() => handleDeleteDocument(document.id)}

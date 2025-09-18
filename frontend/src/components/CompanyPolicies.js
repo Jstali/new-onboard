@@ -1,7 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import {
-  FaArrowLeft,
   FaSignOutAlt,
   FaBuilding,
   FaUsers,
@@ -9,6 +8,7 @@ import {
   FaShieldAlt,
   FaHandshake,
   FaGraduationCap,
+  FaHome,
 } from "react-icons/fa";
 import { useAuth } from "../contexts/AuthContext";
 
@@ -108,13 +108,13 @@ Our mission is to transform businesses through innovative technology solutions w
       <header className="bg-white shadow-sm border-b border-deep-space-black/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
-            <div className="flex items-center">
+            <div className="flex items-center space-x-4">
               <button
-                onClick={() => navigate(-1)}
-                className="flex items-center text-deep-space-black/70 hover:text-deep-space-black hover:bg-neon-violet/20 transition-all duration-200 mr-4 px-3 py-2 rounded-lg"
+                onClick={() => navigate("/employee/dashboard")}
+                className="flex items-center px-3 py-2 text-sm font-medium text-deep-space-black bg-white border border-deep-space-black/20 hover:bg-neon-violet/20 rounded-xl transition-colors duration-200"
               >
-                <FaArrowLeft className="w-4 h-4 mr-2" />
-                Back
+                <FaHome className="w-4 h-4 mr-2" />
+                Home
               </button>
               <div>
                 <h1 className="brand-heading-md text-deep-space-black">
@@ -158,10 +158,10 @@ Our mission is to transform businesses through innovative technology solutions w
             </div>
           </div>
           <p className="text-deep-space-black/80 leading-relaxed">
-            This handbook serves as your comprehensive guide to working at NXZEN. 
-            Please familiarize yourself with all policies and procedures outlined 
-            below. If you have any questions, don't hesitate to reach out to your 
-            manager or the HR department.
+            This handbook serves as your comprehensive guide to working at
+            NXZEN. Please familiarize yourself with all policies and procedures
+            outlined below. If you have any questions, don't hesitate to reach
+            out to your manager or the HR department.
           </p>
         </div>
 
@@ -174,9 +174,7 @@ Our mission is to transform businesses through innovative technology solutions w
             >
               <div className="p-6">
                 <div className="flex items-center mb-4">
-                  <div className="flex-shrink-0 mr-4">
-                    {policy.icon}
-                  </div>
+                  <div className="flex-shrink-0 mr-4">{policy.icon}</div>
                   <h3 className="text-lg font-semibold text-deep-space-black">
                     {policy.title}
                   </h3>
@@ -198,13 +196,19 @@ Our mission is to transform businesses through innovative technology solutions w
               Questions or Concerns?
             </h3>
             <p className="text-deep-space-black/70 mb-4">
-              If you have any questions about these policies or need clarification 
-              on any company procedures, please contact:
+              If you have any questions about these policies or need
+              clarification on any company procedures, please contact:
             </p>
             <div className="space-y-2 text-sm text-deep-space-black/80">
-              <p><strong>HR Department:</strong> hr@nxzen.com</p>
-              <p><strong>General Inquiries:</strong> info@nxzen.com</p>
-              <p><strong>Phone:</strong> +1 (555) 123-4567</p>
+              <p>
+                <strong>HR Department:</strong> hr@nxzen.com
+              </p>
+              <p>
+                <strong>General Inquiries:</strong> info@nxzen.com
+              </p>
+              <p>
+                <strong>Phone:</strong> +1 (555) 123-4567
+              </p>
             </div>
           </div>
         </div>

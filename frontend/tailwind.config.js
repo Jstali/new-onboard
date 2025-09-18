@@ -10,7 +10,7 @@ module.exports = {
         "lumen-green": "#8DE971",
         "iridescent-pearl": "#F6F2F4",
         "neon-violet": "#AD96DC",
-        
+
         // Tertiary accents (for charts/infographics only)
         "brand-yellow": "#ECF166",
         "brand-cyan": "#74D1EA",
@@ -60,36 +60,50 @@ module.exports = {
       },
       fontFamily: {
         // Brand Typography System
-        'heading': ['Canela', 'Times New Roman', 'serif'],
-        'subheading': ['Corporative Sans Rounded', 'Arial Rounded MT Bold', 'Arial', 'sans-serif'],
-        'body': ['Corporative Sans Rounded', 'Calibri', 'Arial', 'sans-serif'],
-        'highlight': ['Testimonia', 'Brush Script MT', 'cursive'],
-        
+        heading: ["Canela", "Times New Roman", "serif"],
+        subheading: [
+          "Corporative Sans Rounded",
+          "Arial Rounded MT Bold",
+          "Arial",
+          "sans-serif",
+        ],
+        body: ["Corporative Sans Rounded", "Calibri", "Arial", "sans-serif"],
+        highlight: ["Testimonia", "Brush Script MT", "cursive"],
+
         // Web-safe alternatives for better compatibility
-        'heading-safe': ['Times New Roman', 'serif'],
-        'subheading-safe': ['Arial Rounded MT Bold', 'Arial', 'sans-serif'],
-        'body-safe': ['Calibri', 'Arial', 'sans-serif'],
-        'highlight-safe': ['Brush Script MT', 'cursive'],
+        "heading-safe": ["Times New Roman", "serif"],
+        "subheading-safe": ["Arial Rounded MT Bold", "Arial", "sans-serif"],
+        "body-safe": ["Calibri", "Arial", "sans-serif"],
+        "highlight-safe": ["Brush Script MT", "cursive"],
       },
       fontSize: {
         // Brand Typography Scale
-        'heading-xl': ['3.5rem', { lineHeight: '1.1', letterSpacing: '0' }],
-        'heading-lg': ['2.5rem', { lineHeight: '1.2', letterSpacing: '0' }],
-        'heading-md': ['2rem', { lineHeight: '1.3', letterSpacing: '0' }],
-        'heading-sm': ['1.5rem', { lineHeight: '1.4', letterSpacing: '0' }],
-        'subheading-lg': ['1.25rem', { lineHeight: '1.3', letterSpacing: '0.1em' }],
-        'subheading-md': ['1.125rem', { lineHeight: '1.4', letterSpacing: '0.1em' }],
-        'subheading-sm': ['1rem', { lineHeight: '1.5', letterSpacing: '0.1em' }],
-        'body-lg': ['1.125rem', { lineHeight: '1.6', letterSpacing: '0' }],
-        'body-md': ['1rem', { lineHeight: '1.6', letterSpacing: '0' }],
-        'body-sm': ['0.875rem', { lineHeight: '1.5', letterSpacing: '0' }],
-        'highlight': ['1rem', { lineHeight: '1.4', letterSpacing: '0' }],
+        "heading-xl": ["3.5rem", { lineHeight: "1.1", letterSpacing: "0" }],
+        "heading-lg": ["2.5rem", { lineHeight: "1.2", letterSpacing: "0" }],
+        "heading-md": ["2rem", { lineHeight: "1.3", letterSpacing: "0" }],
+        "heading-sm": ["1.5rem", { lineHeight: "1.4", letterSpacing: "0" }],
+        "subheading-lg": [
+          "1.25rem",
+          { lineHeight: "1.3", letterSpacing: "0.1em" },
+        ],
+        "subheading-md": [
+          "1.125rem",
+          { lineHeight: "1.4", letterSpacing: "0.1em" },
+        ],
+        "subheading-sm": [
+          "1rem",
+          { lineHeight: "1.5", letterSpacing: "0.1em" },
+        ],
+        "body-lg": ["1.125rem", { lineHeight: "1.6", letterSpacing: "0" }],
+        "body-md": ["1rem", { lineHeight: "1.6", letterSpacing: "0" }],
+        "body-sm": ["0.875rem", { lineHeight: "1.5", letterSpacing: "0" }],
+        highlight: ["1rem", { lineHeight: "1.4", letterSpacing: "0" }],
       },
       fontWeight: {
-        'heading': '300', // Thin for Canela
-        'subheading': '700', // Bold for Corporative Sans Rounded
-        'body': '400', // Regular
-        'highlight': '400', // Regular for Testimonia
+        heading: "300", // Thin for Canela
+        subheading: "700", // Bold for Corporative Sans Rounded
+        body: "400", // Regular
+        highlight: "400", // Regular for Testimonia
       },
     },
   },

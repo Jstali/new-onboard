@@ -100,7 +100,16 @@ export const AuthProvider = ({ children }) => {
 
       localStorage.setItem("token", newToken);
       setToken(newToken);
-      setUser(userData);
+
+      // Get complete user data from /auth/me endpoint
+      try {
+        const userResponse = await axios.get("/auth/me");
+        setUser(userResponse.data.user);
+      } catch (error) {
+        console.error("Failed to get user details:", error);
+        // Fallback to basic user data from login response
+        setUser(userData);
+      }
 
       toast.success("Login successful!");
       return { success: true };

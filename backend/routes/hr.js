@@ -413,18 +413,51 @@ router.post(
       const { email, name, type, doj } = req.body;
       console.log("✅ Validated data:", { email, name, type, doj });
 
-      // Check if email already exists
-      console.log("🔍 Checking if email exists:", email);
+      // Validate email format (allow any domain for personal email)
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        console.log("❌ Invalid email format:", email);
+        return res.status(400).json({
+          error: "Please enter a valid email address",
+        });
+      }
+      console.log("✅ Email format is valid (personal email)");
+
+      // Check if email already exists in users table
+      console.log("🔍 Checking if email exists in users table:", email);
       const existingUser = await pool.query(
         "SELECT id FROM users WHERE email = $1",
         [email]
       );
 
       if (existingUser.rows.length > 0) {
-        console.log("❌ Email already exists:", email);
+        console.log("❌ Email already exists in users table:", email);
         return res.status(400).json({ error: "Email already exists" });
       }
-      console.log("✅ Email is unique");
+      console.log("✅ Email is unique in users table");
+
+      // Check if employee already exists in master table
+      console.log("🔍 Checking if employee exists in master table:", {
+        name,
+        email,
+      });
+      const existingEmployee = await pool.query(
+        "SELECT employee_id, employee_name, company_email FROM employee_master WHERE employee_name = $1 OR email = $2",
+        [name, email]
+      );
+
+      if (existingEmployee.rows.length > 0) {
+        console.log(
+          "❌ Employee already exists in master table:",
+          existingEmployee.rows[0]
+        );
+        return res.status(400).json({
+          error: "Employee already exists in master table",
+          details: `Employee with name "${name}" or email "${email}" already exists`,
+          existingEmployee: existingEmployee.rows[0],
+        });
+      }
+      console.log("✅ No duplicate employee found in master table");
 
       // Generate temporary password
       const tempPassword = generateTempPassword();
@@ -458,9 +491,9 @@ router.post(
       const employeeId = await generateEmployeeId();
       await pool.query(
         `INSERT INTO employee_master (
-          employee_id, employee_name, company_email, type, doj, status,
+          employee_id, employee_name, email, company_email, type, doj, status,
           created_at, updated_at
-        ) VALUES ($1, $2, $3, $4, $5, 'pending', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)`,
+        ) VALUES ($1, $2, $3, NULL, $4, $5, 'pending', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)`,
         [employeeId, name, email, type, doj]
       );
       console.log("✅ Employee master record created with ID:", employeeId);
@@ -480,10 +513,9 @@ router.post(
         );
         // If email fails, delete both user and employee master record
         await pool.query("DELETE FROM users WHERE id = $1", [userId]);
-        await pool.query(
-          "DELETE FROM employee_master WHERE company_email = $1",
-          [email]
-        );
+        await pool.query("DELETE FROM employee_master WHERE email = $1", [
+          email,
+        ]);
         return res
           .status(500)
           .json({ error: "Failed to send onboarding email" });
@@ -533,10 +565,10 @@ router.get("/employees", async (req, res) => {
         em.employee_id,
         em.employee_name as first_name,
         '' as last_name,
-        em.company_email as email,
+        em.email as email,
         em.type,
         em.status,
-        em.doj as created_at,
+        em.created_at,
         em.manager_id,
         em.manager_name as assigned_manager,
         em.manager2_id,
@@ -557,7 +589,7 @@ router.get("/employees", async (req, res) => {
         u.emergency_contact_phone2,
         u.emergency_contact_relationship2
       FROM employee_master em
-      LEFT JOIN users u ON em.company_email = u.email
+      LEFT JOIN users u ON em.email = u.email
       WHERE em.status = 'active'
       ORDER BY em.created_at DESC
     `);
@@ -900,9 +932,9 @@ router.put("/employee-forms/:id/approve", async (req, res) => {
     const form = formResult.rows[0];
 
     if (action === "approve") {
-      // Update form status to approved
+      // Update form status to approved and set submitted_at if not already set
       await pool.query(
-        "UPDATE employee_forms SET status = 'approved', updated_at = CURRENT_TIMESTAMP WHERE id = $1",
+        "UPDATE employee_forms SET status = 'approved', submitted_at = COALESCE(submitted_at, CURRENT_TIMESTAMP), updated_at = CURRENT_TIMESTAMP WHERE id = $1",
         [id]
       );
 
@@ -1034,11 +1066,18 @@ router.put(
           companyEmail,
         });
 
+        // Validate company email if provided
+        if (companyEmail && !companyEmail.endsWith("@nxzen.com")) {
+          return res.status(400).json({
+            error: "Company email must end with @nxzen.com",
+          });
+        }
+
         // Use fallback values if not provided
         finalEmployeeId = employeeId || `EMP${id}`;
-        finalCompanyEmail = companyEmail || `employee${id}@company.com`;
+        finalCompanyEmail = companyEmail || `employee${id}@nxzen.com`;
 
-        console.log("🔍 Using fallback values:", {
+        console.log("🔍 Using values:", {
           finalEmployeeId,
           finalCompanyEmail,
         });
@@ -2255,22 +2294,46 @@ router.put(
         }
       }
 
+      // Check for existing employee in master table to prevent duplicates
+      console.log("🔍 Checking for existing employee in master table:", {
+        name,
+        companyEmail,
+      });
+      const existingEmployee = await pool.query(
+        "SELECT employee_id, employee_name, company_email FROM employee_master WHERE employee_name = $1 OR company_email = $2",
+        [name, companyEmail]
+      );
+
+      if (existingEmployee.rows.length > 0) {
+        console.log(
+          "❌ Employee already exists in master table:",
+          existingEmployee.rows[0]
+        );
+        return res.status(400).json({
+          error: "Employee already exists in master table",
+          details: `Employee with name "${name}" or company email "${companyEmail}" already exists`,
+          existingEmployee: existingEmployee.rows[0],
+        });
+      }
+      console.log("✅ No duplicate found, proceeding with assignment");
+
       // Add to employee master table with multiple managers
       await pool.query(
         `
         INSERT INTO employee_master (
-          employee_id, employee_name, company_email, 
+          employee_id, employee_name, email, company_email, 
           manager_id, manager_name, 
           manager2_id, manager2_name, 
           manager3_id, manager3_name, 
           type, doj
         )
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
       `,
         [
           employeeId,
           name,
-          companyEmail,
+          formData.email || onboarded.user_email, // Personal email from form or fallback to user email
+          companyEmail, // Company email
           managerInfo.manager_id, // Manager 1 ID
           managerInfo.manager_name, // Manager 1 name
           manager2Info?.manager_id || null, // Manager 2 ID
@@ -2488,6 +2551,14 @@ router.post(
         manager2Id,
         manager3Id,
       } = req.body;
+
+      // Validate that the email is a company email (ends with @nxzen.com)
+      if (!companyEmail.endsWith("@nxzen.com")) {
+        return res.status(400).json({
+          error:
+            "Only company emails (@nxzen.com) are allowed for employee creation",
+        });
+      }
 
       // Generate unique 6-digit employee ID
       const employeeId = await generateEmployeeId();
@@ -2972,6 +3043,20 @@ router.post(
         doj,
       } = req.body;
 
+      // Validate that both emails are company emails (end with @nxzen.com)
+      if (!email.endsWith("@nxzen.com")) {
+        return res.status(400).json({
+          error:
+            "Only company emails (@nxzen.com) are allowed for employee creation",
+        });
+      }
+      if (!companyEmail.endsWith("@nxzen.com")) {
+        return res.status(400).json({
+          error:
+            "Only company emails (@nxzen.com) are allowed for employee creation",
+        });
+      }
+
       // Check if email already exists in users table
       const existingUser = await pool.query(
         "SELECT id FROM users WHERE email = $1",
@@ -3300,9 +3385,20 @@ router.put("/employee-forms/test", (req, res) => {
   res.json({ message: "Employee forms test working" });
 });
 
+// Simple test for employee forms with ID
+router.put("/employee-forms/test/:id", (req, res) => {
+  console.log("🚀 EMPLOYEE FORMS TEST WITH ID HIT!", req.params.id);
+  res.json({
+    message: "Employee forms test with ID working",
+    id: req.params.id,
+  });
+});
+
 // Update employee form
 router.put("/employee-forms/:id", async (req, res) => {
   console.log("🚀 UPDATE EMPLOYEE FORM ROUTE HIT!");
+  console.log("🚀 Route params:", req.params);
+  console.log("🚀 Request body:", req.body);
   try {
     console.log("🔍 Update employee form request:", req.body);
 
@@ -3318,6 +3414,17 @@ router.put("/employee-forms/:id", async (req, res) => {
       manager3,
     });
 
+    // Simple validation
+    if (!id) {
+      return res.status(400).json({ error: "Employee form ID is required" });
+    }
+
+    if (!form_data || !employee_type) {
+      return res
+        .status(400)
+        .json({ error: "Form data and employee type are required" });
+    }
+
     // Get the current employee's email to prevent self-assignment
     console.log("🔍 Querying current employee for ID:", id);
     const currentEmployeeQuery = await pool.query(
@@ -3325,6 +3432,11 @@ router.put("/employee-forms/:id", async (req, res) => {
       [id]
     );
     console.log("🔍 Current employee query result:", currentEmployeeQuery.rows);
+
+    if (currentEmployeeQuery.rows.length === 0) {
+      console.log("❌ No employee found with ID:", id);
+      return res.status(404).json({ error: "Employee form not found" });
+    }
 
     if (currentEmployeeQuery.rows.length > 0) {
       const currentEmployee = currentEmployeeQuery.rows[0];

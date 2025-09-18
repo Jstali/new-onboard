@@ -13,6 +13,7 @@ import {
   FaEdit,
 } from "react-icons/fa";
 import DocumentStatus from "./DocumentStatus";
+import ImageWithFallback from "./ImageWithFallback";
 
 const EmployeeFormManagement = ({ onRefresh }) => {
   const { user, refreshUserData } = useAuth();
@@ -880,7 +881,7 @@ const EmployeeFormManagement = ({ onRefresh }) => {
                           >
                             <div className="flex items-center space-x-3 overflow-hidden">
                               {isImage ? (
-                                <img
+                                <ImageWithFallback
                                   src={file}
                                   alt={fileName}
                                   className="w-12 h-12 object-cover rounded"

@@ -18,6 +18,7 @@ import axios from "axios";
 import { format } from "date-fns";
 import OnboardingForm from "./OnboardingForm";
 import OnboardingStatus from "./OnboardingStatus";
+import ImageWithFallback from "./ImageWithFallback";
 import DocumentStatus from "./DocumentStatus";
 import EmployeeExpensePortal from "./EmployeeExpensePortal";
 import EmployeePayroll from "./EmployeePayroll";
@@ -224,7 +225,7 @@ const EmployeeDashboard = () => {
               <div className="flex items-center space-x-3 cursor-pointer transition-all duration-300 ease-in-out transform hover:scale-105">
                 <div className="w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg bg-lumen-green">
                   <span className="text-xl font-bold text-deep-space-black">
-                    <img
+                    <ImageWithFallback
                       src="/favicon.png"
                       alt="favicon"
                       className="w-12 h-12"

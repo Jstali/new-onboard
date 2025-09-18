@@ -94,9 +94,11 @@ router.get("/me", authenticateToken, async (req, res) => {
   try {
     const result = await pool.query(
       `SELECT u.id, u.email, u.role, u.first_name, u.last_name, 
-              em.doj, em.employee_id, em.employee_name, em.designation
+              COALESCE(em.doj, (ef.form_data->>'doj')::date) as doj, 
+              em.employee_id, em.employee_name, em.designation
        FROM users u
-       LEFT JOIN employee_master em ON u.email = em.company_email
+       LEFT JOIN employee_master em ON (u.email = em.company_email OR u.email = em.email)
+       LEFT JOIN employee_forms ef ON u.id = ef.employee_id
        WHERE u.id = $1`,
       [req.user.userId]
     );
@@ -144,25 +146,6 @@ router.post(
     }
   }
 );
-
-// Get current user
-router.get("/me", authenticateToken, async (req, res) => {
-  try {
-    const userResult = await pool.query(
-      "SELECT id, email, role, created_at FROM users WHERE id = $1",
-      [req.user.userId]
-    );
-
-    if (userResult.rows.length === 0) {
-      return res.status(404).json({ error: "User not found" });
-    }
-
-    res.json({ user: userResult.rows[0] });
-  } catch (error) {
-    console.error("Get user error:", error);
-    res.status(500).json({ error: "Failed to get user" });
-  }
-});
 
 // Change password
 router.post(

@@ -482,13 +482,9 @@ router.get("/preview/:documentId", async (req, res) => {
   try {
     const { documentId } = req.params;
 
+    // Query the correct fields from employee_documents table
     const result = await pool.query(
-      `
-      SELECT ed.*, u.email 
-      FROM employee_documents ed
-      JOIN users u ON ed.employee_id = u.id
-      WHERE ed.id = $1
-    `,
+      `SELECT file_url, mime_type, file_name FROM employee_documents WHERE id = $1`,
       [documentId]
     );
 
@@ -498,34 +494,76 @@ router.get("/preview/:documentId", async (req, res) => {
 
     const document = result.rows[0];
 
-    // Public access for preview - no authentication required
-
+    // Construct the full file path
     const filePath = path.join(__dirname, "..", document.file_url);
 
+    // Check if file exists
     if (!fs.existsSync(filePath)) {
+      console.error(`File not found: ${filePath}`);
       return res.status(404).json({ error: "File not found on server" });
     }
 
     // Set appropriate headers for preview
     res.setHeader(
       "Content-Type",
-      document.file_type || "application/octet-stream"
+      document.mime_type || "application/octet-stream"
     );
     res.setHeader(
       "Content-Disposition",
-      'inline; filename="' + document.file_name + '"'
+      `inline; filename="${document.file_name}"`
     );
-    // Add CORS headers for image preview
-    res.setHeader("Access-Control-Allow-Origin", "*");
+
+    // Add CORS headers for iframe embedding
+    const allowedOrigins =
+      process.env.NODE_ENV === "production"
+        ? [process.env.FRONTEND_URL || "https://yourdomain.com"]
+        : [
+            "http://localhost:3000",
+            "http://localhost:5001",
+            "http://localhost:3001",
+          ];
+
+    const origin = req.get("origin") || req.get("referer");
+    const isAllowedOrigin = allowedOrigins.some(
+      (allowed) => origin && origin.startsWith(allowed)
+    );
+
+    if (isAllowedOrigin || process.env.NODE_ENV === "development") {
+      res.setHeader("Access-Control-Allow-Origin", origin || "*");
+    }
+
     res.setHeader("Access-Control-Allow-Methods", "GET");
     res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
+    // Allow iframe embedding
+    res.setHeader("X-Frame-Options", "ALLOWALL");
+
+    // Set cache headers for better performance
+    res.setHeader("Cache-Control", "public, max-age=3600");
+    res.setHeader("X-Content-Type-Options", "nosniff");
+
     // Stream the file
     const fileStream = fs.createReadStream(filePath);
+
+    // Handle stream errors
+    fileStream.on("error", (error) => {
+      console.error("Error streaming file:", error);
+      if (!res.headersSent) {
+        res.status(500).json({ error: "Failed to stream file" });
+      }
+    });
+
+    // Handle client disconnect
+    req.on("close", () => {
+      fileStream.destroy();
+    });
+
     fileStream.pipe(res);
   } catch (error) {
     console.error("Error previewing document:", error);
-    res.status(500).json({ error: "Failed to preview document" });
+    if (!res.headersSent) {
+      res.status(500).json({ error: "Failed to preview document" });
+    }
   }
 });
 

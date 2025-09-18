@@ -667,61 +667,117 @@ router.get(
   [authenticateToken, checkHRRole],
   async (req, res) => {
     try {
+      console.log("🚀 MANAGERS ROUTE HIT!");
+      console.log("🔍 Fetching all managers...");
       const result = await pool.query(`
-        SELECT 
-            subq.id,
-            subq.first_name,
-            subq.last_name,
-            subq.email,
-            subq.role,
-            subq.department_id,
-            subq.status,
-            subq.created_at,
-            subq.updated_at
-          FROM (
-            SELECT DISTINCT
-              manager_id::integer as id,
-              manager_name as first_name,
-              '' as last_name,
-              company_email as email,
-              'manager' as role,
-            NULL as department_id,
-              status,
-              created_at,
-              updated_at
-            FROM employee_master
-            WHERE status = 'active'
-              AND type = 'Manager'
-          ) as subq
-          ORDER BY subq.first_name
-    `);
+        SELECT
+          employee_id as id,
+          employee_name,
+          company_email as email,
+          'manager' as role,
+          NULL as department_id,
+          status,
+          created_at,
+          updated_at
+        FROM employee_master
+        WHERE status = 'active'
+          AND type = 'Manager'
+        ORDER BY employee_name
+      `);
+      console.log("🔍 Managers result:", result.rows);
+      console.log("🔍 Managers result length:", result.rows.length);
 
       // Get departments for mapping
+      console.log("🔍 Fetching departments...");
       const deptResult = await pool.query(
         "SELECT id, name, manager_id FROM departments"
       );
+      console.log("🔍 Departments result:", deptResult.rows);
       const deptMap = new Map(
-        deptResult.rows.map((d) => [d.manager_id.toString(), d.name])
+        deptResult.rows
+          .filter((d) => d.manager_id !== null)
+          .map((d) => [d.manager_id.toString(), d.name])
       );
 
       // Format the response
+      console.log("🔍 Starting response formatting...");
       const managers = result.rows.map((manager) => {
+        console.log("🔍 Processing manager:", manager);
         const deptName = deptMap.get(manager.id);
-        return {
+        const nameParts = manager.employee_name.split(" ");
+        const formattedManager = {
           ...manager,
-          full_name: manager.first_name,
+          first_name: nameParts[0] || manager.employee_name,
+          last_name: nameParts.slice(1).join(" ") || "",
+          full_name: manager.employee_name,
           department_name: deptName || null,
           is_assigned: !!deptName,
         };
+        console.log("🔍 Formatted manager:", formattedManager);
+        return formattedManager;
       });
+      console.log("🔍 Final managers array:", managers);
 
       res.json(managers);
     } catch (error) {
-      console.error("Error fetching all managers:", error);
+      console.error("❌ Error fetching all managers:", error);
+      console.error("❌ Error details:", error.message);
+      console.error("❌ Error stack:", error.stack);
       res.status(500).json({ error: "Failed to fetch managers" });
     }
   }
 );
+
+// Test departments table
+router.get(
+  "/test-depts",
+  [authenticateToken, checkHRRole],
+  async (req, res) => {
+    try {
+      console.log("🔍 Testing departments table...");
+      const result = await pool.query("SELECT * FROM departments LIMIT 5");
+      console.log("🔍 Departments result:", result.rows);
+      res.json({ departments: result.rows });
+    } catch (error) {
+      console.error("❌ Error testing departments:", error);
+      res.status(500).json({ error: "Failed to test departments" });
+    }
+  }
+);
+
+// Test managers query
+router.get(
+  "/test-managers",
+  [authenticateToken, checkHRRole],
+  async (req, res) => {
+    try {
+      console.log("🔍 Testing managers query...");
+      const result = await pool.query(`
+      SELECT 1 as test
+    `);
+      console.log("🔍 Managers result:", result.rows);
+      res.json({ managers: result.rows });
+    } catch (error) {
+      console.error("❌ Error testing managers:", error);
+      res.status(500).json({ error: "Failed to test managers" });
+    }
+  }
+);
+
+// Simple test without authentication
+router.get("/test-managers-no-auth", async (req, res) => {
+  try {
+    console.log("🔍 Testing managers query without auth...");
+    const result = await pool.query(`
+      SELECT employee_id, employee_name FROM employee_master WHERE type = 'Manager' LIMIT 1
+    `);
+    console.log("🔍 Managers result:", result.rows);
+    res.json({ managers: result.rows });
+  } catch (error) {
+    console.error("❌ Error testing managers:", error);
+    res.status(500).json({ error: "Failed to test managers" });
+  }
+});
 
 // Get HR config - Missing endpoint
 router.get("/", [authenticateToken, checkHRRole], async (req, res) => {

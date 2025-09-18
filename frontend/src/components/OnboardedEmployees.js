@@ -52,6 +52,14 @@ const OnboardedEmployees = ({ onRefresh }) => {
         "🔍 Onboarded employees data:",
         response.data.onboardedEmployees
       );
+      // Debug submitted_at field
+      response.data.onboardedEmployees.forEach((emp, index) => {
+        console.log(`Employee ${index}:`, {
+          user_email: emp.user_email,
+          submitted_at: emp.submitted_at,
+          submitted_at_type: typeof emp.submitted_at,
+        });
+      });
       setOnboardedEmployees(response.data.onboardedEmployees);
     } catch (error) {
       console.error("Error fetching onboarded employees:", error);
@@ -170,7 +178,14 @@ const OnboardedEmployees = ({ onRefresh }) => {
   };
 
   const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString();
+    if (!dateString || dateString === null || dateString === undefined) {
+      return "Not submitted";
+    }
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) {
+      return "Invalid date";
+    }
+    return date.toLocaleDateString();
   };
 
   if (loading) {

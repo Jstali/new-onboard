@@ -207,21 +207,17 @@ const EmployeeCRUD = () => {
       : `${baseClasses} bg-brand-red text-brand-black`;
   };
 
-  const getRoleBadge = (role) => {
+  const getRoleBadge = (type) => {
     const baseClasses = "px-2 py-1 rounded-full text-xs font-medium";
-    switch (role) {
+    switch (type) {
       case "Full-Time":
         return `${baseClasses} bg-brand-green text-brand-black`;
       case "Contract":
         return `${baseClasses} bg-brand-blue text-brand-black`;
       case "Intern":
         return `${baseClasses} bg-brand-yellow text-brand-black`;
-      case "Product Developer":
+      case "Manager":
         return `${baseClasses} bg-brand-violet text-brand-black`;
-      case "hr":
-        return `${baseClasses} bg-brand-violet text-brand-black`;
-      case "manager":
-        return `${baseClasses} bg-brand-blue text-brand-black`;
       case "Not Assigned":
         return `${baseClasses} bg-brand-pearl text-brand-black/60`;
       default:
@@ -298,13 +294,10 @@ const EmployeeCRUD = () => {
                     Name
                   </th>
                   <th className="px-6 py-4 text-left text-xs font-medium text-brand-black uppercase tracking-wider">
-                    Employee ID
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-brand-black uppercase tracking-wider">
                     Email
                   </th>
                   <th className="px-6 py-4 text-left text-xs font-medium text-brand-black uppercase tracking-wider">
-                    Role
+                    Type
                   </th>
                   <th className="px-6 py-4 text-left text-xs font-medium text-brand-black uppercase tracking-wider">
                     Managers
@@ -347,27 +340,12 @@ const EmployeeCRUD = () => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm text-brand-black">
-                        {employee.assigned_employee_id ? (
-                          <span className="font-mono">
-                            {employee.assigned_employee_id}
-                          </span>
-                        ) : (
-                          <span className="text-brand-black/50 italic">
-                            Not Assigned
-                          </span>
-                        )}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-brand-black">
                         {employee.email}
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span
-                        className={getRoleBadge(employee.assigned_job_role)}
-                      >
-                        {employee.assigned_job_role || "Not Assigned"}
+                      <span className={getRoleBadge(employee.type)}>
+                        {employee.type || "Not Assigned"}
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">

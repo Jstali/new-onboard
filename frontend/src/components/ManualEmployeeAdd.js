@@ -96,7 +96,7 @@ const ManualEmployeeAdd = ({ onSuccess, onClose }) => {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Email *
+              Personal Email *
             </label>
             <input
               type="email"
@@ -104,7 +104,7 @@ const ManualEmployeeAdd = ({ onSuccess, onClose }) => {
               value={formData.email}
               onChange={handleInputChange}
               className="w-full border border-deep-space-black/20 rounded-md px-3 py-2 bg-gray-100 focus:outline-none focus:ring-2 focus:ring-lumen-green text-deep-space-black"
-              placeholder="employee@company.com"
+              placeholder="employee@gmail.com"
               required
             />
           </div>

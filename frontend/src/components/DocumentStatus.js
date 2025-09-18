@@ -12,6 +12,7 @@ import {
 import axios from "axios";
 import toast from "react-hot-toast";
 import DocumentUploadSection from "./DocumentUploadSection";
+import ImageWithFallback from "./ImageWithFallback";
 
 const DocumentStatus = ({
   employeeId,
@@ -80,21 +81,56 @@ const DocumentStatus = ({
     setShowAllDocuments(true);
   };
 
+  const handleApproveEmployee = async () => {
+    if (
+      window.confirm(
+        `Are you sure you want to approve ${employeeName}'s application?\n\nNote: Employee can be approved even with missing documents. Documents can be uploaded later during employment.`
+      )
+    ) {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.put(
+          `http://localhost:5001/api/hr/employee-forms/${employeeId}/approve`,
+          {
+            action: "approve",
+          },
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+
+        console.log("🔍 Approval response:", response.data);
+        toast.success("Employee approved successfully!");
+
+        // Refresh the data
+        if (onRefresh) {
+          onRefresh();
+        }
+      } catch (error) {
+        console.error("❌ Approval failed:", error);
+        toast.error("Failed to approve employee");
+      }
+    }
+  };
+
   const fetchUploadedFiles = async () => {
     try {
+      console.log("🔍 Fetching uploaded files for employee ID:", employeeId);
       const token = localStorage.getItem("token");
       const response = await axios.get(
         `http://localhost:5001/api/documents/employee/${employeeId}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
+      console.log("✅ Uploaded files response:", response.data);
       setUploadedFiles(response.data);
     } catch (error) {
-      console.error("Error fetching uploaded files:", error);
+      console.error("❌ Error fetching uploaded files:", error);
+      console.error("❌ Error details:", error.response?.data);
+      toast.error("Failed to fetch documents. Please try again.");
     }
   };
 
   const handleViewFile = async (documentType) => {
     try {
+      console.log("🔍 Starting to view file for document type:", documentType);
       await fetchUploadedFiles();
       const allDocs = Object.values(uploadedFiles).flat();
       const fileToView = allDocs.find(
@@ -121,21 +157,27 @@ const DocumentStatus = ({
           documentId: safeFile.id,
           fileName: safeFile.file_name,
           fileType: safeFile.file_type,
+          fileUrl: safeFile.file_url,
         });
 
         setSelectedFile(safeFile);
         setShowFileViewer(true);
+
+        // Show a warning if the file might not exist
+        toast.info(
+          "Opening document viewer. If the file doesn't load, it may not be available on the server."
+        );
       } else {
         console.log("⚠️ File not found for document type:", documentType);
         console.log(
           "⚠️ Available document types:",
           allDocs.map((doc) => doc.document_type)
         );
-        toast.error("Document not found");
+        toast.error(`No document found for type: ${documentType}`);
       }
     } catch (error) {
       console.error("Error viewing file:", error);
-      toast.error("Failed to load document");
+      toast.error("Failed to load document. Please try again.");
     }
   };
 
@@ -507,7 +549,10 @@ const DocumentStatus = ({
                 Documents can be uploaded later during employment.
               </p>
               <div className="flex space-x-2">
-                <button className="inline-flex items-center px-3 py-2 border border-transparent rounded-md text-sm font-medium text-white bg-green-600 hover:bg-green-700">
+                <button
+                  onClick={handleApproveEmployee}
+                  className="inline-flex items-center px-3 py-2 border border-transparent rounded-md text-sm font-medium text-white bg-green-600 hover:bg-green-700"
+                >
                   <FaCheck className="mr-1" />
                   Approve Employee
                 </button>
@@ -752,34 +797,18 @@ const DocumentStatus = ({
                   ?.toLowerCase()
                   .match(/\.(jpg|jpeg|png|gif|bmp|webp)$/)) ? (
                 <div className="text-center">
-                  <img
+                  <ImageWithFallback
                     src={`http://localhost:5001/api/documents/preview/${selectedFile.id}`}
                     alt={selectedFile.file_name || "Image"}
                     className="w-full h-auto max-h-96 object-contain mx-auto"
                     onError={(e) => {
-                      console.error("❌ Image load error:", e);
-                      // Don't show toast for every image load error to avoid spam
-                      console.log(
-                        "Image preview failed, this might be due to CORS or file not found"
+                      console.error("Image preview failed:", e);
+                      toast.error(
+                        "File not found on server. The document may have been moved or deleted."
                       );
                     }}
                   />
-                  <div className="mt-4">
-                    <button
-                      onClick={() => {
-                        if (selectedFile && selectedFile.id) {
-                          handleDownload(
-                            selectedFile.id,
-                            selectedFile.file_name
-                          );
-                        }
-                      }}
-                      className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
-                    >
-                      <FaDownload className="mr-2" />
-                      Download Image
-                    </button>
-                  </div>
+                  <div className="mt-4"></div>
                 </div>
               ) : selectedFile &&
                 (selectedFile.file_type === "application/pdf" ||
@@ -790,26 +819,18 @@ const DocumentStatus = ({
                     src={`http://localhost:5001/api/documents/preview/${selectedFile.id}`}
                     className="w-full h-96 border border-gray-300 rounded-lg"
                     title={selectedFile.file_name || "PDF Preview"}
+                    onLoad={() => {
+                      console.log("✅ PDF loaded successfully");
+                    }}
                     onError={(e) => {
                       console.error("❌ PDF load error:", e);
-                      toast.error("Failed to load PDF preview");
+                      toast.error(
+                        "Failed to load PDF preview. The document may not be available on the server."
+                      );
                     }}
                   />
-                  <div className="mt-4">
-                    <button
-                      onClick={() => {
-                        if (selectedFile && selectedFile.id) {
-                          handleDownload(
-                            selectedFile.id,
-                            selectedFile.file_name
-                          );
-                        }
-                      }}
-                      className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
-                    >
-                      <FaDownload className="mr-2" />
-                      Download PDF
-                    </button>
+                  <div className="mt-2 text-sm text-gray-500">
+                    If the PDF doesn't load, try the download button below.
                   </div>
                 </div>
               ) : (
@@ -829,47 +850,40 @@ const DocumentStatus = ({
                         </span>
                       )}
                     </p>
-                    <button
-                      onClick={() => {
-                        if (selectedFile && selectedFile.id) {
-                          handleDownload(
-                            selectedFile.id,
-                            selectedFile.file_name
-                          );
-                        } else {
-                          console.log(
-                            "⚠️ Download not available - missing document ID"
-                          );
-                          toast.error("Download not available");
-                        }
-                      }}
-                      className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700"
-                    >
-                      <FaDownload className="mr-2" />
-                      Download File
-                    </button>
+                    <div className="space-y-2">
+                      <p className="text-sm text-red-500">
+                        ⚠️ File may not be available on server
+                      </p>
+                      <div className="flex space-x-2 justify-center">
+                        <button
+                          onClick={() =>
+                            window.open(
+                              `http://localhost:5001/api/documents/download/${selectedFile.id}`,
+                              "_blank"
+                            )
+                          }
+                          className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
+                        >
+                          <FaDownload className="mr-2" />
+                          Download
+                        </button>
+                        <button
+                          onClick={() => {
+                            setShowFileViewer(false);
+                            setSelectedFile(null);
+                          }}
+                          className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
+                        >
+                          Close
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 </div>
               )}
             </div>
 
             <div className="flex justify-end mt-6 space-x-3">
-              <button
-                onClick={() => {
-                  if (selectedFile && selectedFile.id) {
-                    handleDownload(selectedFile.id, selectedFile.file_name);
-                  } else {
-                    console.log(
-                      "⚠️ Download not available - missing document ID"
-                    );
-                    toast.error("Download not available");
-                  }
-                }}
-                className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
-              >
-                <FaDownload className="mr-2" />
-                Download
-              </button>
               <button
                 onClick={() => {
                   setShowFileViewer(false);

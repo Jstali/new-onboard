@@ -18,6 +18,7 @@ import toast from "react-hot-toast";
 import AddEmployeeModal from "./AddEmployeeModal";
 // EmployeeList removed
 import AttendanceStats from "./AttendanceStats";
+import ImageWithFallback from "./ImageWithFallback";
 import EmployeeMaster from "./EmployeeMaster";
 import HRLeaveApproval from "./HRLeaveApproval";
 import OnboardedEmployees from "./OnboardedEmployees";
@@ -137,7 +138,7 @@ const HRDashboard = () => {
             <div className="flex items-center space-x-4">
               {/* Logo */}
               <div className="flex items-center space-x-3 cursor-pointer transition-all duration-300 ease-in-out transform hover:scale-105">
-                <img
+                <ImageWithFallback
                   src="/favicon.png"
                   alt="nxzen Logo"
                   className="w-10 h-10 object-contain transition-transform duration-300 hover:rotate-12"

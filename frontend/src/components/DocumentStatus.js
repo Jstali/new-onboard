@@ -30,6 +30,7 @@ const DocumentStatus = ({
   const [uploadedFiles, setUploadedFiles] = useState({});
   const [showFileViewer, setShowFileViewer] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
+  const [iframeLoading, setIframeLoading] = useState(true);
 
   const fetchValidation = useCallback(async () => {
     try {
@@ -89,8 +90,22 @@ const DocumentStatus = ({
     ) {
       try {
         const token = localStorage.getItem("token");
+
+        // First, get the form ID for this employee
+        const formResponse = await axios.get(
+          `http://localhost:5001/api/hr/employee-forms?employeeId=${employeeId}`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+
+        if (!formResponse.data.forms || formResponse.data.forms.length === 0) {
+          toast.error("No employee form found for this employee");
+          return;
+        }
+
+        const formId = formResponse.data.forms[0].id;
+
         const response = await axios.put(
-          `http://localhost:5001/api/hr/employee-forms/${employeeId}/approve`,
+          `http://localhost:5001/api/hr/employee-forms/${formId}/approve`,
           {
             action: "approve",
           },
@@ -162,9 +177,10 @@ const DocumentStatus = ({
 
         setSelectedFile(safeFile);
         setShowFileViewer(true);
+        setIframeLoading(true);
 
         // Show a warning if the file might not exist
-        toast.info(
+        toast.success(
           "Opening document viewer. If the file doesn't load, it may not be available on the server."
         );
       } else {
@@ -815,22 +831,55 @@ const DocumentStatus = ({
                   selectedFile.file_type === "application/octet-stream" ||
                   selectedFile.file_name?.toLowerCase().endsWith(".pdf")) ? (
                 <div className="text-center">
-                  <iframe
-                    src={`http://localhost:5001/api/documents/preview/${selectedFile.id}`}
-                    className="w-full h-96 border border-gray-300 rounded-lg"
-                    title={selectedFile.file_name || "PDF Preview"}
-                    onLoad={() => {
-                      console.log("✅ PDF loaded successfully");
-                    }}
-                    onError={(e) => {
-                      console.error("❌ PDF load error:", e);
-                      toast.error(
-                        "Failed to load PDF preview. The document may not be available on the server."
-                      );
-                    }}
-                  />
-                  <div className="mt-2 text-sm text-gray-500">
-                    If the PDF doesn't load, try the download button below.
+                  <div className="w-full h-96 border border-gray-300 rounded-lg flex items-center justify-center bg-gray-50">
+                    <div className="text-center">
+                      <FaFileAlt className="mx-auto h-16 w-16 text-blue-500 mb-4" />
+                      <p className="text-gray-700 mb-4">PDF Document Ready</p>
+                      <p className="text-sm text-gray-500 mb-4">
+                        Click the button below to view the PDF in a new tab
+                      </p>
+                      <button
+                        onClick={() => {
+                          const token = localStorage.getItem("token");
+                          window.open(
+                            `http://localhost:5001/api/documents/preview/${selectedFile.id}?token=${token}`,
+                            "_blank"
+                          );
+                        }}
+                        className="inline-flex items-center px-6 py-3 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                      >
+                        <FaEye className="mr-2" />
+                        View PDF
+                      </button>
+                    </div>
+                  </div>
+                  <div className="mt-4 flex justify-center space-x-3">
+                    <button
+                      onClick={() => {
+                        const token = localStorage.getItem("token");
+                        window.open(
+                          `http://localhost:5001/api/documents/preview/${selectedFile.id}?token=${token}`,
+                          "_blank"
+                        );
+                      }}
+                      className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
+                    >
+                      <FaEye className="mr-2" />
+                      View PDF
+                    </button>
+                    <button
+                      onClick={() => {
+                        const token = localStorage.getItem("token");
+                        window.open(
+                          `http://localhost:5001/api/documents/download/${selectedFile.id}?token=${token}`,
+                          "_blank"
+                        );
+                      }}
+                      className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
+                    >
+                      <FaDownload className="mr-2" />
+                      Download PDF
+                    </button>
                   </div>
                 </div>
               ) : (

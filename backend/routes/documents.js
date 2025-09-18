@@ -479,6 +479,18 @@ router.get("/employee/:employeeId", authenticateToken, async (req, res) => {
 
 // Preview a document (for viewing in browser)
 router.get("/preview/:documentId", async (req, res) => {
+  // Check for token in Authorization header or query parameter
+  const authHeader = req.headers.authorization;
+  const tokenFromQuery = req.query.token;
+
+  if (!authHeader && !tokenFromQuery) {
+    return res.status(401).json({ error: "Access token required" });
+  }
+
+  // If token is in query parameter, add it to headers for middleware
+  if (tokenFromQuery && !authHeader) {
+    req.headers.authorization = `Bearer ${tokenFromQuery}`;
+  }
   try {
     const { documentId } = req.params;
 
@@ -568,11 +580,41 @@ router.get("/preview/:documentId", async (req, res) => {
 });
 
 // Download a document
-router.get("/download/:documentId", authenticateToken, async (req, res) => {
+router.get("/download/:documentId", async (req, res) => {
   try {
+    // Check for token in Authorization header or query parameter
+    const authHeader = req.headers.authorization;
+    const tokenFromQuery = req.query.token;
+
+    if (!authHeader && !tokenFromQuery) {
+      return res.status(401).json({ error: "Access token required" });
+    }
+
+    // If token is in query parameter, add it to headers for middleware
+    if (tokenFromQuery && !authHeader) {
+      req.headers.authorization = `Bearer ${tokenFromQuery}`;
+    }
+
+    // Verify token manually
+    const token = (authHeader && authHeader.split(" ")[1]) || tokenFromQuery;
+    const jwt = require("jsonwebtoken");
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    // Get user from database
+    const { pool } = require("../config/database");
+    const result = await pool.query(
+      "SELECT id, email, role FROM users WHERE id = $1",
+      [decoded.userId]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(401).json({ error: "Invalid token" });
+    }
+
+    req.user = result.rows[0];
     const { documentId } = req.params;
 
-    const result = await pool.query(
+    const docResult = await pool.query(
       `
       SELECT ed.*, u.email 
       FROM employee_documents ed
@@ -582,11 +624,11 @@ router.get("/download/:documentId", authenticateToken, async (req, res) => {
       [documentId]
     );
 
-    if (result.rows.length === 0) {
+    if (docResult.rows.length === 0) {
       return res.status(404).json({ error: "Document not found" });
     }
 
-    const document = result.rows[0];
+    const document = docResult.rows[0];
 
     // Verify user can download this document (own documents or HR)
     if (

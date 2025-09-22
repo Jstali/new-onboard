@@ -111,7 +111,7 @@ The database comes with pre-configured users for testing:
 
 ## Database Structure
 
-The database includes the following main tables:
+The database includes 25+ tables with complete functionality:
 
 ### Core Tables
 
@@ -125,32 +125,58 @@ The database includes the following main tables:
 - `document_templates` - Document requirements
 - `employee_documents` - Uploaded documents
 - `document_collection` - Document tracking
+- `document_reminder_mails` - Document reminder system
 
 ### Leave Management
 
 - `leave_requests` - Leave applications
 - `leave_balances` - Employee leave balances
+- `leave_type_balances` - Leave type specific balances
+- `leave_types` - Available leave types
 - `comp_off_balances` - Compensatory off balances
 
 ### Attendance & Expenses
 
 - `attendance` - Daily attendance records
+- `attendance_settings` - Attendance configuration
 - `expenses` - Expense claims
+- `expense_categories` - Expense categories
+- `expense_requests` - Expense request workflow
+- `expense_attachments` - Expense file attachments
 
-### Relationships
+### Management & Relationships
 
 - `manager_employee_mapping` - Manager-employee relationships
+- `managers` - Manager information
+- `departments` - Department management
+- `company_emails` - Company email assignments
+
+### System & Configuration
+
+- `system_settings` - System-wide settings
+- `relations` - Emergency contact relationships
+- `migration_log` - Database migration tracking
+
+### Advanced Features
+
+- `pnc_monitoring_reports` - P&C monitoring system
+- `pnc_monitoring_breakdowns` - Detailed monitoring data
+- `recruitment_requisitions` - Recruitment management
+- `onboarding` - Onboarding workflow tracking
 
 ## Sample Data Included
 
 The database comes with:
 
 - 4 sample users (HR, Admin, Manager, Employee)
-- Sample employee records
-- Document templates for common requirements
-- Sample leave balances
+- Sample employee records with complete data
+- Document templates for all requirements
+- Sample leave balances and leave types
 - Sample attendance records
 - Manager-employee mappings
+- Expense categories and system settings
+- Complete HR workflow data
+- PNC monitoring functions
 
 ## Troubleshooting
 

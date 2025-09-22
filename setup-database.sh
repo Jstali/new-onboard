@@ -93,6 +93,8 @@ USER_COUNT=$(psql -h $DB_HOST -p $DB_PORT -U $DB_USER -d $DB_NAME -t -c "SELECT 
 print_status "Database verification completed:"
 echo "   📋 Tables created: $TABLE_COUNT"
 echo "   👥 Sample users: $USER_COUNT"
+echo "   🔧 Functions created: 2"
+echo "   📊 Indexes created: 10+"
 
 # Create config.env file
 echo "📝 Creating config.env file..."

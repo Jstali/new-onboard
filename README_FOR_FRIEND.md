@@ -45,13 +45,16 @@ cd frontend && npm start
 
 ## What's Included
 
-✅ Complete database with all tables and sample data  
+✅ Complete database with 25+ tables and sample data  
 ✅ All user roles and permissions  
 ✅ Sample employees and documents  
 ✅ Leave management system  
 ✅ Attendance tracking  
 ✅ Document upload system  
-✅ Manager-employee relationships
+✅ Manager-employee relationships  
+✅ Expense management system  
+✅ PNC monitoring functions  
+✅ Complete HR workflow
 
 ## Files Created for You
 

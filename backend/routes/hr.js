@@ -470,13 +470,23 @@ router.post(
         userId = userResult.rows[0].id;
         console.log("✅ User created with ID:", userId);
 
-        // Create initial employee form record with the employment type
-        console.log("🔍 Creating initial employee form with type:", type);
-        await client.query(
-          "INSERT INTO employee_forms (employee_id, type, status) VALUES ($1, $2, 'pending')",
-          [userId, type]
+        // Create initial employee form record with the employment type and DOJ
+        console.log(
+          "🔍 Creating initial employee form with type:",
+          type,
+          "and DOJ:",
+          doj
         );
-        console.log("✅ Initial employee form created with type");
+        const formData = {
+          doj: doj,
+          name: name,
+          email: email,
+        };
+        await client.query(
+          "INSERT INTO employee_forms (employee_id, type, status, form_data) VALUES ($1, $2, 'pending', $3)",
+          [userId, type, JSON.stringify(formData)]
+        );
+        console.log("✅ Initial employee form created with type and DOJ");
 
         // Note: Employee master record will be created only after company email assignment
         console.log(

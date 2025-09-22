@@ -65,7 +65,61 @@ const OnboardingForm = ({ onSuccess }) => {
         });
 
         if (formResponse.data.hasForm && formResponse.data.form.form_data) {
-          setFormData(formResponse.data.form.form_data);
+          const savedFormData = formResponse.data.form.form_data;
+          console.log("🔍 Loading saved form data:", savedFormData);
+          console.log("🔍 DOJ from saved form:", savedFormData.doj);
+
+          // Merge saved data with default structure to ensure all required fields exist
+          const mergedFormData = {
+            name: "",
+            email: "",
+            phone: "",
+            address: "",
+            education: "",
+            experience: "",
+            doj: "",
+            emergencyContact: {
+              name: "",
+              phone: "",
+              relationship: "",
+            },
+            emergencyContact2: {
+              name: "",
+              phone: "",
+              relationship: "",
+            },
+            ...savedFormData,
+            // Ensure nested objects are properly merged
+            emergencyContact: {
+              name: "",
+              phone: "",
+              relationship: "",
+              ...(savedFormData.emergencyContact || {}),
+            },
+            emergencyContact2: {
+              name: "",
+              phone: "",
+              relationship: "",
+              ...(savedFormData.emergencyContact2 || {}),
+            },
+          };
+
+          // Convert DOJ to yyyy-MM-dd format for HTML date input
+          if (mergedFormData.doj) {
+            try {
+              const dojDate = new Date(mergedFormData.doj);
+              mergedFormData.doj = dojDate.toISOString().split("T")[0];
+              console.log(
+                "🔍 Converted DOJ to date format:",
+                mergedFormData.doj
+              );
+            } catch (error) {
+              console.error("❌ Error converting DOJ date:", error);
+              mergedFormData.doj = "";
+            }
+          }
+
+          setFormData(mergedFormData);
           setHasSavedForm(true);
           toast.success("Saved form data loaded successfully!");
         }
@@ -90,14 +144,31 @@ const OnboardingForm = ({ onSuccess }) => {
               email: userData.email || prev.email,
             };
 
-            // Set joining date if available
-            if (userData.doj) {
-              console.log("✅ Setting joining date:", userData.doj);
+            // Set joining date if available and not already set from saved form
+            if (userData.doj && !prev.doj) {
+              console.log(
+                "✅ Setting joining date from user profile:",
+                userData.doj
+              );
               // Convert date to YYYY-MM-DD format for HTML date input
               const joiningDate = new Date(userData.doj);
               const formattedDate = joiningDate.toISOString().split("T")[0];
               console.log("🔍 Formatted joining date:", formattedDate);
               newData.doj = formattedDate;
+            } else if (prev.doj) {
+              console.log("✅ Keeping DOJ from saved form:", prev.doj);
+              // Ensure DOJ from saved form is also in correct format
+              try {
+                const dojDate = new Date(prev.doj);
+                newData.doj = dojDate.toISOString().split("T")[0];
+                console.log(
+                  "🔍 Converted saved DOJ to date format:",
+                  newData.doj
+                );
+              } catch (error) {
+                console.error("❌ Error converting saved DOJ date:", error);
+                newData.doj = "";
+              }
             }
 
             if (userData.email) {
@@ -195,7 +266,7 @@ const OnboardingForm = ({ onSuccess }) => {
       setFormData((prev) => ({
         ...prev,
         [parent]: {
-          ...prev[parent],
+          ...(prev[parent] || {}),
           [child]: filteredValue,
         },
       }));

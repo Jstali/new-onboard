@@ -95,7 +95,8 @@ router.get("/me", authenticateToken, async (req, res) => {
     const result = await pool.query(
       `SELECT u.id, u.email, u.role, u.first_name, u.last_name, 
               COALESCE(em.doj, (ef.form_data->>'doj')::date) as doj, 
-              em.employee_id, em.employee_name, em.designation
+              em.employee_id, em.employee_name, em.designation,
+              ef.form_data
        FROM users u
        LEFT JOIN employee_master em ON (u.email = em.company_email OR u.email = em.email)
        LEFT JOIN employee_forms ef ON u.id = ef.employee_id

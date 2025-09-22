@@ -9,7 +9,11 @@
     "client": "cd frontend && npm start",
     "install-all": "npm install && cd backend && npm install && cd ../frontend && npm install",
     "build": "cd frontend && npm run build",
-    "start": "cd backend && npm start"
+    "start": "cd backend && npm start",
+    "setup-db": "./setup-database.sh",
+    "setup-database": "./setup-database.sh",
+    "test-db": "./test-database.sh",
+    "test-database": "./test-database.sh"
   },
   "keywords": [
     "employee",

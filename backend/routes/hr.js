@@ -436,28 +436,9 @@ router.post(
       }
       console.log("✅ Email is unique in users table");
 
-      // Check if employee already exists in master table
-      console.log("🔍 Checking if employee exists in master table:", {
-        name,
-        email,
-      });
-      const existingEmployee = await pool.query(
-        "SELECT employee_id, employee_name, company_email FROM employee_master WHERE employee_name = $1 OR email = $2",
-        [name, email]
-      );
-
-      if (existingEmployee.rows.length > 0) {
-        console.log(
-          "❌ Employee already exists in master table:",
-          existingEmployee.rows[0]
-        );
-        return res.status(400).json({
-          error: "Employee already exists in master table",
-          details: `Employee with name "${name}" or email "${email}" already exists`,
-          existingEmployee: existingEmployee.rows[0],
-        });
-      }
-      console.log("✅ No duplicate employee found in master table");
+      // Check if employee already exists in users table (this is sufficient for initial creation)
+      // Master table check will happen during company email assignment
+      console.log("✅ No duplicate employee found - proceeding with creation");
 
       // Generate temporary password
       const tempPassword = generateTempPassword();
@@ -468,35 +449,50 @@ router.post(
       const firstName = nameParts[0] || "";
       const lastName = nameParts.slice(1).join(" ") || "";
 
-      // Create user with the provided email
-      console.log("🔍 Creating user in database...");
-      const userResult = await pool.query(
-        "INSERT INTO users (email, password, role, temp_password, first_name, last_name) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id",
-        [email, "", "employee", tempPassword, firstName, lastName]
-      );
+      // Initialize userId for cleanup purposes
+      let userId = null;
 
-      const userId = userResult.rows[0].id;
-      console.log("✅ User created with ID:", userId);
+      // Start database transaction to prevent race conditions
+      const client = await pool.connect();
+      try {
+        await client.query("BEGIN");
+        console.log("🔍 Started database transaction");
 
-      // Create initial employee form record with the employment type
-      console.log("🔍 Creating initial employee form with type:", type);
-      await pool.query(
-        "INSERT INTO employee_forms (employee_id, type, status) VALUES ($1, $2, 'pending')",
-        [userId, type]
-      );
-      console.log("✅ Initial employee form created with type");
+        // No need to check master table since we're not creating master records during initial creation
 
-      // Create employee master record
-      console.log("🔍 Creating employee master record");
-      const employeeId = await generateEmployeeId();
-      await pool.query(
-        `INSERT INTO employee_master (
-          employee_id, employee_name, email, company_email, type, doj, status,
-          created_at, updated_at
-        ) VALUES ($1, $2, $3, NULL, $4, $5, 'pending', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)`,
-        [employeeId, name, email, type, doj]
-      );
-      console.log("✅ Employee master record created with ID:", employeeId);
+        // Create user with the provided email
+        console.log("🔍 Creating user in database...");
+        const userResult = await client.query(
+          "INSERT INTO users (email, password, role, temp_password, first_name, last_name) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id",
+          [email, "", "employee", tempPassword, firstName, lastName]
+        );
+
+        userId = userResult.rows[0].id;
+        console.log("✅ User created with ID:", userId);
+
+        // Create initial employee form record with the employment type
+        console.log("🔍 Creating initial employee form with type:", type);
+        await client.query(
+          "INSERT INTO employee_forms (employee_id, type, status) VALUES ($1, $2, 'pending')",
+          [userId, type]
+        );
+        console.log("✅ Initial employee form created with type");
+
+        // Note: Employee master record will be created only after company email assignment
+        console.log(
+          "✅ Employee created successfully - will be added to master table after company email assignment"
+        );
+
+        // Commit transaction
+        await client.query("COMMIT");
+        console.log("✅ Transaction committed successfully");
+      } catch (transactionError) {
+        await client.query("ROLLBACK");
+        console.error("❌ Transaction failed, rolling back:", transactionError);
+        throw transactionError;
+      } finally {
+        client.release();
+      }
 
       // Send onboarding email
       console.log("🔍 Sending onboarding email to:", email);
@@ -526,7 +522,8 @@ router.post(
       await clearPNCCache();
 
       res.status(201).json({
-        message: "Employee added successfully",
+        message:
+          "Employee added successfully - will appear in master table after company email assignment",
         employee: {
           id: userId,
           email: email,
@@ -545,6 +542,17 @@ router.post(
         stack: error.stack,
         name: error.name,
       });
+
+      // Clean up user if it was created
+      if (userId) {
+        try {
+          await pool.query("DELETE FROM users WHERE id = $1", [userId]);
+          console.log("✅ Cleaned up user due to error");
+        } catch (cleanupError) {
+          console.error("❌ Error during cleanup:", cleanupError);
+        }
+      }
+
       res.status(500).json({
         error: "Failed to add employee",
         details:
@@ -2298,10 +2306,11 @@ router.put(
       console.log("🔍 Checking for existing employee in master table:", {
         name,
         companyEmail,
+        personalEmail: formData.email || onboarded.user_email,
       });
       const existingEmployee = await pool.query(
-        "SELECT employee_id, employee_name, company_email FROM employee_master WHERE employee_name = $1 OR company_email = $2",
-        [name, companyEmail]
+        "SELECT employee_id, employee_name, company_email, email FROM employee_master WHERE employee_name = $1 OR company_email = $2 OR email = $3",
+        [name, companyEmail, formData.email || onboarded.user_email]
       );
 
       if (existingEmployee.rows.length > 0) {
@@ -2311,7 +2320,9 @@ router.put(
         );
         return res.status(400).json({
           error: "Employee already exists in master table",
-          details: `Employee with name "${name}" or company email "${companyEmail}" already exists`,
+          details: `Employee with name "${name}", company email "${companyEmail}", or personal email "${
+            formData.email || onboarded.user_email
+          }" already exists`,
           existingEmployee: existingEmployee.rows[0],
         });
       }

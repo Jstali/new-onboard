@@ -146,8 +146,17 @@ const DocumentStatus = ({
   const handleViewFile = async (documentType) => {
     try {
       console.log("🔍 Starting to view file for document type:", documentType);
-      await fetchUploadedFiles();
-      const allDocs = Object.values(uploadedFiles).flat();
+
+      // Fetch the files and wait for the response
+      const token = localStorage.getItem("token");
+      const response = await axios.get(
+        `http://localhost:5001/api/documents/employee/${employeeId}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      console.log("✅ Uploaded files response:", response.data);
+
+      // Use the response data directly instead of state
+      const allDocs = Object.values(response.data).flat();
       const fileToView = allDocs.find(
         (doc) => doc.document_type === documentType
       );

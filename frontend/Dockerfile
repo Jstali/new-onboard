@@ -25,6 +25,9 @@ RUN npm ci --silent
 # Copy source code
 COPY . .
 
+# Copy production environment
+COPY production.env .env.production
+
 # Build the application
 RUN npm run build
 

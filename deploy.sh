@@ -68,6 +68,14 @@ check_prerequisites() {
         exit 1
     fi
     
+    # Check if DATA_MIGRATION.sql exists
+    if [ ! -f "DATA_MIGRATION.sql" ]; then
+        print_error "DATA_MIGRATION.sql file not found!"
+        print_error "Please ensure DATA_MIGRATION.sql is in the current directory"
+        print_error "This file is required to create all 33 database tables"
+        exit 1
+    fi
+    
     # Check if running as root or with sudo
     if [ "$EUID" -ne 0 ]; then
         print_warning "This script should be run as root or with sudo for proper permissions."
@@ -223,6 +231,76 @@ show_status() {
     echo "  docker-compose -f $DOCKER_COMPOSE_FILE logs -f [service_name]"
 }
 
+# Function to setup database
+setup_database() {
+    print_status "Setting up database with all 33 tables..."
+    
+    # Wait for PostgreSQL to be ready
+    print_status "Waiting for PostgreSQL to be ready..."
+    local max_attempts=30
+    local attempt=1
+    
+    while [ $attempt -le $max_attempts ]; do
+        if docker-compose -f $DOCKER_COMPOSE_FILE exec -T postgres pg_isready -U nxzen_user -d nxzen_hrms_prod > /dev/null 2>&1; then
+            print_success "PostgreSQL is ready"
+            break
+        else
+            print_warning "Waiting for PostgreSQL... (attempt $attempt/$max_attempts)"
+            sleep 5
+            ((attempt++))
+        fi
+    done
+    
+    if [ $attempt -gt $max_attempts ]; then
+        print_error "PostgreSQL failed to become ready within expected time"
+        return 1
+    fi
+    
+    # Check if DATA_MIGRATION.sql exists
+    if [ ! -f "DATA_MIGRATION.sql" ]; then
+        print_error "DATA_MIGRATION.sql file not found!"
+        print_error "Please ensure DATA_MIGRATION.sql is in the current directory"
+        return 1
+    fi
+    
+    # Run the migration script
+    print_status "Running database migration to create all 33 tables..."
+    if docker-compose -f $DOCKER_COMPOSE_FILE exec -T postgres psql -U nxzen_user -d nxzen_hrms_prod -f /tmp/DATA_MIGRATION.sql; then
+        print_success "Database migration completed successfully"
+        print_success "All 33 tables have been created"
+    else
+        print_error "Database migration failed"
+        print_status "Checking migration logs..."
+        docker-compose -f $DOCKER_COMPOSE_FILE exec -T postgres psql -U nxzen_user -d nxzen_hrms_prod -c "SELECT * FROM migration_log ORDER BY executed_at DESC LIMIT 5;"
+        return 1
+    fi
+    
+    # Verify table count
+    print_status "Verifying table creation..."
+    local table_count=$(docker-compose -f $DOCKER_COMPOSE_FILE exec -T postgres psql -U nxzen_user -d nxzen_hrms_prod -t -c "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'public';" | tr -d ' ')
+    
+    if [ "$table_count" -ge 33 ]; then
+        print_success "Database setup completed with $table_count tables"
+    else
+        print_warning "Expected at least 33 tables, found $table_count"
+        print_status "This might be normal if some tables already existed"
+    fi
+}
+
+# Function to copy migration file to container
+copy_migration_file() {
+    print_status "Copying DATA_MIGRATION.sql to PostgreSQL container..."
+    
+    if [ -f "DATA_MIGRATION.sql" ]; then
+        docker-compose -f $DOCKER_COMPOSE_FILE cp DATA_MIGRATION.sql postgres:/tmp/DATA_MIGRATION.sql
+        print_success "Migration file copied to container"
+    else
+        print_error "DATA_MIGRATION.sql file not found!"
+        print_error "Please ensure DATA_MIGRATION.sql is in the current directory"
+        return 1
+    fi
+}
+
 # Function to setup SSL (optional)
 setup_ssl() {
     read -p "Do you want to setup SSL certificates? (y/N): " -n 1 -r
@@ -245,6 +323,7 @@ main() {
     echo "============================================================================="
     echo "Server: $SERVER_IP"
     echo "Application: $APP_NAME"
+    echo "Database: PostgreSQL with 33 tables"
     echo "============================================================================="
     echo ""
     
@@ -266,6 +345,12 @@ main() {
     # Deploy services
     deploy_services
     
+    # Copy migration file to container
+    copy_migration_file
+    
+    # Setup database with all 33 tables
+    setup_database
+    
     # Verify deployment
     if verify_deployment; then
         print_success "Deployment completed successfully!"
@@ -284,6 +369,29 @@ main() {
     fi
 }
 
+# Function to show help
+show_help() {
+    echo "Usage: $0 [COMMAND]"
+    echo ""
+    echo "Commands:"
+    echo "  (no args)  - Full deployment with database setup"
+    echo "  backup     - Create backup of current deployment"
+    echo "  stop       - Stop all services"
+    echo "  start      - Start services (without database setup)"
+    echo "  restart    - Restart services (without database setup)"
+    echo "  database   - Setup database only (create all 33 tables)"
+    echo "  status     - Show deployment status"
+    echo "  logs       - Show service logs"
+    echo "  cleanup    - Clean up Docker images"
+    echo "  help       - Show this help message"
+    echo ""
+    echo "Examples:"
+    echo "  $0                    # Full deployment"
+    echo "  $0 database          # Setup database only"
+    echo "  $0 logs backend      # Show backend logs"
+    echo "  $0 status            # Show service status"
+}
+
 # Handle script arguments
 case "${1:-}" in
     "backup")
@@ -299,6 +407,12 @@ case "${1:-}" in
         stop_services
         deploy_services
         ;;
+    "database")
+        print_status "Setting up database only..."
+        copy_migration_file
+        setup_database
+        print_success "Database setup completed!"
+        ;;
     "status")
         show_status
         ;;
@@ -307,6 +421,9 @@ case "${1:-}" in
         ;;
     "cleanup")
         cleanup_images
+        ;;
+    "help"|"-h"|"--help")
+        show_help
         ;;
     *)
         main

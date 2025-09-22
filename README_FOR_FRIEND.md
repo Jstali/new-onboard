@@ -28,6 +28,17 @@ cd backend && npm start
 cd frontend && npm start
 ```
 
+## 🔄 For Existing Databases
+
+If you already have an Onboard database with data:
+
+```bash
+# Run data migration to update your existing database
+./run-migration.sh
+```
+
+This will preserve all your existing data while adding the new features and structure.
+
 **That's it!** 🎉
 
 ## Access the Application
@@ -45,7 +56,7 @@ cd frontend && npm start
 
 ## What's Included
 
-✅ Complete database with 25+ tables and sample data  
+✅ Complete database with 33 tables and sample data  
 ✅ All user roles and permissions  
 ✅ Sample employees and documents  
 ✅ Leave management system  
@@ -60,7 +71,11 @@ cd frontend && npm start
 
 - `COMPLETE_DATABASE_SETUP.sql` - Complete database schema + data
 - `setup-database.sh` - Automated setup script
+- `DATA_MIGRATION.sql` - Data migration script for existing databases (33 tables)
+- `run-migration.sh` - Automated migration runner
+- `verify-migration.sh` - Migration verification script
 - `SETUP_GUIDE.md` - Detailed setup instructions
+- `MIGRATION_GUIDE.md` - Data migration guide
 - `config.env` - Environment configuration (auto-generated)
 
 ## Need Help?

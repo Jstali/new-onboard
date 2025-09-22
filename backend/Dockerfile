@@ -63,11 +63,11 @@ RUN chown -R nxzen:nodejs /app && \
 USER nxzen
 
 # Expose port
-EXPOSE 5000
+EXPOSE 2026
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-    CMD curl -f http://localhost:5000/api/health || exit 1
+    CMD curl -f http://localhost:2026/api/health || exit 1
 
 # Start the application
 CMD ["node", "server.js"]

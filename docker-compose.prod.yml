@@ -13,19 +13,19 @@ services:
     container_name: nxzen_postgres_prod
     restart: always
     environment:
-      POSTGRES_DB: onboardxdb
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: MySecurePass#2025
+      POSTGRES_DB: nxzen_hrms_prod
+      POSTGRES_USER: nxzen_user
+      POSTGRES_PASSWORD: NxzenSecurePass2025!
       POSTGRES_INITDB_ARGS: "--encoding=UTF-8 --lc-collate=C --lc-ctype=C"
     volumes:
       - postgres_data_prod:/var/lib/postgresql/data
-      - ./backend/database_tables.sh:/docker-entrypoint-initdb.d/01-init.sh:ro
+      - ./DATA_MIGRATION.sql:/docker-entrypoint-initdb.d/01-migration.sql:ro
     ports:
       - "127.0.0.1:5432:5432"  # Only accessible from localhost
     networks:
       - nxzen_network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d onboardxdb"]
+      test: ["CMD-SHELL", "pg_isready -U nxzen_user -d nxzen_hrms_prod"]
       interval: 30s
       timeout: 10s
       retries: 5
@@ -76,18 +76,18 @@ services:
       - NODE_ENV=production
       - DB_HOST=postgres
       - DB_PORT=5432
-      - DB_NAME=onboardxdb
-      - DB_USER=postgres
-      - DB_PASSWORD=MySecurePass#2025
+      - DB_NAME=nxzen_hrms_prod
+      - DB_USER=nxzen_user
+      - DB_PASSWORD=NxzenSecurePass2025!
       - REDIS_HOST=redis
       - REDIS_PORT=6379
       - REDIS_PASSWORD=nxzen_redis_password_2024
       - JWT_SECRET=nxzen_jwt_secret_key_production_2024_secure
       - PORT=2026
       - HOST=0.0.0.0
-      - CORS_ORIGIN=https://149.102.158.71:2025,https://nxzen.com
-      - FRONTEND_URL=https://149.102.158.71:2025
-      - BACKEND_URL=https://149.102.158.71:2026/api
+      - CORS_ORIGIN=http://149.102.158.71:2025,https://149.102.158.71:2025,https://nxzen.com
+      - FRONTEND_URL=http://149.102.158.71:2025
+      - BACKEND_URL=http://149.102.158.71:2026/api
       - LOG_LEVEL=info
       - ENABLE_MONITORING=true
     volumes:
@@ -153,7 +153,7 @@ services:
     container_name: nxzen_backup_prod
     restart: "no"
     environment:
-      PGPASSWORD: MySecurePass#2025
+      PGPASSWORD: NxzenSecurePass2025!
     volumes:
       - backend_backups_prod:/backups
       - ./scripts/backup.sh:/backup.sh:ro

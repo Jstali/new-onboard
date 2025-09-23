@@ -2,9 +2,13 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 
-// Configure axios defaults
+// Configure axios defaults with runtime-configurable base URL
 axios.defaults.timeout = 15000; // 15 second timeout
-axios.defaults.baseURL = "http://localhost:5001/api";
+const runtimeBaseUrl =
+  window.__RUNTIME_CONFIG__?.REACT_APP_API_BASE_URL ||
+  process.env.REACT_APP_API_BASE_URL ||
+  "http://localhost:5001/api";
+axios.defaults.baseURL = runtimeBaseUrl;
 
 const AuthContext = createContext();
 
@@ -100,6 +104,9 @@ export const AuthProvider = ({ children }) => {
 
       localStorage.setItem("token", newToken);
       setToken(newToken);
+
+      // Set Authorization header immediately so subsequent requests are authenticated
+      axios.defaults.headers.common["Authorization"] = `Bearer ${newToken}`;
 
       // Get complete user data from /auth/me endpoint
       try {

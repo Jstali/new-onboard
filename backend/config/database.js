@@ -116,6 +116,20 @@ const initializeTables = async () => {
       )
     `);
 
+    // Ensure optional email column exists for compatibility with queries that reference em.email
+    await pool.query(`
+      DO $$ BEGIN
+        IF NOT EXISTS (
+          SELECT 1 FROM information_schema.columns
+          WHERE table_name = 'employee_master' AND column_name = 'email'
+        ) THEN
+          ALTER TABLE employee_master ADD COLUMN email VARCHAR(255);
+          -- Backfill email with company_email where available
+          UPDATE employee_master SET email = company_email WHERE email IS NULL;
+        END IF;
+      END $$;
+    `);
+
     // Managers table - To store manager information
     await pool.query(`
       CREATE TABLE IF NOT EXISTS managers (
@@ -462,6 +476,21 @@ const initializeTables = async () => {
       )
     `);
 
+    // Document reminder mails table (for tracking reminder emails sent by HR)
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS document_reminder_mails (
+        id SERIAL PRIMARY KEY,
+        employee_id INTEGER NOT NULL,
+        employee_email VARCHAR(255) NOT NULL,
+        employee_name VARCHAR(255) NOT NULL,
+        sent_by_hr_id INTEGER NOT NULL,
+        sent_by_hr_name VARCHAR(255),
+        document_upload_link TEXT,
+        sent_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        status VARCHAR(50) DEFAULT 'sent'
+      )
+    `);
+
     // Create expenses table for expense management
     await pool.query(`
       CREATE TABLE IF NOT EXISTS expenses (
@@ -508,6 +537,71 @@ const initializeTables = async () => {
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (employee_id) REFERENCES users(id) ON DELETE CASCADE,
         FOREIGN KEY (hr_id) REFERENCES users(id) ON DELETE SET NULL
+      )
+    `);
+
+    // ADP payroll table for payout management
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS adp_payroll (
+        id SERIAL PRIMARY KEY,
+        employee_id VARCHAR(100) UNIQUE NOT NULL,
+        employee_full_name VARCHAR(255),
+        given_or_first_name VARCHAR(100),
+        middle_name VARCHAR(100),
+        last_name VARCHAR(100),
+        joining_date DATE,
+        payroll_starting_month DATE,
+        dob DATE,
+        aadhar VARCHAR(20),
+        name_as_per_aadhar VARCHAR(255),
+        designation_description VARCHAR(255),
+        email VARCHAR(255),
+        alternate_email VARCHAR(255),
+        pan VARCHAR(20),
+        name_as_per_pan VARCHAR(255),
+        gender VARCHAR(20),
+        department_description VARCHAR(255),
+        work_location VARCHAR(255),
+        labour_state_description VARCHAR(255),
+        bank_name VARCHAR(255),
+        name_as_per_bank VARCHAR(255),
+        account_no VARCHAR(50),
+        bank_ifsc_code VARCHAR(20),
+        payment_mode VARCHAR(50),
+        pf_account_no VARCHAR(50),
+        esi_account_no VARCHAR(50),
+        uan VARCHAR(50),
+        branch_description VARCHAR(255),
+        manager_employee_id VARCHAR(100),
+        tax_regime VARCHAR(50),
+        father_name VARCHAR(255),
+        mother_name VARCHAR(255),
+        spouse_name VARCHAR(255),
+        marital_status VARCHAR(50),
+        number_of_children INTEGER,
+        disability_status BOOLEAN,
+        type_of_disability VARCHAR(255),
+        employment_type VARCHAR(50),
+        grade_description VARCHAR(100),
+        cadre_description VARCHAR(100),
+        payment_description VARCHAR(100),
+        attendance_description VARCHAR(100),
+        workplace_description VARCHAR(100),
+        band VARCHAR(50),
+        level VARCHAR(50),
+        work_cost_center VARCHAR(100),
+        custom_group_1 VARCHAR(255),
+        custom_group_2 VARCHAR(255),
+        custom_group_3 VARCHAR(255),
+        custom_group_4 VARCHAR(255),
+        custom_group_5 VARCHAR(255),
+        passport_number VARCHAR(100),
+        passport_issue_date DATE,
+        passport_valid_upto DATE,
+        passport_issued_country VARCHAR(100),
+        is_draft BOOLEAN DEFAULT TRUE,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
     `);
 
@@ -559,6 +653,40 @@ const initializeTables = async () => {
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
+    `);
+
+    // Ensure required columns exist on document_templates
+    await pool.query(`
+      DO $$ BEGIN
+        IF NOT EXISTS (
+          SELECT 1 FROM information_schema.columns 
+          WHERE table_name = 'document_templates' AND column_name = 'category'
+        ) THEN
+          ALTER TABLE document_templates ADD COLUMN category VARCHAR(50);
+        END IF;
+      END $$;
+    `);
+
+    await pool.query(`
+      DO $$ BEGIN
+        IF NOT EXISTS (
+          SELECT 1 FROM information_schema.columns 
+          WHERE table_name = 'document_templates' AND column_name = 'is_required'
+        ) THEN
+          ALTER TABLE document_templates ADD COLUMN is_required BOOLEAN DEFAULT FALSE;
+        END IF;
+      END $$;
+    `);
+
+    await pool.query(`
+      DO $$ BEGIN
+        IF NOT EXISTS (
+          SELECT 1 FROM information_schema.columns 
+          WHERE table_name = 'document_templates' AND column_name = 'allow_multiple'
+        ) THEN
+          ALTER TABLE document_templates ADD COLUMN allow_multiple BOOLEAN DEFAULT FALSE;
+        END IF;
+      END $$;
     `);
 
     // Insert default system settings
@@ -954,6 +1082,79 @@ const initializeTables = async () => {
           ALTER TABLE leave_requests ADD COLUMN role VARCHAR(20) DEFAULT 'employee';
         END IF;
       END $$;
+    `);
+
+    // Create P&C monitoring reports table if not exists
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS pnc_monitoring_reports (
+        id SERIAL PRIMARY KEY,
+        report_month VARCHAR(7) UNIQUE NOT NULL,
+        report_year INTEGER,
+        report_month_number INTEGER,
+        generated_by INTEGER,
+        generated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        is_active BOOLEAN DEFAULT TRUE,
+        report_data JSONB
+      )
+    `);
+
+    // Ensure helper function exists to generate/fetch monitoring report
+    await pool.query(`
+      DO $$
+      BEGIN
+        IF NOT EXISTS (
+          SELECT 1 FROM pg_proc
+          WHERE proname = 'get_pnc_monitoring_report'
+        ) THEN
+          EXECUTE '
+          CREATE OR REPLACE FUNCTION get_pnc_monitoring_report(target_month VARCHAR)
+          RETURNS JSONB AS $func$
+          DECLARE
+            cached JSONB;
+          BEGIN
+            SELECT report_data INTO cached FROM pnc_monitoring_reports
+            WHERE report_month = target_month AND is_active = TRUE
+            ORDER BY generated_at DESC LIMIT 1;
+
+            IF cached IS NOT NULL THEN
+              RETURN cached;
+            END IF;
+
+            cached := jsonb_build_object(
+              ''month'', target_month,
+              ''generatedAt'', CURRENT_TIMESTAMP,
+              ''period'', jsonb_build_object(
+                ''startOfMonth'', date_trunc(''month'', (target_month || ''-01'')::date),
+                ''endOfMonth'', (date_trunc(''month'', (target_month || ''-01'')::date) + interval ''1 month - 1 day'')::date
+              ),
+              ''statistics'', jsonb_build_object(
+                ''totalHeadcount'', 0,
+                ''totalContractors'', 0,
+                ''totalLeavers'', 0,
+                ''futureJoiners'', 0,
+                ''totalVacancies'', 0
+              ),
+              ''ageDistribution'', jsonb_build_object(''averageAge'', 0, ''groups'', ''[]''::jsonb),
+              ''tenure'', jsonb_build_object(''averageTenure'', 0, ''groups'', ''[]''::jsonb),
+              ''gender'', ''[]''::jsonb,
+              ''attrition'', jsonb_build_object(''percentage'', 0),
+              ''disability'', jsonb_build_object(''percentage'', 0)
+            );
+
+            INSERT INTO pnc_monitoring_reports (report_month, report_year, report_month_number, report_data)
+            VALUES (
+              target_month,
+              EXTRACT(YEAR FROM (target_month || ''-01'')::date),
+              EXTRACT(MONTH FROM (target_month || ''-01'')::date),
+              cached
+            )
+            ON CONFLICT (report_month) DO UPDATE SET report_data = EXCLUDED.report_data, generated_at = CURRENT_TIMESTAMP, is_active = TRUE;
+
+            RETURN cached;
+          END; $func$ LANGUAGE plpgsql;';
+        END IF;
+      END
+      $$;
     `);
 
     console.log("✅ Database tables initialized successfully");

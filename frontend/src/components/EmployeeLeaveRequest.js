@@ -213,7 +213,7 @@ const EmployeeLeaveRequest = () => {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-        timeout: 15000, // 15 second timeout for leave submission
+        timeout: 15001, // 15 second timeout for leave submission
       });
 
       setMessage("Leave request submitted successfully!");

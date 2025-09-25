@@ -2,7 +2,22 @@ const express = require("express");
 const cors = require("cors");
 const rateLimit = require("express-rate-limit");
 const { securityConfig } = require("./middleware/security");
-require("dotenv").config({ path: "./config.env" });
+
+// Load environment variables - try production first, then fallback to config
+if (process.env.NODE_ENV === "production") {
+  require("dotenv").config({ path: "./production.env" });
+} else {
+  require("dotenv").config({ path: "./config.env" });
+}
+
+// Log environment configuration for debugging
+console.log("🔧 Environment Configuration:");
+console.log("🔧 NODE_ENV:", process.env.NODE_ENV);
+console.log("🔧 JWT_SECRET:", process.env.JWT_SECRET ? "✅ Set" : "❌ Missing");
+console.log("🔧 JWT_EXPIRES_IN:", process.env.JWT_EXPIRES_IN);
+console.log("🔧 DB_HOST:", process.env.DB_HOST);
+console.log("🔧 PORT:", process.env.PORT);
+console.log("🔧 CORS_ORIGIN:", process.env.CORS_ORIGIN);
 
 const authRoutes = require("./routes/auth");
 const hrRoutes = require("./routes/hr");
@@ -38,14 +53,34 @@ app.use(limiter);
 
 // CORS configuration for development and production
 const corsOptions = {
-  origin:
-    process.env.NODE_ENV === "production"
-      ? [process.env.FRONTEND_URL || "https://yourdomain.com"]
-      : [
-          "http://localhost:3000",
-          "http://localhost:5001",
-          "http://localhost:3001",
-        ],
+  origin: function (origin, callback) {
+    const allowedOrigins =
+      process.env.NODE_ENV === "production"
+        ? process.env.CORS_ORIGIN
+          ? process.env.CORS_ORIGIN.split(",")
+          : [process.env.FRONTEND_URL || "https://yourdomain.com"]
+        : [
+            "http://localhost:3001",
+            "http://localhost:5001",
+            "http://localhost:3001",
+            "http://localhost:5001",
+            "http://149.102.158.71:3001",
+            "http://149.102.158.71:5001",
+          ];
+
+    console.log("🔧 CORS - Request origin:", origin);
+    console.log("🔧 CORS - Allowed origins:", allowedOrigins);
+
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      console.log("❌ CORS - Origin not allowed:", origin);
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
   credentials: false,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH", "HEAD"],
   allowedHeaders: [
@@ -71,11 +106,16 @@ app.options("*", cors());
 app.use((req, res, next) => {
   const allowedOrigins =
     process.env.NODE_ENV === "production"
-      ? [process.env.FRONTEND_URL || "https://yourdomain.com"]
+      ? process.env.CORS_ORIGIN
+        ? process.env.CORS_ORIGIN.split(",")
+        : [process.env.FRONTEND_URL || "https://yourdomain.com"]
       : [
-          "http://localhost:3000",
+          "http://localhost:3001",
           "http://localhost:5001",
           "http://localhost:3001",
+          "http://localhost:5001",
+          "http://149.102.158.71:3001",
+          "http://149.102.158.71:5001",
         ];
 
   const origin = req.get("origin") || req.get("referer");
@@ -176,7 +216,23 @@ app.use("/api/employee-payroll", employeePayrollRoutes);
 
 // Health check
 app.get("/api/health", (req, res) => {
-  res.json({ status: "OK", message: "Server is running" });
+  res.json({
+    status: "OK",
+    message: "Server is running",
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV,
+    jwtConfigured: !!process.env.JWT_SECRET,
+  });
+});
+
+// Auth health check endpoint for debugging
+app.get("/api/health/auth", authenticateToken, (req, res) => {
+  res.json({
+    status: "OK",
+    message: "Authentication is working",
+    user: req.user,
+    timestamp: new Date().toISOString(),
+  });
 });
 
 // Error handling middleware

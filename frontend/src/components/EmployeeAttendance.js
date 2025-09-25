@@ -181,7 +181,12 @@ const EmployeeAttendance = () => {
     try {
       const token = localStorage.getItem("token");
 
-      console.log("🔍 markAttendance called with date:", date, "status:", status);
+      console.log(
+        "🔍 markAttendance called with date:",
+        date,
+        "status:",
+        status
+      );
 
       // Build request body, omitting null values
       const requestBody = {
@@ -197,9 +202,12 @@ const EmployeeAttendance = () => {
         requestBody.hours = hours;
       }
 
-      console.log("📤 Sending request to:", "http://localhost:5001/api/attendance/mark");
+      console.log(
+        "📤 Sending request to:",
+        "http://localhost:5001/api/attendance/mark"
+      );
       console.log("📤 Request body:", requestBody);
-      
+
       const response = await fetch(
         "http://localhost:5001/api/attendance/mark",
         {
@@ -211,26 +219,36 @@ const EmployeeAttendance = () => {
           body: JSON.stringify(requestBody),
         }
       );
-      
+
       console.log("📥 Response status:", response.status);
       console.log("📥 Response ok:", response.ok);
 
       if (response.ok) {
         console.log("✅ Attendance marked successfully, refreshing data...");
         toast.success("Attendance updated successfully");
-        
+
         // Refresh attendance data to show updated status
         if (view === "weekly") {
           const today = new Date();
           const { start, end } = getWeekDates(today);
-          console.log("🔄 Refreshing weekly data for:", start.toISOString().split("T")[0], "to", end.toISOString().split("T")[0]);
+          console.log(
+            "🔄 Refreshing weekly data for:",
+            start.toISOString().split("T")[0],
+            "to",
+            end.toISOString().split("T")[0]
+          );
           await fetchAttendance(
             start.toISOString().split("T")[0],
             end.toISOString().split("T")[0]
           );
         } else if (view === "calendar") {
           const { start, end } = getMonthDates(currentMonth);
-          console.log("🔄 Refreshing calendar data for:", start.toISOString().split("T")[0], "to", end.toISOString().split("T")[0]);
+          console.log(
+            "🔄 Refreshing calendar data for:",
+            start.toISOString().split("T")[0],
+            "to",
+            end.toISOString().split("T")[0]
+          );
           await fetchAttendance(
             start.toISOString().split("T")[0],
             end.toISOString().split("T")[0]
@@ -251,14 +269,27 @@ const EmployeeAttendance = () => {
     // The input date should already be in YYYY-MM-DD format from toISOString().split("T")[0]
     const formattedInputDate = date;
 
-    console.log("🔍 getAttendanceForDate - Input date:", date, "Formatted:", formattedInputDate);
-    console.log("🔍 Available attendance records:", attendance.map(a => ({ date: a.date, status: a.status })));
+    console.log(
+      "🔍 getAttendanceForDate - Input date:",
+      date,
+      "Formatted:",
+      formattedInputDate
+    );
+    console.log(
+      "🔍 Available attendance records:",
+      attendance.map((a) => ({ date: a.date, status: a.status }))
+    );
 
     return (
       attendance.find((a) => {
         // The attendance date from API is already in YYYY-MM-DD format, so use it directly
         const formattedAttendanceDate = a.date;
-        console.log("🔍 Comparing:", formattedInputDate, "with", formattedAttendanceDate);
+        console.log(
+          "🔍 Comparing:",
+          formattedInputDate,
+          "with",
+          formattedAttendanceDate
+        );
         return formattedAttendanceDate === formattedInputDate;
       }) || null
     );
@@ -306,7 +337,10 @@ const EmployeeAttendance = () => {
     const { start } = getWeekDates(new Date());
     const days = [];
 
-    console.log("📅 generateWeekDays - Week start:", start.toISOString().split("T")[0]);
+    console.log(
+      "📅 generateWeekDays - Week start:",
+      start.toISOString().split("T")[0]
+    );
 
     for (let i = 0; i < 7; i++) {
       const date = new Date(start);
@@ -314,12 +348,20 @@ const EmployeeAttendance = () => {
       const dayOfWeek = date.getDay();
       // Skip Saturday (6) and Sunday (0)
       if (dayOfWeek !== 0 && dayOfWeek !== 6) {
-        console.log("📅 Adding weekday:", date.toISOString().split("T")[0], "Day:", dayOfWeek);
+        console.log(
+          "📅 Adding weekday:",
+          date.toISOString().split("T")[0],
+          "Day:",
+          dayOfWeek
+        );
         days.push(date);
       }
     }
 
-    console.log("📅 Generated weekdays:", days.map(d => d.toISOString().split("T")[0]));
+    console.log(
+      "📅 Generated weekdays:",
+      days.map((d) => d.toISOString().split("T")[0])
+    );
     return days;
   };
 
@@ -608,8 +650,17 @@ const EmployeeAttendance = () => {
                                 onChange={(e) => {
                                   if (e.target.value) {
                                     // Use the same date format as getAttendanceForDate
-                                    const formattedDate = date.toISOString().split("T")[0];
-                                    console.log("🔄 Status dropdown onChange - Date:", date, "Formatted:", formattedDate, "Status:", e.target.value);
+                                    const formattedDate = date
+                                      .toISOString()
+                                      .split("T")[0];
+                                    console.log(
+                                      "🔄 Status dropdown onChange - Date:",
+                                      date,
+                                      "Formatted:",
+                                      formattedDate,
+                                      "Status:",
+                                      e.target.value
+                                    );
 
                                     // Mark attendance without automatically setting hours
                                     markAttendance(

@@ -59,7 +59,7 @@ router.get("/profile", async (req, res) => {
   try {
     const managerId = req.user.userId;
 
-    // Get manager details from managers table
+    // Get manager details from employee_master table
     const managerResult = await pool.query(
       `
       SELECT 

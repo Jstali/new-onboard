@@ -204,7 +204,7 @@ const ManagerLeaveRequest = () => {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-        timeout: 15000,
+        timeout: 15001,
       });
 
       setMessage("Leave request submitted successfully!");
@@ -279,244 +279,255 @@ const ManagerLeaveRequest = () => {
     <div className="min-h-screen bg-iridescent-pearl">
       <div className="max-w-6xl mx-auto p-6">
         <div className="bg-white rounded-xl shadow-lg p-6 mb-6 border border-deep-space-black/10">
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center">
-            <button
-              onClick={() => navigate(-1)}
-              className="flex items-center text-deep-space-black/70 hover:text-deep-space-black hover:bg-neon-violet/20 transition-all duration-200 mr-4 px-3 py-2 rounded-lg"
-            >
-              <FaArrowLeft className="w-4 h-4 mr-2" />
-              Back
-            </button>
-            <h2 className="text-2xl font-bold text-deep-space-black">
-              Manager Leave Request Form
-            </h2>
-          </div>
-        </div>
-
-        {/* Leave Balance Display */}
-        {leaveBalance ? (
-          <div className="bg-iridescent-pearl border border-deep-space-black/10 rounded-lg p-4 mb-6">
-            <h3 className="text-lg font-semibold text-deep-space-black mb-2">
-              Your Leave Balance
-            </h3>
-            <div className="grid grid-cols-3 gap-4 text-center">
-              <div>
-                <p className="text-2xl font-bold text-neon-violet">
-                  {leaveBalance.total_allocated}
-                </p>
-                <p className="text-sm text-deep-space-black/70">Total Allocated</p>
-              </div>
-              <div>
-                <p className="text-2xl font-bold text-brand-coral">
-                  {leaveBalance.leaves_taken}
-                </p>
-                <p className="text-sm text-deep-space-black/70">Leaves Taken</p>
-              </div>
-              <div>
-                <p className="text-2xl font-bold text-lumen-green">
-                  {leaveBalance.leaves_remaining}
-                </p>
-                <p className="text-sm text-deep-space-black/70">Leaves Remaining</p>
-              </div>
-            </div>
-          </div>
-        ) : (
-          <div className="bg-brand-yellow/10 border border-brand-yellow/20 rounded-lg p-4 mb-6">
-            <p className="text-deep-space-black/70">Loading leave balance...</p>
-          </div>
-        )}
-
-        {/* Leave Request Form */}
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label className="block text-sm font-medium text-deep-space-black mb-2">
-                Leave Type *
-              </label>
-              <select
-                name="leaveType"
-                value={formData.leaveType}
-                onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-deep-space-black/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-lumen-green bg-white text-deep-space-black"
-                required
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center">
+              <button
+                onClick={() => navigate(-1)}
+                className="flex items-center text-deep-space-black/70 hover:text-deep-space-black hover:bg-neon-violet/20 transition-all duration-200 mr-4 px-3 py-2 rounded-lg"
               >
-                <option value="">Select Leave Type</option>
-                {leaveTypes.map((type) => (
-                  <option key={type.id} value={type.type_name}>
-                    {type.type_name}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-deep-space-black mb-2">
-                From Date *
-              </label>
-              <input
-                type="date"
-                name="fromDate"
-                value={formData.fromDate}
-                onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-deep-space-black/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-lumen-green bg-white text-deep-space-black"
-                required
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-deep-space-black mb-2">
-                To Date (Optional)
-              </label>
-              <input
-                type="date"
-                name="toDate"
-                value={formData.toDate}
-                onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-deep-space-black/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-lumen-green bg-white text-deep-space-black"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-deep-space-black mb-2">
-                Total Days
-              </label>
-              <input
-                type="text"
-                value={calculateTotalDays()}
-                readOnly
-                className="w-full px-3 py-2 border border-deep-space-black/20 rounded-lg bg-iridescent-pearl text-deep-space-black/70"
-              />
+                <FaArrowLeft className="w-4 h-4 mr-2" />
+                Back
+              </button>
+              <h2 className="text-2xl font-bold text-deep-space-black">
+                Manager Leave Request Form
+              </h2>
             </div>
           </div>
 
-          <div className="flex items-center">
-            <input
-              type="checkbox"
-              name="halfDay"
-              checked={formData.halfDay}
-              onChange={handleInputChange}
-              className="h-4 w-4 text-lumen-green focus:ring-lumen-green border-deep-space-black/20 rounded"
-            />
-            <label className="ml-2 block text-sm text-deep-space-black">
-              Half Day Leave
-            </label>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-deep-space-black mb-2">
-              Reason *
-            </label>
-            <textarea
-              name="reason"
-              value={formData.reason}
-              onChange={handleInputChange}
-              rows={4}
-              className="w-full px-3 py-2 border border-deep-space-black/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-lumen-green bg-white text-deep-space-black placeholder-deep-space-black/50"
-              placeholder="Please provide a detailed reason for your leave request..."
-              required
-            />
-          </div>
-
-          {message && (
-            <div
-              className={`p-4 rounded-lg ${
-                message.includes("successfully")
-                  ? "bg-lumen-green/10 text-deep-space-black border border-lumen-green/20"
-                  : "bg-brand-coral/10 text-white border border-brand-coral/20"
-              }`}
-            >
-              {message}
+          {/* Leave Balance Display */}
+          {leaveBalance ? (
+            <div className="bg-iridescent-pearl border border-deep-space-black/10 rounded-lg p-4 mb-6">
+              <h3 className="text-lg font-semibold text-deep-space-black mb-2">
+                Your Leave Balance
+              </h3>
+              <div className="grid grid-cols-3 gap-4 text-center">
+                <div>
+                  <p className="text-2xl font-bold text-neon-violet">
+                    {leaveBalance.total_allocated}
+                  </p>
+                  <p className="text-sm text-deep-space-black/70">
+                    Total Allocated
+                  </p>
+                </div>
+                <div>
+                  <p className="text-2xl font-bold text-brand-coral">
+                    {leaveBalance.leaves_taken}
+                  </p>
+                  <p className="text-sm text-deep-space-black/70">
+                    Leaves Taken
+                  </p>
+                </div>
+                <div>
+                  <p className="text-2xl font-bold text-lumen-green">
+                    {leaveBalance.leaves_remaining}
+                  </p>
+                  <p className="text-sm text-deep-space-black/70">
+                    Leaves Remaining
+                  </p>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="bg-brand-yellow/10 border border-brand-yellow/20 rounded-lg p-4 mb-6">
+              <p className="text-deep-space-black/70">
+                Loading leave balance...
+              </p>
             </div>
           )}
 
-          <div className="flex justify-end">
-            <button
-              type="submit"
-              disabled={loading}
-              className="px-6 py-2 bg-lumen-green text-deep-space-black rounded-lg hover:bg-neon-violet focus:outline-none focus:ring-2 focus:ring-lumen-green disabled:opacity-50 disabled:cursor-not-allowed font-medium transition-all duration-200 transform hover:scale-105"
-            >
-              {loading ? "Submitting..." : "Submit Leave Request"}
-            </button>
-          </div>
-        </form>
-      </div>
+          {/* Leave Request Form */}
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-deep-space-black mb-2">
+                  Leave Type *
+                </label>
+                <select
+                  name="leaveType"
+                  value={formData.leaveType}
+                  onChange={handleInputChange}
+                  className="w-full px-3 py-2 border border-deep-space-black/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-lumen-green bg-white text-deep-space-black"
+                  required
+                >
+                  <option value="">Select Leave Type</option>
+                  {leaveTypes.map((type) => (
+                    <option key={type.id} value={type.type_name}>
+                      {type.type_name}
+                    </option>
+                  ))}
+                </select>
+              </div>
 
-      {/* My Leave Requests History */}
-      <div className="bg-white rounded-xl shadow-lg p-6 border border-deep-space-black/10">
-        <h3 className="text-xl font-semibold text-deep-space-black mb-4">
-          My Leave Requests
-        </h3>
-        {myRequests.length === 0 ? (
-          <p className="text-deep-space-black/70 text-center py-4">
-            No leave requests found.
-          </p>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-deep-space-black/10 bg-white rounded-xl overflow-hidden">
-              <thead className="bg-iridescent-pearl border-b border-deep-space-black/10">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-deep-space-black/70 uppercase tracking-wider">
-                    Series
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-deep-space-black/70 uppercase tracking-wider">
-                    Leave Type
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-deep-space-black/70 uppercase tracking-wider">
-                    From Date
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-deep-space-black/70 uppercase tracking-wider">
-                    To Date
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-deep-space-black/70 uppercase tracking-wider">
-                    Total Days
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-deep-space-black/70 uppercase tracking-wider">
-                    Status
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-deep-space-black/70 uppercase tracking-wider">
-                    Created At
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-deep-space-black/10">
-                {myRequests.map((request) => (
-                  <tr key={request.id} className="hover:bg-iridescent-pearl/50 transition-colors duration-200">
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-deep-space-black">
-                      {request.series}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-deep-space-black">
-                      {request.leave_type}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-deep-space-black">
-                      {formatDate(request.from_date)}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-deep-space-black">
-                      {formatDate(request.to_date)}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-deep-space-black">
-                      {request.total_leave_days}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span
-                        className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(
-                          request.status
-                        )}`}
-                      >
-                        {formatStatus(request.status)}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-deep-space-black/70">
-                      {formatDate(request.created_at)}
-                    </td>
+              <div>
+                <label className="block text-sm font-medium text-deep-space-black mb-2">
+                  From Date *
+                </label>
+                <input
+                  type="date"
+                  name="fromDate"
+                  value={formData.fromDate}
+                  onChange={handleInputChange}
+                  className="w-full px-3 py-2 border border-deep-space-black/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-lumen-green bg-white text-deep-space-black"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-deep-space-black mb-2">
+                  To Date (Optional)
+                </label>
+                <input
+                  type="date"
+                  name="toDate"
+                  value={formData.toDate}
+                  onChange={handleInputChange}
+                  className="w-full px-3 py-2 border border-deep-space-black/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-lumen-green bg-white text-deep-space-black"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-deep-space-black mb-2">
+                  Total Days
+                </label>
+                <input
+                  type="text"
+                  value={calculateTotalDays()}
+                  readOnly
+                  className="w-full px-3 py-2 border border-deep-space-black/20 rounded-lg bg-iridescent-pearl text-deep-space-black/70"
+                />
+              </div>
+            </div>
+
+            <div className="flex items-center">
+              <input
+                type="checkbox"
+                name="halfDay"
+                checked={formData.halfDay}
+                onChange={handleInputChange}
+                className="h-4 w-4 text-lumen-green focus:ring-lumen-green border-deep-space-black/20 rounded"
+              />
+              <label className="ml-2 block text-sm text-deep-space-black">
+                Half Day Leave
+              </label>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-deep-space-black mb-2">
+                Reason *
+              </label>
+              <textarea
+                name="reason"
+                value={formData.reason}
+                onChange={handleInputChange}
+                rows={4}
+                className="w-full px-3 py-2 border border-deep-space-black/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-lumen-green bg-white text-deep-space-black placeholder-deep-space-black/50"
+                placeholder="Please provide a detailed reason for your leave request..."
+                required
+              />
+            </div>
+
+            {message && (
+              <div
+                className={`p-4 rounded-lg ${
+                  message.includes("successfully")
+                    ? "bg-lumen-green/10 text-deep-space-black border border-lumen-green/20"
+                    : "bg-brand-coral/10 text-white border border-brand-coral/20"
+                }`}
+              >
+                {message}
+              </div>
+            )}
+
+            <div className="flex justify-end">
+              <button
+                type="submit"
+                disabled={loading}
+                className="px-6 py-2 bg-lumen-green text-deep-space-black rounded-lg hover:bg-neon-violet focus:outline-none focus:ring-2 focus:ring-lumen-green disabled:opacity-50 disabled:cursor-not-allowed font-medium transition-all duration-200 transform hover:scale-105"
+              >
+                {loading ? "Submitting..." : "Submit Leave Request"}
+              </button>
+            </div>
+          </form>
+        </div>
+
+        {/* My Leave Requests History */}
+        <div className="bg-white rounded-xl shadow-lg p-6 border border-deep-space-black/10">
+          <h3 className="text-xl font-semibold text-deep-space-black mb-4">
+            My Leave Requests
+          </h3>
+          {myRequests.length === 0 ? (
+            <p className="text-deep-space-black/70 text-center py-4">
+              No leave requests found.
+            </p>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="min-w-full divide-y divide-deep-space-black/10 bg-white rounded-xl overflow-hidden">
+                <thead className="bg-iridescent-pearl border-b border-deep-space-black/10">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-deep-space-black/70 uppercase tracking-wider">
+                      Series
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-deep-space-black/70 uppercase tracking-wider">
+                      Leave Type
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-deep-space-black/70 uppercase tracking-wider">
+                      From Date
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-deep-space-black/70 uppercase tracking-wider">
+                      To Date
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-deep-space-black/70 uppercase tracking-wider">
+                      Total Days
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-deep-space-black/70 uppercase tracking-wider">
+                      Status
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-deep-space-black/70 uppercase tracking-wider">
+                      Created At
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
+                </thead>
+                <tbody className="bg-white divide-y divide-deep-space-black/10">
+                  {myRequests.map((request) => (
+                    <tr
+                      key={request.id}
+                      className="hover:bg-iridescent-pearl/50 transition-colors duration-200"
+                    >
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-deep-space-black">
+                        {request.series}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-deep-space-black">
+                        {request.leave_type}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-deep-space-black">
+                        {formatDate(request.from_date)}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-deep-space-black">
+                        {formatDate(request.to_date)}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-deep-space-black">
+                        {request.total_leave_days}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span
+                          className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(
+                            request.status
+                          )}`}
+                        >
+                          {formatStatus(request.status)}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-deep-space-black/70">
+                        {formatDate(request.created_at)}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
       </div>
-    </div>
     </div>
   );
 };

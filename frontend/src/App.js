@@ -32,6 +32,8 @@ function AppRoutes() {
 
   // Debug logging
   console.log("🔍 AppRoutes - User:", user, "Loading:", loading);
+  console.log("🔍 AppRoutes - User role:", user?.role);
+  console.log("🔍 AppRoutes - User ID:", user?.id);
 
   if (loading) {
     return (
@@ -100,7 +102,7 @@ function AppRoutes() {
         path="/manager"
         element={
           <ProtectedRoute role="manager">
-            <ManagerDashboard />
+            <Navigate to="/manager/dashboard" />
           </ProtectedRoute>
         }
       />
@@ -219,14 +221,14 @@ function App() {
                 color: "#F6F2F4", // IRIDESCENT PEARL
               },
               success: {
-                duration: 3000,
+                duration: 3001,
                 iconTheme: {
                   primary: "#8DE971", // LUMEN GREEN
                   secondary: "#030304", // DEEP SPACE BLACK
                 },
               },
               error: {
-                duration: 5000,
+                duration: 5001,
                 iconTheme: {
                   primary: "#FF7276", // CORAL
                   secondary: "#F6F2F4", // IRIDESCENT PEARL
@@ -236,7 +238,7 @@ function App() {
           />
           <ToastContainer
             position="top-right"
-            autoClose={5000}
+            autoClose={5001}
             hideProgressBar={false}
             newestOnTop={false}
             closeOnClick

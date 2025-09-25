@@ -180,7 +180,8 @@ const ManagerEmployeeAttendance = () => {
       default:
         return {
           icon: null,
-          color: "bg-white text-deep-space-black border border-deep-space-black/20",
+          color:
+            "bg-white text-deep-space-black border border-deep-space-black/20",
           text: status,
         };
     }
@@ -239,7 +240,9 @@ const ManagerEmployeeAttendance = () => {
           <div className="lg:col-span-1">
             <div className="bg-white rounded-lg shadow border border-deep-space-black/10">
               <div className="px-6 py-4 border-b border-deep-space-black/10">
-                <h2 className="text-lg font-medium text-deep-space-black">My Team</h2>
+                <h2 className="text-lg font-medium text-deep-space-black">
+                  My Team
+                </h2>
                 <p className="text-sm text-deep-space-black/70">
                   Select an employee to view attendance
                 </p>
@@ -339,7 +342,10 @@ const ManagerEmployeeAttendance = () => {
                         attendance.map((record) => {
                           const statusDisplay = getStatusDisplay(record.status);
                           return (
-                            <tr key={record.id} className="hover:bg-iridescent-pearl/50">
+                            <tr
+                              key={record.id}
+                              className="hover:bg-iridescent-pearl/50"
+                            >
                               <td className="px-6 py-4 whitespace-nowrap text-sm text-deep-space-black">
                                 {new Date(record.date).toLocaleDateString()}
                               </td>

@@ -127,7 +127,8 @@ const ManagerLeaveRequests = () => {
         };
       default:
         return {
-          color: "bg-iridescent-pearl text-deep-space-black border border-deep-space-black/20",
+          color:
+            "bg-iridescent-pearl text-deep-space-black border border-deep-space-black/20",
           text: status,
           icon: null,
         };
@@ -433,19 +434,25 @@ const ManagerLeaveRequests = () => {
                   </h4>
                   <div className="grid grid-cols-2 gap-4 text-sm">
                     <div>
-                      <span className="text-deep-space-black/70">Employee:</span>
+                      <span className="text-deep-space-black/70">
+                        Employee:
+                      </span>
                       <div className="font-medium text-deep-space-black">
                         {selectedRequest.first_name} {selectedRequest.last_name}
                       </div>
                     </div>
                     <div>
-                      <span className="text-deep-space-black/70">Leave Type:</span>
+                      <span className="text-deep-space-black/70">
+                        Leave Type:
+                      </span>
                       <div className="font-medium text-deep-space-black">
                         {selectedRequest.leave_type}
                       </div>
                     </div>
                     <div>
-                      <span className="text-deep-space-black/70">From Date:</span>
+                      <span className="text-deep-space-black/70">
+                        From Date:
+                      </span>
                       <div className="font-medium text-deep-space-black">
                         {formatDate(selectedRequest.from_date)}
                       </div>
@@ -459,7 +466,9 @@ const ManagerLeaveRequests = () => {
                       </div>
                     </div>
                     <div>
-                      <span className="text-deep-space-black/70">Total Days:</span>
+                      <span className="text-deep-space-black/70">
+                        Total Days:
+                      </span>
                       <div className="font-medium text-deep-space-black">
                         {selectedRequest.total_leave_days} days
                       </div>

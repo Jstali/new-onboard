@@ -3,8 +3,28 @@ import axios from "axios";
 import toast from "react-hot-toast";
 
 // Configure axios defaults
-axios.defaults.timeout = 15000; // 15 second timeout
-axios.defaults.baseURL = "http://localhost:5001/api";
+axios.defaults.timeout = 15001; // 15 second timeout
+
+// Determine API URL based on environment
+const getApiUrl = () => {
+  if (process.env.REACT_APP_API_URL) {
+    return process.env.REACT_APP_API_URL;
+  }
+
+  // For production, use the full URL
+  if (process.env.NODE_ENV === "production") {
+    return "http://149.102.158.71:5001/api";
+  }
+
+  // For development, use localhost
+  return "http://localhost:5001/api";
+};
+
+axios.defaults.baseURL = getApiUrl();
+
+console.log("🔧 Frontend API URL:", axios.defaults.baseURL);
+console.log("🔧 NODE_ENV:", process.env.NODE_ENV);
+console.log("🔧 REACT_APP_API_URL:", process.env.REACT_APP_API_URL);
 
 const AuthContext = createContext();
 
@@ -34,6 +54,11 @@ export const AuthProvider = ({ children }) => {
 
         try {
           const response = await axios.get("/auth/me");
+          console.log(
+            "🔍 AuthContext - /auth/me response:",
+            response.data.user
+          );
+          console.log("🔍 AuthContext - User role:", response.data.user?.role);
           setUser(response.data.user);
         } catch (error) {
           console.error("Auth check failed:", error);
@@ -104,10 +129,19 @@ export const AuthProvider = ({ children }) => {
       // Get complete user data from /auth/me endpoint
       try {
         const userResponse = await axios.get("/auth/me");
+        console.log(
+          "🔍 AuthContext - Login /auth/me response:",
+          userResponse.data.user
+        );
+        console.log(
+          "🔍 AuthContext - Login user role:",
+          userResponse.data.user?.role
+        );
         setUser(userResponse.data.user);
       } catch (error) {
         console.error("Failed to get user details:", error);
         // Fallback to basic user data from login response
+        console.log("🔍 AuthContext - Using fallback user data:", userData);
         setUser(userData);
       }
 

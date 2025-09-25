@@ -5,6 +5,16 @@ import { useAuth } from "../contexts/AuthContext";
 const ProtectedRoute = ({ children, role }) => {
   const { user, loading } = useAuth();
 
+  // Debug logging
+  console.log(
+    "🔍 ProtectedRoute - User:",
+    user,
+    "Required role:",
+    role,
+    "Loading:",
+    loading
+  );
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -23,7 +33,7 @@ const ProtectedRoute = ({ children, role }) => {
     if (user.role === "hr") {
       return <Navigate to="/hr" />;
     } else if (user.role === "manager") {
-      return <Navigate to="/manager" />;
+      return <Navigate to="/manager/dashboard" />;
     } else {
       return <Navigate to="/employee" />;
     }

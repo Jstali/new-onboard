@@ -25,13 +25,13 @@ const securityConfig = (app) => {
           connectSrc: ["'self'", "http://localhost:5001", "https:"],
           frameSrc: [
             "'self'",
-            "http://localhost:3000",
+            "http://localhost:3001",
             "http://localhost:5001",
           ],
           frameAncestors:
             process.env.NODE_ENV === "production"
               ? ["'self'", process.env.FRONTEND_URL || "https://yourdomain.com"]
-              : ["'self'", "http://localhost:3000", "http://localhost:5001"],
+              : ["'self'", "http://localhost:3001", "http://localhost:5001"],
           objectSrc: ["'none'"],
           upgradeInsecureRequests:
             process.env.NODE_ENV === "production" ? [] : null,
@@ -49,7 +49,7 @@ const securityConfig = (app) => {
     const allowedOrigins =
       process.env.NODE_ENV === "production"
         ? [process.env.FRONTEND_URL || "https://yourdomain.com"]
-        : ["http://localhost:3000", "http://localhost:5001"];
+        : ["http://localhost:3001", "http://localhost:5001"];
 
     const origin = req.get("origin") || req.get("referer");
     const isAllowedOrigin = allowedOrigins.some(

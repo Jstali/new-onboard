@@ -743,8 +743,61 @@ async function sendDocumentReminderEmail(
   }
 }
 
+async function sendManagerOnboardingEmail(to, name, tempPassword) {
+  const mailOptions = {
+    from: process.env.EMAIL_USER,
+    to,
+    subject: "Welcome to nxzen - Manager Onboarding Login Details",
+    text: `Welcome to nxzen as a Manager! \n\nLogin here: https://149.102.158.71:2025/login \nEmail: ${to} \nTemporary Password: ${tempPassword}\nRole: Manager\n\nPlease reset your password after logging in. You will have access to the Manager Dashboard to manage your team.`,
+    html: `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h2 style="color: #333; text-align: center; margin: 30px 0 20px;">Welcome to nxzen as a Manager!</h2>
+        
+        <div style="background: #f8f9fa; padding: 25px; border-radius: 8px; margin: 20px 0;">
+          <h3 style="color: #2c3e50; margin-top: 0;">Your Manager Account Details</h3>
+          <p style="margin: 10px 0; color: #555;"><strong>Name:</strong> ${name}</p>
+          <p style="margin: 10px 0; color: #555;"><strong>Email:</strong> ${to}</p>
+          <p style="margin: 10px 0; color: #555;"><strong>Role:</strong> Manager</p>
+          <p style="margin: 10px 0; color: #555;"><strong>Temporary Password:</strong> <code style="background: #e9ecef; padding: 2px 6px; border-radius: 4px;">${tempPassword}</code></p>
+        </div>
+        
+        <div style="text-align: center; margin: 30px 0;">
+          <a href="https://149.102.158.71:2025/login" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 12px 30px; text-decoration: none; border-radius: 25px; display: inline-block; font-weight: bold;">
+            Access Manager Dashboard
+          </a>
+        </div>
+        
+        <div style="background: #e8f4fd; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #3498db;">
+          <h4 style="color: #2c3e50; margin-top: 0;">Manager Responsibilities</h4>
+          <ul style="color: #555; margin: 10px 0; padding-left: 20px;">
+            <li>Manage and oversee your team members</li>
+            <li>Approve leave requests from your team</li>
+            <li>Monitor team attendance and performance</li>
+            <li>Access team reports and analytics</li>
+            <li>Review and approve expense reports</li>
+          </ul>
+        </div>
+        
+        <div style="background: #fff3cd; padding: 15px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #ffc107;">
+          <p style="margin: 0; color: #856404;"><strong>Important:</strong> Please change your temporary password after your first login for security purposes.</p>
+        </div>
+      </div>
+    `,
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+    console.log("✅ Manager onboarding email sent successfully to:", to);
+    return true;
+  } catch (error) {
+    console.error("❌ Failed to send manager onboarding email:", error);
+    return false;
+  }
+}
+
 module.exports = {
   sendOnboardingEmail,
+  sendManagerOnboardingEmail,
   sendPasswordResetEmail,
   sendLeaveRequestToManager,
   sendManagerApprovalToHR,

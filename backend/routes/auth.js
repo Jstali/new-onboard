@@ -13,8 +13,14 @@ router.post(
   [body("email").isEmail(), body("password").notEmpty()],
   async (req, res) => {
     try {
+      console.log("🔐 Login attempt:", {
+        email: req.body.email,
+        timestamp: new Date().toISOString(),
+      });
+
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
+        console.log("❌ Login validation failed:", errors.array());
         return res.status(400).json({ errors: errors.array() });
       }
 
@@ -73,6 +79,15 @@ router.post(
         { expiresIn: process.env.JWT_EXPIRES_IN }
       );
 
+      console.log("✅ Login successful - User role:", user.role);
+      console.log("✅ Login successful - JWT payload:", {
+        userId: user.id,
+        email: user.email,
+        role: user.role,
+      });
+      console.log("✅ JWT Secret configured:", !!process.env.JWT_SECRET);
+      console.log("✅ JWT Expires in:", process.env.JWT_EXPIRES_IN);
+
       res.json({
         message: "Login successful",
         token,
@@ -92,25 +107,49 @@ router.post(
 // Get current user info
 router.get("/me", authenticateToken, async (req, res) => {
   try {
-    const result = await pool.query(
-      `SELECT u.id, u.email, u.role, u.first_name, u.last_name, 
-              COALESCE(em.doj, (ef.form_data->>'doj')::date) as doj, 
-              em.employee_id, em.employee_name, em.designation,
-              ef.form_data
+    console.log("🔍 /api/auth/me - Request from user:", req.user);
+
+    // First get the user data with role from users table
+    const userResult = await pool.query(
+      `SELECT u.id, u.email, u.role, u.first_name, u.last_name, u.temp_password
        FROM users u
-       LEFT JOIN employee_master em ON (u.email = em.company_email OR u.email = em.email)
-       LEFT JOIN employee_forms ef ON u.id = ef.employee_id
        WHERE u.id = $1`,
       [req.user.userId]
     );
 
-    if (result.rows.length === 0) {
+    if (userResult.rows.length === 0) {
+      console.log(
+        "❌ /api/auth/me - User not found in database:",
+        req.user.userId
+      );
       return res.status(404).json({ error: "User not found" });
     }
 
-    console.log("🔍 /api/auth/me response for user:", result.rows[0]);
+    const user = userResult.rows[0];
+    console.log("✅ /api/auth/me - User from users table:", user);
+
+    // Get additional employee data if available
+    const employeeResult = await pool.query(
+      `SELECT em.doj, em.employee_id, em.employee_name, em.designation, em.type as employment_type
+       FROM employee_master em
+       WHERE (em.company_email = $1 OR em.email = $1)
+       LIMIT 1`,
+      [user.email]
+    );
+
+    const employeeData = employeeResult.rows[0] || {};
+
+    // Combine user data with employee data, prioritizing users.role
+    const combinedUser = {
+      ...user,
+      ...employeeData,
+      role: user.role, // Always use role from users table
+    };
+
+    console.log("✅ /api/auth/me - Combined user data:", combinedUser);
+    console.log("✅ /api/auth/me - Response sent successfully");
     res.json({
-      user: result.rows[0],
+      user: combinedUser,
     });
   } catch (error) {
     console.error("Get user error:", error);

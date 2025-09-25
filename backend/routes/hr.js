@@ -5,6 +5,7 @@ const { pool } = require("../config/database");
 const { authenticateToken, requireHR } = require("../middleware/auth");
 const {
   sendOnboardingEmail,
+  sendManagerOnboardingEmail,
   sendDocumentReminderEmail,
 } = require("../utils/mailer");
 const {
@@ -385,6 +386,298 @@ async function createDocumentCollectionForEmployee(
     console.error("Error creating document collection for employee:", error);
   }
 }
+
+// Add new manager
+router.post(
+  "/managers",
+  [
+    body("email").isEmail().withMessage("Valid email is required"),
+    body("name").notEmpty().trim().withMessage("Manager name is required"),
+    body("department").optional().trim(),
+    body("designation").optional().trim(),
+    body("location").optional().trim(),
+  ],
+  async (req, res) => {
+    try {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+      }
+
+      const {
+        email,
+        name,
+        department = "",
+        designation = "",
+        location = "",
+      } = req.body;
+
+      console.log("🔍 Creating manager:", {
+        email,
+        name,
+        department,
+        designation,
+        location,
+      });
+
+      // Check if email already exists in users table
+      const existingUser = await pool.query(
+        "SELECT id FROM users WHERE email = $1",
+        [email]
+      );
+
+      if (existingUser.rows.length > 0) {
+        return res.status(400).json({ error: "Email already exists" });
+      }
+
+      // Generate temporary password
+      const tempPassword = generateTempPassword();
+      console.log("🔍 Generated temp password for manager:", tempPassword);
+
+      // Split name into first and last name
+      const nameParts = name.trim().split(" ");
+      const firstName = nameParts[0] || "";
+      const lastName = nameParts.slice(1).join(" ") || "";
+
+      // Generate unique manager ID
+      const managerId = await generateEmployeeId();
+      console.log("🔢 Generated Manager ID:", managerId);
+
+      // Start database transaction
+      const client = await pool.connect();
+      try {
+        await client.query("BEGIN");
+
+        // Create user with manager role
+        const userResult = await client.query(
+          "INSERT INTO users (email, password, role, temp_password, first_name, last_name) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id",
+          [email, "", "manager", tempPassword, firstName, lastName]
+        );
+
+        const userId = userResult.rows[0].id;
+        console.log("✅ Manager user created with ID:", userId);
+
+        // Create manager record in employee_master table
+        await client.query(
+          `INSERT INTO employee_master (
+            employee_id, employee_name, email, company_email, type, status, 
+            department, designation, location, doj, created_at, updated_at
+          ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)`,
+          [
+            managerId,
+            name,
+            email,
+            email,
+            "Manager",
+            "active",
+            department,
+            designation,
+            location,
+            new Date().toISOString().split("T")[0], // Current date as DOJ
+          ]
+        );
+
+        console.log("✅ Manager record created in employee_master table");
+
+        // Send onboarding email
+        const emailSent = await sendManagerOnboardingEmail(
+          email,
+          name,
+          tempPassword
+        );
+
+        if (!emailSent) {
+          console.log("❌ Email sending failed, rolling back transaction");
+          await client.query("ROLLBACK");
+          return res
+            .status(500)
+            .json({ error: "Failed to send onboarding email" });
+        }
+
+        await client.query("COMMIT");
+        console.log("✅ Manager creation transaction committed");
+
+        res.status(201).json({
+          message: "Manager added successfully - onboarding email sent",
+          manager: {
+            id: userId,
+            email: email,
+            name,
+            managerId,
+            department,
+            designation,
+            location,
+            tempPassword,
+          },
+        });
+      } catch (error) {
+        await client.query("ROLLBACK");
+        console.error("❌ Manager creation error:", error);
+        throw error;
+      } finally {
+        client.release();
+      }
+    } catch (error) {
+      console.error("❌ Add manager error:", error);
+      res.status(500).json({
+        error: "Failed to add manager",
+        details:
+          process.env.NODE_ENV === "development"
+            ? error.message
+            : "Internal server error",
+      });
+    }
+  }
+);
+
+// Add manager directly to employee master table (without email)
+router.post(
+  "/managers/direct",
+  [
+    body("name").notEmpty().trim().withMessage("Manager name is required"),
+    body("employeeId").notEmpty().trim().withMessage("Employee ID is required"),
+    body("companyEmail")
+      .isEmail()
+      .withMessage("Valid company email is required"),
+    body("department").optional().trim(),
+    body("designation").optional().trim(),
+    body("location").optional().trim(),
+  ],
+  async (req, res) => {
+    try {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+      }
+
+      const {
+        name,
+        employeeId,
+        companyEmail,
+        department = "",
+        designation = "",
+        location = "",
+      } = req.body;
+
+      console.log("🔍 Creating manager directly:", {
+        name,
+        employeeId,
+        companyEmail,
+        department,
+        designation,
+        location,
+      });
+
+      // Check if employee ID already exists
+      const existingEmployee = await pool.query(
+        "SELECT id FROM employee_master WHERE employee_id = $1",
+        [employeeId]
+      );
+
+      if (existingEmployee.rows.length > 0) {
+        return res.status(400).json({ error: "Employee ID already exists" });
+      }
+
+      // Check if company email already exists in employee_master
+      const existingEmail = await pool.query(
+        "SELECT id FROM employee_master WHERE company_email = $1",
+        [companyEmail]
+      );
+
+      if (existingEmail.rows.length > 0) {
+        return res.status(400).json({ error: "Company email already exists" });
+      }
+
+      // Check if user account already exists
+      const existingUser = await pool.query(
+        "SELECT id FROM users WHERE email = $1",
+        [companyEmail]
+      );
+
+      if (existingUser.rows.length > 0) {
+        return res
+          .status(400)
+          .json({ error: "User account already exists with this email" });
+      }
+
+      // Create user account for manager
+      console.log("🔍 Creating user account for manager...");
+      const bcrypt = require("bcryptjs");
+      const tempPassword = Math.random().toString(36).slice(-8);
+      const hashedPassword = await bcrypt.hash(tempPassword, 10);
+
+      // Split name into first and last name
+      const nameParts = name.trim().split(" ");
+      const firstName = nameParts[0] || "";
+      const lastName = nameParts.slice(1).join(" ") || "";
+
+      // Create user account
+      const userResult = await pool.query(
+        "INSERT INTO users (email, password, role, temp_password, first_name, last_name) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id",
+        [
+          companyEmail,
+          hashedPassword,
+          "manager",
+          tempPassword,
+          firstName,
+          lastName,
+        ]
+      );
+
+      const userId = userResult.rows[0].id;
+      console.log("✅ Manager user account created with ID:", userId);
+
+      // Create manager record in employee_master table
+      await pool.query(
+        `INSERT INTO employee_master (
+          employee_id, employee_name, email, company_email, type, status, 
+          department, designation, location, doj, created_at, updated_at
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)`,
+        [
+          employeeId,
+          name,
+          companyEmail,
+          companyEmail,
+          "Manager",
+          "active",
+          department,
+          designation,
+          location,
+          new Date().toISOString().split("T")[0], // Current date as DOJ
+        ]
+      );
+
+      console.log(
+        "✅ Manager record created directly in employee_master table"
+      );
+
+      res.status(201).json({
+        message: "Manager added successfully to employee master table",
+        manager: {
+          name,
+          employeeId,
+          companyEmail,
+          department,
+          designation,
+          location,
+          type: "Manager",
+          role: "manager",
+          status: "active",
+          temp_password: tempPassword,
+        },
+      });
+    } catch (error) {
+      console.error("❌ Add manager directly error:", error);
+      res.status(500).json({
+        error: "Failed to add manager",
+        details:
+          process.env.NODE_ENV === "development"
+            ? error.message
+            : "Internal server error",
+      });
+    }
+  }
+);
 
 // Add new employee
 router.post(
@@ -4314,6 +4607,7 @@ router.post(
   async (req, res) => {
     try {
       console.log("🔍 Manual add employee request body:", req.body);
+      console.log("🔍 Starting manual add employee process...");
 
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
@@ -4330,37 +4624,90 @@ router.post(
       } = req.body;
 
       // Check if email already exists
+      console.log("🔍 Checking if email already exists:", email);
       const existingUser = await pool.query(
         "SELECT id FROM users WHERE email = $1",
         [email]
       );
 
       if (existingUser.rows.length > 0) {
+        console.log("❌ Email already exists:", email);
         return res.status(400).json({ error: "Email already exists" });
       }
+      console.log("✅ Email is available");
 
-      // Call the database function to create the user
-      const result = await pool.query(
-        "SELECT manually_add_employee($1, $2, $3, $4, $5) as user_id",
-        [email, first_name, last_name, employment_type, temp_password]
+      // Create user manually instead of using database function
+      console.log("🔍 Creating user account...");
+      const bcrypt = require("bcryptjs");
+      const generatedPassword =
+        temp_password || Math.random().toString(36).slice(-8);
+      console.log("🔍 Generated password:", generatedPassword);
+      const hashedPassword = await bcrypt.hash(generatedPassword, 10);
+      console.log("🔍 Password hashed successfully");
+
+      // Determine role based on employment_type
+      const userRole = employment_type === "Manager" ? "manager" : "employee";
+      console.log(
+        "🔍 Employment type:",
+        employment_type,
+        "-> User role:",
+        userRole
       );
 
-      const userId = result.rows[0].user_id;
-
-      // Get the temporary password that was generated
+      // Create user account
+      console.log("🔍 Inserting user into database...");
       const userResult = await pool.query(
-        "SELECT temp_password FROM users WHERE id = $1",
-        [userId]
+        "INSERT INTO users (email, password, role, temp_password, first_name, last_name) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id",
+        [
+          email,
+          hashedPassword,
+          userRole,
+          generatedPassword,
+          first_name,
+          last_name,
+        ]
       );
 
-      const generatedPassword = userResult.rows[0].temp_password;
+      const userId = userResult.rows[0].id;
+      console.log("✅ User created with ID:", userId);
+
+      // Create employee form record
+      console.log("🔍 Creating employee form record...");
+      await pool.query(
+        "INSERT INTO employee_forms (employee_id, type, status) VALUES ($1, $2, $3)",
+        [userId, employment_type, "pending"]
+      );
+      console.log("✅ Employee form record created");
+
+      // Generate employee ID
+      console.log("🔍 Generating employee ID...");
+      const employeeId = await generateEmployeeId();
+      console.log("✅ Generated employee ID:", employeeId);
+
+      // Create employee master record
+      console.log("🔍 Creating employee master record...");
+      await pool.query(
+        `INSERT INTO employee_master (
+          employee_id, employee_name, email, company_email, type, status, doj, created_at, updated_at
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)`,
+        [
+          employeeId,
+          `${first_name} ${last_name}`,
+          email,
+          email,
+          employment_type,
+          "active",
+          new Date().toISOString().split("T")[0], // Current date as DOJ
+        ]
+      );
+      console.log("✅ Employee master record created");
 
       // Send welcome email with credentials
       try {
         const emailSent = await sendOnboardingEmail(
           email,
-          generatedPassword,
-          employment_type
+          `${first_name} ${last_name}`,
+          generatedPassword
         );
 
         if (!emailSent) {
@@ -4378,6 +4725,7 @@ router.post(
         first_name,
         last_name,
         employment_type,
+        role: userRole,
         temp_password: generatedPassword,
       });
 
@@ -4392,12 +4740,21 @@ router.post(
           first_name,
           last_name,
           employment_type,
+          role: userRole,
           temp_password: generatedPassword,
         },
       });
     } catch (error) {
       console.error("Manual add employee error:", error);
-      res.status(500).json({ error: "Failed to manually add employee" });
+      console.error("Error stack:", error.stack);
+      console.error("Error message:", error.message);
+      res.status(500).json({
+        error: "Failed to manually add employee",
+        details:
+          process.env.NODE_ENV === "development"
+            ? error.message
+            : "Internal server error",
+      });
     }
   }
 );

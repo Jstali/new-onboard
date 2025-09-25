@@ -10,10 +10,12 @@
     "install-all": "npm install && cd backend && npm install && cd ../frontend && npm install",
     "build": "cd frontend && npm run build",
     "start": "cd backend && npm start",
-    "setup-db": "./setup-database.sh",
-    "setup-database": "./setup-database.sh",
-    "test-db": "./test-database.sh",
-    "test-database": "./test-database.sh"
+    "setup-db": "./scripts/setup_db.sh",
+    "setup-database": "./scripts/setup_db.sh",
+    "run-app": "./scripts/run_app.sh",
+    "check-db": "./scripts/check_connection.sh",
+    "test-db": "./scripts/check_connection.sh",
+    "test-database": "./scripts/check_connection.sh"
   },
   "keywords": [
     "employee",

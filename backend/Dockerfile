@@ -1,7 +1,7 @@
 # =============================================================================
 # NXZEN EMPLOYEE MANAGEMENT SYSTEM - BACKEND DOCKERFILE
 # =============================================================================
-# Multi-stage build for production optimization
+# Multi-stage build for production optimization with environment-based configuration
 # =============================================================================
 
 # Stage 1: Build stage
@@ -62,12 +62,12 @@ RUN chown -R nxzen:nodejs /app && \
 # Switch to non-root user
 USER nxzen
 
-# Expose port
-EXPOSE 2026
+# Expose port (will be overridden by environment variable)
+EXPOSE 5001
 
-# Health check
+# Health check using environment variables
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-    CMD curl -f http://localhost:2026/api/health || exit 1
+    CMD curl -f http://localhost:5001/api/health || exit 1
 
 # Start the application
 CMD ["node", "server.js"]

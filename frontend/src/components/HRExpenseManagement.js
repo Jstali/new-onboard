@@ -78,7 +78,7 @@ const HRExpenseManagement = () => {
 
       setError(errorMessage);
       toast.error(errorMessage, {
-        duration: 5000,
+        duration: 5001,
         position: "top-right",
       });
     } finally {
@@ -120,7 +120,7 @@ const HRExpenseManagement = () => {
         error.response?.data?.error || "Failed to delete expense request";
       setError(errorMessage);
       toast.error(errorMessage, {
-        duration: 5000,
+        duration: 5001,
         position: "top-right",
       });
     } finally {

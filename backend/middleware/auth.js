@@ -11,6 +11,7 @@ const authenticateToken = async (req, res, next) => {
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    console.log("🔍 JWT decoded payload:", decoded);
 
     // Get user from database with temp_password check
     const result = await pool.query(
@@ -22,8 +23,11 @@ const authenticateToken = async (req, res, next) => {
       return res.status(401).json({ error: "Invalid token" });
     }
 
+    const user = result.rows[0];
+    console.log("🔍 User from database:", user);
+
     // Check if user still has temporary password
-    if (result.rows[0].temp_password) {
+    if (user.temp_password) {
       return res.status(403).json({
         error: "Password change required",
         requiresPasswordReset: true,
@@ -33,10 +37,11 @@ const authenticateToken = async (req, res, next) => {
     }
 
     req.user = {
-      userId: result.rows[0].id,
-      email: result.rows[0].email,
-      role: result.rows[0].role,
+      userId: user.id,
+      email: user.email,
+      role: user.role,
     };
+    console.log("🔍 Set req.user:", req.user);
     next();
   } catch (error) {
     if (error.name === "TokenExpiredError") {

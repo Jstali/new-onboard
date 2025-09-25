@@ -572,10 +572,10 @@ ON CONFLICT (type_name) DO NOTHING;
 INSERT INTO expense_categories (name, description, max_amount, requires_receipt) VALUES
 ('Travel', 'Travel and transportation expenses', 10000.00, true),
 ('Meals', 'Business meal expenses', 2000.00, true),
-('Office Supplies', 'Office supplies and equipment', 5000.00, true),
-('Training', 'Training and development expenses', 15000.00, true),
-('Communication', 'Phone and internet expenses', 3000.00, true),
-('Others', 'Miscellaneous expenses', 5000.00, true)
+('Office Supplies', 'Office supplies and equipment', 5001.00, true),
+('Training', 'Training and development expenses', 15001.00, true),
+('Communication', 'Phone and internet expenses', 3001.00, true),
+('Others', 'Miscellaneous expenses', 5001.00, true)
 ON CONFLICT (name) DO NOTHING;
 
 -- Insert default relations
@@ -593,7 +593,7 @@ INSERT INTO system_settings (category, setting_key, setting_value, description) 
 ('leave', 'annual_leave_per_year', '21', 'Annual leave allocation'),
 ('attendance', 'office_start_time', '09:00', 'Office start time'),
 ('attendance', 'office_end_time', '18:00', 'Office end time'),
-('expense', 'max_amount_without_approval', '5000', 'Maximum expense amount without approval')
+('expense', 'max_amount_without_approval', '5001', 'Maximum expense amount without approval')
 ON CONFLICT (category, setting_key) DO NOTHING;
 
 -- =============================================================================

@@ -38,7 +38,7 @@ const ManagerDashboard = () => {
       }
 
       const response = await fetch(
-        "http://localhost:5001/api/manager/dashboard",
+        "/manager/dashboard",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -73,7 +73,7 @@ const ManagerDashboard = () => {
       }
 
       const response = await fetch(
-        "http://localhost:5001/api/manager/profile",
+        "/manager/profile",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -102,7 +102,7 @@ const ManagerDashboard = () => {
       if (!token) return;
 
       const response = await fetch(
-        `http://localhost:5001/api/manager/employee/${employeeId}/leave-details`,
+        `/manager/employee/${employeeId}/leave-details`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

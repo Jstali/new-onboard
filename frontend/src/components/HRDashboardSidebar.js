@@ -61,7 +61,7 @@ const HRDashboardSidebar = () => {
   const fetchMasterEmployees = async () => {
     try {
       console.log("🔍 Fetching master employees...");
-      const response = await axios.get("http://localhost:5001/api/hr/master");
+      const response = await axios.get("/hr/master");
       console.log("✅ Master employees fetched:", response.data);
       console.log(
         "📊 Number of employees:",

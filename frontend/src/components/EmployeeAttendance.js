@@ -67,7 +67,7 @@ const EmployeeAttendance = () => {
       }
 
       const response = await fetch(
-        `http://localhost:5001/api/attendance/my-attendance?start_date=${startDate}&end_date=${endDate}`,
+        `/attendance/my-attendance?start_date=${startDate}&end_date=${endDate}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -141,7 +141,7 @@ const EmployeeAttendance = () => {
       }
 
       const response = await fetch(
-        "http://localhost:5001/api/attendance/settings",
+        "/attendance/settings",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -197,11 +197,11 @@ const EmployeeAttendance = () => {
         requestBody.hours = hours;
       }
 
-      console.log("📤 Sending request to:", "http://localhost:5001/api/attendance/mark");
+      console.log("📤 Sending request to:", "/attendance/mark");
       console.log("📤 Request body:", requestBody);
       
       const response = await fetch(
-        "http://localhost:5001/api/attendance/mark",
+        "/attendance/mark",
         {
           method: "POST",
           headers: {

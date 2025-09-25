@@ -17,7 +17,7 @@ const EmployeeList = ({ employees, onRefresh, onApprove }) => {
   const handleViewDetails = async (employeeId) => {
     try {
       const response = await axios.get(
-        `http://localhost:5001/api/hr/employees/${employeeId}/form`
+        `/hr/employees/${employeeId}/form`
       );
       setSelectedEmployee(response.data.form);
     } catch (error) {
@@ -58,7 +58,7 @@ const EmployeeList = ({ employees, onRefresh, onApprove }) => {
       });
 
       await axios.put(
-        `http://localhost:5001/api/hr/employees/${approvalData.userId}/approve`,
+        `/hr/employees/${approvalData.userId}/approve`,
         approvalData
       );
       toast.success(`Employee ${approvalData.status} successfully!`);
@@ -84,9 +84,7 @@ const EmployeeList = ({ employees, onRefresh, onApprove }) => {
       )
     ) {
       try {
-        await axios.delete(
-          `http://localhost:5001/api/hr/employees/${employeeId}`
-        );
+        await axios.delete(`/hr/employees/${employeeId}`);
         toast.success("Employee deleted successfully!");
         onRefresh();
       } catch (error) {

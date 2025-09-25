@@ -64,7 +64,7 @@ wait_for_services() {
     local attempt=1
     
     while [ $attempt -le $max_attempts ]; do
-        if curl -f -s http://localhost:2025/api/health > /dev/null 2>&1; then
+        if curl -f -s ${BACKEND_URL:-http://127.0.0.1:2025/api}/health > /dev/null 2>&1; then
             print_success "Backend API is ready"
             break
         fi
@@ -82,7 +82,7 @@ wait_for_services() {
     # Wait for frontend
     attempt=1
     while [ $attempt -le $max_attempts ]; do
-        if curl -f -s http://localhost:2025/health > /dev/null 2>&1; then
+        if curl -f -s ${FRONTEND_URL:-http://127.0.0.1:2025}/health > /dev/null 2>&1; then
             print_success "Frontend is ready"
             break
         fi
@@ -105,9 +105,9 @@ show_status() {
     docker-compose ps
     echo ""
     print_status "Application URLs:"
-    echo "  Frontend: http://localhost:2025"
-    echo "  API: http://localhost:2025/api"
-    echo "  Health Check: http://localhost:2025/health"
+    echo "  Frontend: ${FRONTEND_URL:-http://127.0.0.1:2025}"
+    echo "  API: ${BACKEND_URL:-http://127.0.0.1:2025/api}"
+    echo "  Health Check: ${FRONTEND_URL:-http://127.0.0.1:2025}/health"
     echo ""
     print_status "Useful Commands:"
     echo "  View logs: docker-compose logs -f [service_name]"
@@ -141,7 +141,7 @@ main() {
         show_status
         echo ""
         print_success "Your NXZEN Employee Management System is now running!"
-        print_status "Access your application at: http://localhost:2025"
+        print_status "Access your application at: ${FRONTEND_URL:-http://127.0.0.1:2025}"
     else
         print_error "Some services failed to start"
         echo ""

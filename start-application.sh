@@ -76,8 +76,8 @@ echo "========================================"
 echo "Application Started Successfully!"
 echo "========================================"
 echo
-echo "Backend Server: http://localhost:5001"
-echo "Frontend Application: http://localhost:3001"
+echo "Backend Server: ${BACKEND_URL:-http://127.0.0.1:5001/api}"
+echo "Frontend Application: ${FRONTEND_URL:-http://127.0.0.1:3001}"
 echo
 echo "Test Credentials:"
 echo "- Employee: test.employee@company.com / test123"
@@ -91,7 +91,7 @@ echo "Checking application status..."
 
 # Check if backend is running
 echo "Checking backend server..."
-if curl -s http://localhost:5001/api/auth/me > /dev/null 2>&1; then
+if curl -s ${BACKEND_URL:-http://127.0.0.1:5001/api}/auth/me > /dev/null 2>&1; then
     echo "✓ Backend server is running"
 else
     echo "⚠ Backend server may still be starting up"
@@ -99,7 +99,7 @@ fi
 
 # Check if frontend is running
 echo "Checking frontend server..."
-if curl -s http://localhost:3001 > /dev/null 2>&1; then
+if curl -s ${FRONTEND_URL:-http://127.0.0.1:3001} > /dev/null 2>&1; then
     echo "✓ Frontend server is running"
 else
     echo "⚠ Frontend server may still be starting up"
@@ -110,7 +110,7 @@ echo "========================================"
 echo "Next Steps"
 echo "========================================"
 echo
-echo "1. Open your browser and go to: http://localhost:3001"
+echo "1. Open your browser and go to: ${FRONTEND_URL:-http://127.0.0.1:3001}"
 echo "2. Login with the test credentials"
 echo "3. Navigate to the attendance section"
 echo

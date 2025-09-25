@@ -62,7 +62,7 @@ const HRPNCMonitoring = () => {
         `📊 Fetching P&C Monthly Monitoring Report for ${selectedMonth}`
       );
       const response = await axios.get(
-        `http://localhost:5001/api/hr/pnc-monitoring?month=${selectedMonth}`
+        `/hr/pnc-monitoring?month=${selectedMonth}`
       );
 
       console.log("✅ Report data fetched:", response.data);
@@ -85,7 +85,7 @@ const HRPNCMonitoring = () => {
         `🔄 Recalculating P&C Monthly Monitoring Report for ${selectedMonth}`
       );
       const response = await axios.post(
-        `http://localhost:5001/api/hr/pnc-monitoring/recalculate`,
+        `/hr/pnc-monitoring/recalculate`,
         { month: selectedMonth }
       );
 

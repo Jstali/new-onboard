@@ -16,9 +16,7 @@ const HRLeaveManagement = () => {
       setLoading(true);
 
       // Use axios defaults (set by AuthContext)
-      const response = await axios.get(
-        "http://localhost:5001/api/hr/leave-requests"
-      );
+      const response = await axios.get("/hr/leave-requests");
       console.log("✅ Leave requests fetched:", response.data);
       setLeaveRequests(response.data.leaveRequests || []);
     } catch (error) {
@@ -52,10 +50,7 @@ const HRLeaveManagement = () => {
       );
 
       // Use axios defaults (set by AuthContext)
-      await axios.put(
-        `http://localhost:5001/api/hr/leave-requests/${requestId}`,
-        { status }
-      );
+      await axios.put(`/hr/leave-requests/${requestId}`, { status });
 
       console.log("✅ Leave request updated successfully");
 

@@ -366,7 +366,7 @@ const OnboardingForm = ({ onSuccess }) => {
 
     try {
       const response = await axios.post(
-        "http://localhost:5001/api/employee/public/onboarding-form",
+        "/employee/public/onboarding-form",
         {
           formData: {
             ...formData,

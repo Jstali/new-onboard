@@ -20,7 +20,7 @@ set +a
 # Generate runtime-config.js for frontend container bind-mount
 RUNTIME_DIR="$REPO_DIR/runtime"
 mkdir -p "$RUNTIME_DIR"
-API_BASE="${REACT_APP_API_BASE_URL:-${BACKEND_URL:-http://localhost:5001/api}}"
+API_BASE="${REACT_APP_API_BASE_URL:-${BACKEND_URL:-/api}}"
 cat > "$RUNTIME_DIR/runtime-config.js" <<EOF
 window.__RUNTIME_CONFIG__ = {
   REACT_APP_API_BASE_URL: "${API_BASE}"

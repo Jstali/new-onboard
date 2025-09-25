@@ -42,16 +42,21 @@ const limiter = rateLimit({
 });
 app.use(limiter);
 
-// CORS configuration for development and production
+// CORS configuration via env (no localhost hardcoding)
+// Set CORS_ORIGIN as a comma-separated list, or leave empty to allow same-origin requests
+const allowedOriginsEnv = (process.env.CORS_ORIGIN || process.env.FRONTEND_URL || "")
+  .split(",")
+  .map((o) => o.trim())
+  .filter(Boolean);
+
 const corsOptions = {
-  origin:
-    process.env.NODE_ENV === "production"
-      ? [process.env.FRONTEND_URL || "https://yourdomain.com"]
-      : [
-          "http://localhost:3000",
-          "http://localhost:5001",
-          "http://localhost:3001",
-        ],
+  origin: function (origin, callback) {
+    // Allow requests with no origin (mobile apps, curl) and same-origin
+    if (!origin) return callback(null, true);
+    if (allowedOriginsEnv.length === 0) return callback(null, true);
+    if (allowedOriginsEnv.some((o) => origin.startsWith(o))) return callback(null, true);
+    return callback(new Error("Not allowed by CORS"));
+  },
   credentials: false,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH", "HEAD"],
   allowedHeaders: [
@@ -75,19 +80,12 @@ app.options("*", cors());
 
 // Additional CORS headers for all responses
 app.use((req, res, next) => {
-  const allowedOrigins =
-    process.env.NODE_ENV === "production"
-      ? [process.env.FRONTEND_URL || "https://yourdomain.com"]
-      : [
-          "http://localhost:3000",
-          "http://localhost:5001",
-          "http://localhost:3001",
-        ];
+  const allowedOrigins = allowedOriginsEnv;
 
   const origin = req.get("origin") || req.get("referer");
-  const isAllowedOrigin = allowedOrigins.some(
-    (allowed) => origin && origin.startsWith(allowed)
-  );
+  const isAllowedOrigin =
+    allowedOrigins.length === 0 ||
+    allowedOrigins.some((allowed) => origin && origin.startsWith(allowed));
 
   if (isAllowedOrigin || process.env.NODE_ENV === "development") {
     res.header("Access-Control-Allow-Origin", origin || "*");

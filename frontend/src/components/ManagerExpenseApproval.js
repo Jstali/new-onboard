@@ -236,7 +236,7 @@ const ManagerExpenseApproval = () => {
                           Attachment
                         </h4>
                         <a
-                          href={`http://localhost:5001${expense.attachment_url}`}
+                          href={`${(window.__RUNTIME_CONFIG__?.REACT_APP_API_BASE_URL || (window.location.origin + '/api')).replace(/\/api$/, '')}${expense.attachment_url}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="inline-flex items-center px-4 py-2 bg-brand-green/10 text-brand-green rounded-lg border border-brand-green/20 hover:bg-brand-green/20 transition-colors duration-200"

@@ -7,7 +7,9 @@ axios.defaults.timeout = 15000; // 15 second timeout
 const runtimeBaseUrl =
   window.__RUNTIME_CONFIG__?.REACT_APP_API_BASE_URL ||
   process.env.REACT_APP_API_BASE_URL ||
-  "http://localhost:5001/api";
+  (typeof window !== "undefined" && window.location
+    ? `${window.location.origin.replace(/\/$/, "")}/api`
+    : "/api");
 axios.defaults.baseURL = runtimeBaseUrl;
 
 const AuthContext = createContext();

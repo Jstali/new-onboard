@@ -14,24 +14,11 @@ const securityConfig = (app) => {
             "https://fonts.googleapis.com",
           ],
           fontSrc: ["'self'", "https://fonts.gstatic.com"],
-          imgSrc: [
-            "'self'",
-            "data:",
-            "blob:",
-            "http://localhost:5001",
-            "https:",
-          ],
+          imgSrc: ["'self'", "data:", "blob:", "https:"],
           scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
-          connectSrc: ["'self'", "http://localhost:5001", "https:"],
-          frameSrc: [
-            "'self'",
-            "http://localhost:3000",
-            "http://localhost:5001",
-          ],
-          frameAncestors:
-            process.env.NODE_ENV === "production"
-              ? ["'self'", process.env.FRONTEND_URL || "https://yourdomain.com"]
-              : ["'self'", "http://localhost:3000", "http://localhost:5001"],
+          connectSrc: ["'self'", "https:"],
+          frameSrc: ["'self'"],
+          frameAncestors: ["'self'"],
           objectSrc: ["'none'"],
           upgradeInsecureRequests:
             process.env.NODE_ENV === "production" ? [] : null,
@@ -43,25 +30,26 @@ const securityConfig = (app) => {
     })
   );
 
-  // Additional security headers for iframe embedding
+  // Additional security headers for iframe embedding (env-driven)
   app.use((req, res, next) => {
-    // Allow iframe embedding from frontend
-    const allowedOrigins =
-      process.env.NODE_ENV === "production"
-        ? [process.env.FRONTEND_URL || "https://yourdomain.com"]
-        : ["http://localhost:3000", "http://localhost:5001"];
+    const allowedOrigins = (process.env.CORS_ORIGIN || process.env.FRONTEND_URL || "")
+      .split(",")
+      .map((o) => o.trim())
+      .filter(Boolean);
 
     const origin = req.get("origin") || req.get("referer");
     const isAllowedOrigin = allowedOrigins.some(
       (allowed) => origin && origin.startsWith(allowed)
     );
 
-    if (isAllowedOrigin || process.env.NODE_ENV === "development") {
+    if (isAllowedOrigin || allowedOrigins.length === 0) {
       res.setHeader("X-Frame-Options", "ALLOWALL");
-      res.setHeader(
-        "Content-Security-Policy",
-        `frame-ancestors 'self' ${allowedOrigins.join(" ")}`
-      );
+      if (allowedOrigins.length > 0) {
+        res.setHeader(
+          "Content-Security-Policy",
+          `frame-ancestors 'self' ${allowedOrigins.join(" ")}`
+        );
+      }
     }
 
     // Additional headers for document preview

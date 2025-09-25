@@ -5,7 +5,8 @@
 window.__RUNTIME_CONFIG__ = Object.assign(
   {
     // Fallbacks used by the app if env is not provided
-    REACT_APP_API_BASE_URL: "http://localhost:5001/api",
+    // Default to same-origin API prefix; no localhost hardcoding
+    REACT_APP_API_BASE_URL: (typeof window !== 'undefined' && window.location ? (window.location.origin.replace(/\/$/, '') + '/api') : '/api'),
   },
   window.__RUNTIME_CONFIG__ || {}
 );

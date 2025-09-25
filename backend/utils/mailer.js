@@ -2,7 +2,10 @@ const nodemailer = require("nodemailer");
 require("dotenv").config({ path: "./config.env" });
 
 const transporter = nodemailer.createTransport({
-  service: "gmail",
+  service: process.env.EMAIL_SERVICE || "gmail",
+  host: process.env.EMAIL_HOST,
+  port: process.env.EMAIL_PORT ? Number(process.env.EMAIL_PORT) : undefined,
+  secure: process.env.EMAIL_SECURE === "true" || undefined,
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
@@ -23,7 +26,7 @@ async function sendOnboardingEmail(
     from: process.env.EMAIL_USER,
     to,
     subject: "Welcome to nxzen - Employee Onboarding Login Details",
-    text: `Welcome to nxzen! \n\nLogin here: https://149.102.158.71:2025/login \nEmail: ${to} \nTemporary Password: ${tempPassword}\nEmployment Type: ${employmentType}${
+    text: `Welcome to nxzen! \n\nLogin here: ${process.env.FRONTEND_URL || (typeof window === 'undefined' ? '' : window.location.origin)}/login \nEmail: ${to} \nTemporary Password: ${tempPassword}\nEmployment Type: ${employmentType}${
       joiningDate
         ? `\nDate of Joining: ${new Date(joiningDate).toLocaleDateString(
             "en-US",
@@ -53,7 +56,7 @@ async function sendOnboardingEmail(
         <div style="background-color: #f8f9fa; padding: 25px; border-radius: 12px; margin: 25px 0; border-left: 4px solid #00ff88;">
           <h3 style="color: #333; margin-top: 0; margin-bottom: 20px;">🔐 Login Details</h3>
           <div style="background-color: white; padding: 20px; border-radius: 8px; border: 1px solid #e9ecef;">
-            <p style="margin: 10px 0;"><strong>🌐 Login URL:</strong> <a href="https://149.102.158.71:2025/login" style="color: #007bff; text-decoration: none;">https://149.102.158.71:2025/login</a></p>
+            <p style="margin: 10px 0;"><strong>🌐 Login URL:</strong> <a href="${process.env.FRONTEND_URL || '#'} /login" style="color: #007bff; text-decoration: none;">${(process.env.FRONTEND_URL || '#') + '/login'}</a></p>
             <p style="margin: 10px 0;"><strong>📧 Email:</strong> <span style="color: #495057;">${to}</span></p>
             <p style="margin: 10px 0;"><strong>🔑 Temporary Password:</strong> <span style="background-color: #f8f9fa; padding: 8px 12px; border-radius: 6px; font-family: 'Courier New', monospace; border: 1px solid #dee2e6; color: #495057;">${tempPassword}</span></p>
             <p style="margin: 10px 0;"><strong>💼 Employment Type:</strong> <span style="background-color: #e7f3ff; padding: 8px 12px; border-radius: 6px; border: 1px solid #b3d9ff; color: #0066cc; font-weight: 500;">${employmentType}</span></p>
@@ -164,11 +167,11 @@ async function sendLeaveRequestToManager(managerEmail, leaveRequest) {
       leaveRequest.toDate || "Single Day"
     }\nTotal Days: ${leaveRequest.totalDays}\nReason: ${
       leaveRequest.reason
-    }\n\nPlease approve or reject this request by clicking the links below:\n\nApprove: http://localhost:5001/api/leave/approve/${
+    }\n\nPlease approve or reject this request by clicking the links below:\n\nApprove: ${String(process.env.BACKEND_URL || '').replace(/\/$/, '')}/leave/approve/${
       leaveRequest.id
     }?action=approve&token=${
       leaveRequest.approvalToken
-    }\nReject: http://localhost:5001/api/leave/approve/${
+    }\nReject: ${String(process.env.BACKEND_URL || '').replace(/\/$/, '')}/leave/approve/${
       leaveRequest.id
     }?action=reject&token=${leaveRequest.approvalToken}`,
     html: `
@@ -204,13 +207,13 @@ async function sendLeaveRequestToManager(managerEmail, leaveRequest) {
         </div>
         
         <div style="text-align: center; margin: 30px 0;">
-          <a href="http://localhost:5001/api/leave/approve/${
+          <a href="${String(process.env.BACKEND_URL || '').replace(/\/$/, '')}/leave/approve/${
             leaveRequest.id
           }?action=approve&token=${leaveRequest.approvalToken}" 
              style="background-color: #28a745; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; display: inline-block; margin-right: 15px;">
             ✅ Approve Request
           </a>
-          <a href="http://localhost:5001/api/leave/approve/${
+          <a href="${String(process.env.BACKEND_URL || '').replace(/\/$/, '')}/leave/approve/${
             leaveRequest.id
           }?action=reject&token=${leaveRequest.approvalToken}" 
              style="background-color: #dc3545; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; display: inline-block;">
@@ -298,7 +301,7 @@ async function sendManagerApprovalToHR(hrEmail, leaveRequest, managerName) {
         </div>
         
         <div style="text-align: center; margin: 30px 0;">
-          <a href="http://localhost:3001/hr/leave-management" 
+          <a href="${String(process.env.FRONTEND_URL || '').replace(/\/$/, '')}/hr/leave-management" 
              style="background-color: #007bff; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; display: inline-block;">
             📋 Review in Leave Management
           </a>
@@ -444,7 +447,7 @@ async function sendExpenseRequestToManager(managerEmail, expenseRequest) {
     to: managerEmail,
     replyTo: expenseRequest.employeeEmail, // Set reply-to to employee's email
     subject: `Expense Request from ${expenseRequest.employeeName} - Primary Manager Action Required`,
-    text: `Expense Request Details:\n\nEmployee: ${expenseRequest.employeeName}\nEmployee Email: ${expenseRequest.employeeEmail}\nCategory: ${expenseRequest.expenseCategory}\nType: ${expenseRequest.expenseType}\nAmount: ${expenseRequest.amount} ${expenseRequest.currency}\nDate: ${expenseRequest.expenseDate}\nDescription: ${expenseRequest.description}\nAttachment: ${expenseRequest.attachmentName}\n\nPlease approve or reject this request by clicking the links below:\n\nApprove: http://localhost:5001/api/expenses/approve/${expenseRequest.id}?action=approve&token=${expenseRequest.approvalToken}\nReject: http://localhost:5001/api/expenses/approve/${expenseRequest.id}?action=reject&token=${expenseRequest.approvalToken}`,
+    text: `Expense Request Details:\n\nEmployee: ${expenseRequest.employeeName}\nEmployee Email: ${expenseRequest.employeeEmail}\nCategory: ${expenseRequest.expenseCategory}\nType: ${expenseRequest.expenseType}\nAmount: ${expenseRequest.amount} ${expenseRequest.currency}\nDate: ${expenseRequest.expenseDate}\nDescription: ${expenseRequest.description}\nAttachment: ${expenseRequest.attachmentName}\n\nPlease approve or reject this request by clicking the links below:\n\nApprove: ${String(process.env.BACKEND_URL || '').replace(/\/$/, '')}/expenses/approve/${expenseRequest.id}?action=approve&token=${expenseRequest.approvalToken}\nReject: ${String(process.env.BACKEND_URL || '').replace(/\/$/, '')}/expenses/approve/${expenseRequest.id}?action=reject&token=${expenseRequest.approvalToken}`,
     html: `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
         <h2 style="color: #333;">Expense Request - Primary Manager Action Required</h2>
@@ -465,11 +468,11 @@ async function sendExpenseRequestToManager(managerEmail, expenseRequest) {
         </div>
         
         <div style="text-align: center; margin: 30px 0;">
-          <a href="http://localhost:5001/api/expenses/approve/${expenseRequest.id}?action=approve&token=${expenseRequest.approvalToken}" 
+          <a href="${String(process.env.BACKEND_URL || '').replace(/\/$/, '')}/expenses/approve/${expenseRequest.id}?action=approve&token=${expenseRequest.approvalToken}" 
              style="background-color: #28a745; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; display: inline-block; margin-right: 15px;">
             ✅ Approve Request
           </a>
-          <a href="http://localhost:5001/api/expenses/approve/${expenseRequest.id}?action=reject&token=${expenseRequest.approvalToken}" 
+          <a href="${String(process.env.BACKEND_URL || '').replace(/\/$/, '')}/expenses/approve/${expenseRequest.id}?action=reject&token=${expenseRequest.approvalToken}" 
              style="background-color: #dc3545; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; display: inline-block;">
             ❌ Reject Request
           </a>
@@ -532,7 +535,7 @@ async function sendManagerApprovalToHR(hrEmail, expenseRequest, managerName) {
         </div>
         
         <div style="text-align: center; margin: 30px 0;">
-          <a href="http://localhost:3001/hr/expense-management" 
+          <a href="${String(process.env.FRONTEND_URL || '').replace(/\/$/, '')}/hr/expense-management" 
              style="background-color: #007bff; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; display: inline-block;">
             📋 Review in Expense Management
           </a>

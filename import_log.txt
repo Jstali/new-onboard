@@ -1,0 +1,220 @@
+SET
+SET
+SET
+psql:shibin.sql:13: ERROR:  unrecognized configuration parameter "transaction_timeout"
+SET
+SET
+ set_config 
+------------
+ 
+(1 row)
+
+SET
+SET
+SET
+SET
+COPY 0
+COPY 14
+COPY 16
+COPY 0
+COPY 9
+COPY 5
+psql:shibin.sql:203: ERROR:  invalid input syntax for type integer: "EMP001"
+CONTEXT:  COPY document_collection, line 1, column emp_id: "EMP001"
+COPY 0
+COPY 23
+COPY 0
+COPY 12
+COPY 4
+psql:shibin.sql:307: ERROR:  invalid input syntax for type integer: "aa142d"
+CONTEXT:  COPY employee_master, line 2, column employee_id: "aa142d"
+psql:shibin.sql:324: ERROR:  invalid input syntax for type integer: "aa142d"
+CONTEXT:  COPY employees_combined, line 1, column manager_id: "aa142d"
+COPY 0
+COPY 6
+COPY 13
+COPY 0
+COPY 3
+COPY 2
+COPY 132
+COPY 6
+COPY 3
+psql:shibin.sql:592: ERROR:  invalid input syntax for type integer: "cf1487"
+CONTEXT:  COPY managers, line 1, column manager_id: "cf1487"
+COPY 7
+psql:shibin.sql:624: ERROR:  invalid input syntax for type integer: "aa142d"
+CONTEXT:  COPY onboarded_employees, line 1, column manager_id: "aa142d"
+psql:shibin.sql:640: ERROR:  invalid input syntax for type integer: "EMP007"
+CONTEXT:  COPY onboarding, line 1, column employee_id: "EMP007"
+COPY 0
+COPY 0
+psql:shibin.sql:675: ERROR:  invalid input syntax for type integer: "REQ-2025-001"
+CONTEXT:  COPY recruitment_requisitions, line 1, column requisition_id: "REQ-2025-001"
+COPY 7
+COPY 1
+COPY 9
+ setval 
+--------
+      1
+(1 row)
+
+ setval 
+--------
+    144
+(1 row)
+
+ setval 
+--------
+   6157
+(1 row)
+
+ setval 
+--------
+      5
+(1 row)
+
+ setval 
+--------
+    235
+(1 row)
+
+ setval 
+--------
+   4800
+(1 row)
+
+ setval 
+--------
+    592
+(1 row)
+
+ setval 
+--------
+     19
+(1 row)
+
+ setval 
+--------
+  25156
+(1 row)
+
+ setval 
+--------
+      1
+(1 row)
+
+ setval 
+--------
+    143
+(1 row)
+
+ setval 
+--------
+     59
+(1 row)
+
+ setval 
+--------
+    161
+(1 row)
+
+ setval 
+--------
+     10
+(1 row)
+
+ setval 
+--------
+      1
+(1 row)
+
+ setval 
+--------
+     12
+(1 row)
+
+ setval 
+--------
+     17
+(1 row)
+
+ setval 
+--------
+     45
+(1 row)
+
+ setval 
+--------
+     33
+(1 row)
+
+ setval 
+--------
+     35
+(1 row)
+
+ setval 
+--------
+    156
+(1 row)
+
+ setval 
+--------
+  14923
+(1 row)
+
+ setval 
+--------
+     58
+(1 row)
+
+ setval 
+--------
+     66
+(1 row)
+
+ setval 
+--------
+      7
+(1 row)
+
+ setval 
+--------
+     46
+(1 row)
+
+ setval 
+--------
+     12
+(1 row)
+
+ setval 
+--------
+      1
+(1 row)
+
+ setval 
+--------
+     26
+(1 row)
+
+ setval 
+--------
+     10
+(1 row)
+
+ setval 
+--------
+      7
+(1 row)
+
+ setval 
+--------
+      1
+(1 row)
+
+ setval 
+--------
+    176
+(1 row)
+

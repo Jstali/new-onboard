@@ -1,0 +1,18 @@
+🔧 Environment Configuration:
+🔧 NODE_ENV: development
+🔧 JWT_SECRET: ✅ Set
+🔧 JWT_EXPIRES_IN: 7d
+🔧 DB_HOST: localhost
+🔧 PORT: 5001
+🔧 CORS_ORIGIN: undefined
+🔥 Top of database.js reached
+🔥 Correct database.js is running
+✅ Connected to PostgreSQL database
+✅ Manager creation skipped - managers will be created from employee_master table
+🔄 Setting up company emails for existing users and managers...
+✅ Company email created for manager cf1487: dori.d@nxzen.com
+✅ Company email created for manager 9d7183: riya.s@nxzen.com
+✅ Company email created for manager 9385ae: stalin.j@nxzen.com
+✅ Database tables initialized successfully
+🚀 Server running on port 5001
+📧 Email configured for: alphanxzen@gmail.com

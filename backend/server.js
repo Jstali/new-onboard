@@ -32,6 +32,7 @@ const adpPayrollRoutes = require("./routes/adpPayroll");
 const employeesCombinedRoutes = require("./routes/employeesCombined");
 const employeePayrollRoutes = require("./routes/employeePayroll");
 const { connectDB } = require("./config/database");
+const { authenticateToken } = require("./middleware/auth");
 
 const app = express();
 const PORT = process.env.PORT || 5001;
@@ -60,8 +61,7 @@ const corsOptions = {
           ? process.env.CORS_ORIGIN.split(",")
           : [process.env.FRONTEND_URL || "https://yourdomain.com"]
         : [
-            "http://localhost:3001",
-            "http://localhost:5001",
+            "http://localhost:3000",
             "http://localhost:3001",
             "http://localhost:5001",
             "http://149.102.158.71:3001",
@@ -81,7 +81,7 @@ const corsOptions = {
       callback(new Error("Not allowed by CORS"));
     }
   },
-  credentials: false,
+  credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH", "HEAD"],
   allowedHeaders: [
     "Content-Type",
@@ -110,8 +110,7 @@ app.use((req, res, next) => {
         ? process.env.CORS_ORIGIN.split(",")
         : [process.env.FRONTEND_URL || "https://yourdomain.com"]
       : [
-          "http://localhost:3001",
-          "http://localhost:5001",
+          "http://localhost:3000",
           "http://localhost:3001",
           "http://localhost:5001",
           "http://149.102.158.71:3001",

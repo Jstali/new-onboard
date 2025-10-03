@@ -1,3 +1,7 @@
+console.log("🔥 Top of database.js reached");
+console.log("🔥 Correct database.js is running");
+
+
 const { Pool } = require("pg");
 require("dotenv").config({ path: "./config.env" });
 
@@ -965,3 +969,18 @@ const initializeTables = async () => {
 
 module.exports = { pool, connectDB };
 // gfbfgnfgnfg
+
+// Run directly if called via `node config/database.js`
+if (require.main === module) {
+  console.log("🚀 database.js script starting...");
+
+  connectDB()
+    .then(() => {
+      console.log("🎉 Database setup complete");
+      process.exit(0);
+    })
+    .catch((err) => {
+      console.error("❌ Database setup failed:", err);
+      process.exit(1);
+    });
+}

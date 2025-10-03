@@ -1,0 +1,2076 @@
+🔧 Environment Configuration:
+🔧 NODE_ENV: development
+🔧 JWT_SECRET: ✅ Set
+🔧 JWT_EXPIRES_IN: 7d
+🔧 DB_HOST: localhost
+🔧 PORT: 5001
+🔧 CORS_ORIGIN: undefined
+🔥 Top of database.js reached
+🔥 Correct database.js is running
+✅ Connected to PostgreSQL database
+✅ Manager creation skipped - managers will be created from employee_master table
+🔄 Setting up company emails for existing users and managers...
+✅ Database tables initialized successfully
+🚀 Server running on port 5001
+📧 Email configured for: alphanxzen@gmail.com
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔍 POST /api/auth/login - 2025-10-01T09:39:48.019Z
+🔐 Login attempt: { email: 'hr@nxzen.com', timestamp: '2025-10-01T09:39:48.022Z' }
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔍 POST /api/auth/login - 2025-10-01T09:40:01.327Z
+🔐 Login attempt: { email: 'hr@nxzen.com', timestamp: '2025-10-01T09:40:01.328Z' }
+✅ Login successful - User role: hr
+✅ Login successful - JWT payload: { userId: 1, email: 'hr@nxzen.com', role: 'hr' }
+✅ JWT Secret configured: true
+✅ JWT Expires in: 7d
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔍 GET /api/auth/me - 2025-10-01T09:40:01.438Z
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔍 GET /api/auth/me - 2025-10-01T09:40:01.482Z
+🔍 JWT decoded payload: {
+  userId: 1,
+  email: 'hr@nxzen.com',
+  role: 'hr',
+  iat: 1759311601,
+  exp: 1759916401
+}
+🔍 User from database: { id: 1, email: 'hr@nxzen.com', role: 'hr', temp_password: null }
+🔍 Set req.user: { userId: 1, email: 'hr@nxzen.com', role: 'hr' }
+🔍 /api/auth/me - Request from user: { userId: 1, email: 'hr@nxzen.com', role: 'hr' }
+✅ /api/auth/me - User from users table: {
+  id: 1,
+  email: 'hr@nxzen.com',
+  role: 'hr',
+  first_name: 'HR',
+  last_name: 'Manager',
+  temp_password: null
+}
+✅ /api/auth/me - Combined user data: {
+  id: 1,
+  email: 'hr@nxzen.com',
+  role: 'hr',
+  first_name: 'HR',
+  last_name: 'Manager',
+  temp_password: null
+}
+✅ /api/auth/me - Response sent successfully
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔍 GET /api/hr/employees - 2025-10-01T09:40:01.534Z
+🔍 HR route middleware hit: GET /employees
+🔍 JWT decoded payload: {
+  userId: 1,
+  email: 'hr@nxzen.com',
+  role: 'hr',
+  iat: 1759311601,
+  exp: 1759916401
+}
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔍 GET /api/hr/employees - 2025-10-01T09:40:01.534Z
+🔍 HR route middleware hit: GET /employees
+🔍 JWT decoded payload: {
+  userId: 1,
+  email: 'hr@nxzen.com',
+  role: 'hr',
+  iat: 1759311601,
+  exp: 1759916401
+}
+🔍 User from database: { id: 1, email: 'hr@nxzen.com', role: 'hr', temp_password: null }
+🔍 Set req.user: { userId: 1, email: 'hr@nxzen.com', role: 'hr' }
+🔍 Role check - User ID: 1, Role: hr, Required roles: hr
+✅ Access granted - User role 'hr' has required permissions
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔍 GET /api/hr/employees - 2025-10-01T09:40:01.539Z
+🔍 HR route middleware hit: GET /employees
+🔍 JWT decoded payload: {
+  userId: 1,
+  email: 'hr@nxzen.com',
+  role: 'hr',
+  iat: 1759311601,
+  exp: 1759916401
+}
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔍 GET /api/hr/master - 2025-10-01T09:40:01.539Z
+🔍 HR route middleware hit: GET /master
+🔍 JWT decoded payload: {
+  userId: 1,
+  email: 'hr@nxzen.com',
+  role: 'hr',
+  iat: 1759311601,
+  exp: 1759916401
+}
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔍 GET /api/hr/employees - 2025-10-01T09:40:01.540Z
+🔍 HR route middleware hit: GET /employees
+🔍 JWT decoded payload: {
+  userId: 1,
+  email: 'hr@nxzen.com',
+  role: 'hr',
+  iat: 1759311601,
+  exp: 1759916401
+}
+🔍 User from database: { id: 1, email: 'hr@nxzen.com', role: 'hr', temp_password: null }
+🔍 Set req.user: { userId: 1, email: 'hr@nxzen.com', role: 'hr' }
+🔍 Role check - User ID: 1, Role: hr, Required roles: hr
+✅ Access granted - User role 'hr' has required permissions
+🔍 User from database: { id: 1, email: 'hr@nxzen.com', role: 'hr', temp_password: null }
+🔍 Set req.user: { userId: 1, email: 'hr@nxzen.com', role: 'hr' }
+🔍 Role check - User ID: 1, Role: hr, Required roles: hr
+✅ Access granted - User role 'hr' has required permissions
+🔍 User from database: { id: 1, email: 'hr@nxzen.com', role: 'hr', temp_password: null }
+🔍 Set req.user: { userId: 1, email: 'hr@nxzen.com', role: 'hr' }
+🔍 Role check - User ID: 1, Role: hr, Required roles: hr
+✅ Access granted - User role 'hr' has required permissions
+🔍 User from database: { id: 1, email: 'hr@nxzen.com', role: 'hr', temp_password: null }
+🔍 Set req.user: { userId: 1, email: 'hr@nxzen.com', role: 'hr' }
+🔍 Role check - User ID: 1, Role: hr, Required roles: hr
+✅ Access granted - User role 'hr' has required permissions
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔍 GET /api/hr/master - 2025-10-01T09:40:01.553Z
+🔍 HR route middleware hit: GET /master
+🔍 JWT decoded payload: {
+  userId: 1,
+  email: 'hr@nxzen.com',
+  role: 'hr',
+  iat: 1759311601,
+  exp: 1759916401
+}
+🔍 User from database: { id: 1, email: 'hr@nxzen.com', role: 'hr', temp_password: null }
+🔍 Set req.user: { userId: 1, email: 'hr@nxzen.com', role: 'hr' }
+🔍 Role check - User ID: 1, Role: hr, Required roles: hr
+✅ Access granted - User role 'hr' has required permissions
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔍 GET /api/hr/employee-forms - 2025-10-01T09:40:19.597Z
+🔍 HR route middleware hit: GET /employee-forms
+🔍 JWT decoded payload: {
+  userId: 1,
+  email: 'hr@nxzen.com',
+  role: 'hr',
+  iat: 1759311601,
+  exp: 1759916401
+}
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔍 GET /api/hr/master-managers - 2025-10-01T09:40:19.599Z
+🔍 HR route middleware hit: GET /master-managers
+🔍 JWT decoded payload: {
+  userId: 1,
+  email: 'hr@nxzen.com',
+  role: 'hr',
+  iat: 1759311601,
+  exp: 1759916401
+}
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔍 GET /api/hr/employee-forms - 2025-10-01T09:40:19.600Z
+🔍 HR route middleware hit: GET /employee-forms
+🔍 JWT decoded payload: {
+  userId: 1,
+  email: 'hr@nxzen.com',
+  role: 'hr',
+  iat: 1759311601,
+  exp: 1759916401
+}
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔍 GET /api/hr/master-managers - 2025-10-01T09:40:19.601Z
+🔍 HR route middleware hit: GET /master-managers
+🔍 JWT decoded payload: {
+  userId: 1,
+  email: 'hr@nxzen.com',
+  role: 'hr',
+  iat: 1759311601,
+  exp: 1759916401
+}
+🔍 User from database: { id: 1, email: 'hr@nxzen.com', role: 'hr', temp_password: null }
+🔍 Set req.user: { userId: 1, email: 'hr@nxzen.com', role: 'hr' }
+🔍 Role check - User ID: 1, Role: hr, Required roles: hr
+✅ Access granted - User role 'hr' has required permissions
+🔍 User from database: { id: 1, email: 'hr@nxzen.com', role: 'hr', temp_password: null }
+🔍 Set req.user: { userId: 1, email: 'hr@nxzen.com', role: 'hr' }
+🔍 Role check - User ID: 1, Role: hr, Required roles: hr
+✅ Access granted - User role 'hr' has required permissions
+🔍 User from database: { id: 1, email: 'hr@nxzen.com', role: 'hr', temp_password: null }
+🔍 Set req.user: { userId: 1, email: 'hr@nxzen.com', role: 'hr' }
+🔍 Role check - User ID: 1, Role: hr, Required roles: hr
+✅ Access granted - User role 'hr' has required permissions
+🔍 User from database: { id: 1, email: 'hr@nxzen.com', role: 'hr', temp_password: null }
+🔍 Set req.user: { userId: 1, email: 'hr@nxzen.com', role: 'hr' }
+🔍 Role check - User ID: 1, Role: hr, Required roles: hr
+✅ Access granted - User role 'hr' has required permissions
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔍 GET /api/documents/validation/155 - 2025-10-01T09:40:23.201Z
+🔍 JWT decoded payload: {
+  userId: 1,
+  email: 'hr@nxzen.com',
+  role: 'hr',
+  iat: 1759311601,
+  exp: 1759916401
+}
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔍 GET /api/documents/validation/155 - 2025-10-01T09:40:23.203Z
+🔍 JWT decoded payload: {
+  userId: 1,
+  email: 'hr@nxzen.com',
+  role: 'hr',
+  iat: 1759311601,
+  exp: 1759916401
+}
+🔍 User from database: { id: 1, email: 'hr@nxzen.com', role: 'hr', temp_password: null }
+🔍 Set req.user: { userId: 1, email: 'hr@nxzen.com', role: 'hr' }
+🔍 User from database: { id: 1, email: 'hr@nxzen.com', role: 'hr', temp_password: null }
+🔍 Set req.user: { userId: 1, email: 'hr@nxzen.com', role: 'hr' }
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔍 GET /api/documents/employee/155 - 2025-10-01T09:40:29.431Z
+🔍 JWT decoded payload: {
+  userId: 1,
+  email: 'hr@nxzen.com',
+  role: 'hr',
+  iat: 1759311601,
+  exp: 1759916401
+}
+🔍 User from database: { id: 1, email: 'hr@nxzen.com', role: 'hr', temp_password: null }
+🔍 Set req.user: { userId: 1, email: 'hr@nxzen.com', role: 'hr' }
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔍 GET /api/hr/document-collection - 2025-10-01T09:40:35.692Z
+🔍 Document collection request: GET /api/hr/document-collection
+🔍 Request body: {}
+🔍 Request params: {}
+🔍 HR route middleware hit: GET /document-collection
+🔍 JWT decoded payload: {
+  userId: 1,
+  email: 'hr@nxzen.com',
+  role: 'hr',
+  iat: 1759311601,
+  exp: 1759916401
+}
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔍 GET /api/documents/requirements - 2025-10-01T09:40:35.693Z
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔍 GET /api/hr/approved-employee-forms - 2025-10-01T09:40:35.694Z
+🔍 HR route middleware hit: GET /approved-employee-forms
+🔍 JWT decoded payload: {
+  userId: 1,
+  email: 'hr@nxzen.com',
+  role: 'hr',
+  iat: 1759311601,
+  exp: 1759916401
+}
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔍 GET /api/hr/master - 2025-10-01T09:40:35.695Z
+🔍 HR route middleware hit: GET /master
+🔍 JWT decoded payload: {
+  userId: 1,
+  email: 'hr@nxzen.com',
+  role: 'hr',
+  iat: 1759311601,
+  exp: 1759916401
+}
+🔍 User from database: { id: 1, email: 'hr@nxzen.com', role: 'hr', temp_password: null }
+🔍 Set req.user: { userId: 1, email: 'hr@nxzen.com', role: 'hr' }
+🔍 Role check - User ID: 1, Role: hr, Required roles: hr
+✅ Access granted - User role 'hr' has required permissions
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔍 User from database: { id: 1, email: 'hr@nxzen.com', role: 'hr', temp_password: null }
+🔍 Set req.user: { userId: 1, email: 'hr@nxzen.com', role: 'hr' }
+🔍 Role check - User ID: 1, Role: hr, Required roles: hr
+✅ Access granted - User role 'hr' has required permissions
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔍 GET /api/hr/approved-employee-forms - 2025-10-01T09:40:35.698Z
+🔍 HR route middleware hit: GET /approved-employee-forms
+🔍 JWT decoded payload: {
+  userId: 1,
+  email: 'hr@nxzen.com',
+  role: 'hr',
+  iat: 1759311601,
+  exp: 1759916401
+}
+🔍 User from database: { id: 1, email: 'hr@nxzen.com', role: 'hr', temp_password: null }
+🔍 Set req.user: { userId: 1, email: 'hr@nxzen.com', role: 'hr' }
+🔍 Role check - User ID: 1, Role: hr, Required roles: hr
+✅ Access granted - User role 'hr' has required permissions
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔍 GET /api/documents/requirements - 2025-10-01T09:40:35.699Z
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔍 GET /api/hr/master - 2025-10-01T09:40:35.701Z
+🔍 HR route middleware hit: GET /master
+🔍 JWT decoded payload: {
+  userId: 1,
+  email: 'hr@nxzen.com',
+  role: 'hr',
+  iat: 1759311601,
+  exp: 1759916401
+}
+🔍 User from database: { id: 1, email: 'hr@nxzen.com', role: 'hr', temp_password: null }
+🔍 Set req.user: { userId: 1, email: 'hr@nxzen.com', role: 'hr' }
+🔍 Role check - User ID: 1, Role: hr, Required roles: hr
+✅ Access granted - User role 'hr' has required permissions
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔍 GET /api/hr/document-collection - 2025-10-01T09:40:35.702Z
+🔍 Document collection request: GET /api/hr/document-collection
+🔍 Request body: {}
+🔍 Request params: {}
+🔍 HR route middleware hit: GET /document-collection
+🔍 JWT decoded payload: {
+  userId: 1,
+  email: 'hr@nxzen.com',
+  role: 'hr',
+  iat: 1759311601,
+  exp: 1759916401
+}
+🔍 User from database: { id: 1, email: 'hr@nxzen.com', role: 'hr', temp_password: null }
+🔍 Set req.user: { userId: 1, email: 'hr@nxzen.com', role: 'hr' }
+🔍 Role check - User ID: 1, Role: hr, Required roles: hr
+✅ Access granted - User role 'hr' has required permissions
+🔍 User from database: { id: 1, email: 'hr@nxzen.com', role: 'hr', temp_password: null }
+🔍 Set req.user: { userId: 1, email: 'hr@nxzen.com', role: 'hr' }
+🔍 Role check - User ID: 1, Role: hr, Required roles: hr
+✅ Access granted - User role 'hr' has required permissions
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔍 GET /api/hr/onboarded - 2025-10-01T09:40:48.617Z
+🔍 HR route middleware hit: GET /onboarded
+🔍 JWT decoded payload: {
+  userId: 1,
+  email: 'hr@nxzen.com',
+  role: 'hr',
+  iat: 1759311601,
+  exp: 1759916401
+}
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔍 GET /api/hr/master-managers - 2025-10-01T09:40:48.619Z
+🔍 HR route middleware hit: GET /master-managers
+🔍 JWT decoded payload: {
+  userId: 1,
+  email: 'hr@nxzen.com',
+  role: 'hr',
+  iat: 1759311601,
+  exp: 1759916401
+}
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔍 User from database: { id: 1, email: 'hr@nxzen.com', role: 'hr', temp_password: null }
+🔍 Set req.user: { userId: 1, email: 'hr@nxzen.com', role: 'hr' }
+🔍 Role check - User ID: 1, Role: hr, Required roles: hr
+✅ Access granted - User role 'hr' has required permissions
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔍 GET /api/hr/master-managers - 2025-10-01T09:40:48.621Z
+🔍 HR route middleware hit: GET /master-managers
+🔍 JWT decoded payload: {
+  userId: 1,
+  email: 'hr@nxzen.com',
+  role: 'hr',
+  iat: 1759311601,
+  exp: 1759916401
+}
+🔍 User from database: { id: 1, email: 'hr@nxzen.com', role: 'hr', temp_password: null }
+🔍 Set req.user: { userId: 1, email: 'hr@nxzen.com', role: 'hr' }
+🔍 Role check - User ID: 1, Role: hr, Required roles: hr
+✅ Access granted - User role 'hr' has required permissions
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔍 GET /api/hr/onboarded - 2025-10-01T09:40:48.622Z
+🔍 HR route middleware hit: GET /onboarded
+🔍 JWT decoded payload: {
+  userId: 1,
+  email: 'hr@nxzen.com',
+  role: 'hr',
+  iat: 1759311601,
+  exp: 1759916401
+}
+🔍 User from database: { id: 1, email: 'hr@nxzen.com', role: 'hr', temp_password: null }
+🔍 Set req.user: { userId: 1, email: 'hr@nxzen.com', role: 'hr' }
+🔍 Role check - User ID: 1, Role: hr, Required roles: hr
+✅ Access granted - User role 'hr' has required permissions
+🔍 User from database: { id: 1, email: 'hr@nxzen.com', role: 'hr', temp_password: null }
+🔍 Set req.user: { userId: 1, email: 'hr@nxzen.com', role: 'hr' }
+🔍 Role check - User ID: 1, Role: hr, Required roles: hr
+✅ Access granted - User role 'hr' has required permissions
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔍 GET /api/hr-config/managers - 2025-10-01T09:40:54.732Z
+🔍 JWT decoded payload: {
+  userId: 1,
+  email: 'hr@nxzen.com',
+  role: 'hr',
+  iat: 1759311601,
+  exp: 1759916401
+}
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔍 GET /api/hr-config/managers - 2025-10-01T09:40:54.738Z
+🔍 JWT decoded payload: {
+  userId: 1,
+  email: 'hr@nxzen.com',
+  role: 'hr',
+  iat: 1759311601,
+  exp: 1759916401
+}
+🔍 User from database: { id: 1, email: 'hr@nxzen.com', role: 'hr', temp_password: null }
+🔍 Set req.user: { userId: 1, email: 'hr@nxzen.com', role: 'hr' }
+🔍 HRConfig managers route hit
+🔍 HRConfig managers endpoint called
+🔍 User from database: { id: 1, email: 'hr@nxzen.com', role: 'hr', temp_password: null }
+🔍 Set req.user: { userId: 1, email: 'hr@nxzen.com', role: 'hr' }
+🔍 HRConfig managers route hit
+🔍 HRConfig managers endpoint called
+🔍 HRConfig managers response: [
+  {
+    manager_id: 'aa142d',
+    manager_name: 'Luthen S',
+    email: 'stalinnithin31@gmail.com',
+    department: null,
+    designation: null
+  }
+]
+🔍 HRConfig managers response: [
+  {
+    manager_id: 'aa142d',
+    manager_name: 'Luthen S',
+    email: 'stalinnithin31@gmail.com',
+    department: null,
+    designation: null
+  }
+]
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔍 GET /api/attendance/stats - 2025-10-01T09:41:01.558Z
+🔍 JWT decoded payload: {
+  userId: 1,
+  email: 'hr@nxzen.com',
+  role: 'hr',
+  iat: 1759311601,
+  exp: 1759916401
+}
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔍 GET /api/attendance/stats - 2025-10-01T09:41:01.559Z
+🔍 JWT decoded payload: {
+  userId: 1,
+  email: 'hr@nxzen.com',
+  role: 'hr',
+  iat: 1759311601,
+  exp: 1759916401
+}
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔍 GET /api/attendance/hr/details - 2025-10-01T09:41:01.559Z
+🔍 JWT decoded payload: {
+  userId: 1,
+  email: 'hr@nxzen.com',
+  role: 'hr',
+  iat: 1759311601,
+  exp: 1759916401
+}
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔍 GET /api/attendance/hr/details - 2025-10-01T09:41:01.560Z
+🔍 JWT decoded payload: {
+  userId: 1,
+  email: 'hr@nxzen.com',
+  role: 'hr',
+  iat: 1759311601,
+  exp: 1759916401
+}
+🔍 User from database: { id: 1, email: 'hr@nxzen.com', role: 'hr', temp_password: null }
+🔍 Set req.user: { userId: 1, email: 'hr@nxzen.com', role: 'hr' }
+🔍 User from database: { id: 1, email: 'hr@nxzen.com', role: 'hr', temp_password: null }
+🔍 Set req.user: { userId: 1, email: 'hr@nxzen.com', role: 'hr' }
+🔍 User from database: { id: 1, email: 'hr@nxzen.com', role: 'hr', temp_password: null }
+🔍 Set req.user: { userId: 1, email: 'hr@nxzen.com', role: 'hr' }
+🔍 User from database: { id: 1, email: 'hr@nxzen.com', role: 'hr', temp_password: null }
+🔍 Set req.user: { userId: 1, email: 'hr@nxzen.com', role: 'hr' }
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔍 GET /api/leave/types - 2025-10-01T09:41:09.753Z
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔍 GET /api/leave/hr/pending - 2025-10-01T09:41:09.754Z
+🔍 JWT decoded payload: {
+  userId: 1,
+  email: 'hr@nxzen.com',
+  role: 'hr',
+  iat: 1759311601,
+  exp: 1759916401
+}
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔍 GET /api/leave/all - 2025-10-01T09:41:09.756Z
+🔍 JWT decoded payload: {
+  userId: 1,
+  email: 'hr@nxzen.com',
+  role: 'hr',
+  iat: 1759311601,
+  exp: 1759916401
+}
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔍 GET /api/leave/hr/pending - 2025-10-01T09:41:09.758Z
+🔍 JWT decoded payload: {
+  userId: 1,
+  email: 'hr@nxzen.com',
+  role: 'hr',
+  iat: 1759311601,
+  exp: 1759916401
+}
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔍 GET /api/leave/types - 2025-10-01T09:41:09.758Z
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔍 GET /api/leave/all - 2025-10-01T09:41:09.760Z
+🔍 JWT decoded payload: {
+  userId: 1,
+  email: 'hr@nxzen.com',
+  role: 'hr',
+  iat: 1759311601,
+  exp: 1759916401
+}
+🔍 User from database: { id: 1, email: 'hr@nxzen.com', role: 'hr', temp_password: null }
+🔍 Set req.user: { userId: 1, email: 'hr@nxzen.com', role: 'hr' }
+🔍 User from database: { id: 1, email: 'hr@nxzen.com', role: 'hr', temp_password: null }
+🔍 Set req.user: { userId: 1, email: 'hr@nxzen.com', role: 'hr' }
+🔍 User from database: { id: 1, email: 'hr@nxzen.com', role: 'hr', temp_password: null }
+🔍 Set req.user: { userId: 1, email: 'hr@nxzen.com', role: 'hr' }
+🔍 User from database: { id: 1, email: 'hr@nxzen.com', role: 'hr', temp_password: null }
+🔍 Set req.user: { userId: 1, email: 'hr@nxzen.com', role: 'hr' }
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔍 GET /api/expenses/hr/pending - 2025-10-01T09:41:19.286Z
+🔍 JWT decoded payload: {
+  userId: 1,
+  email: 'hr@nxzen.com',
+  role: 'hr',
+  iat: 1759311601,
+  exp: 1759916401
+}
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔍 GET /api/expenses/hr/pending - 2025-10-01T09:41:19.287Z
+🔍 JWT decoded payload: {
+  userId: 1,
+  email: 'hr@nxzen.com',
+  role: 'hr',
+  iat: 1759311601,
+  exp: 1759916401
+}
+🔍 User from database: { id: 1, email: 'hr@nxzen.com', role: 'hr', temp_password: null }
+🔍 Set req.user: { userId: 1, email: 'hr@nxzen.com', role: 'hr' }
+🔍 User from database: { id: 1, email: 'hr@nxzen.com', role: 'hr', temp_password: null }
+🔍 Set req.user: { userId: 1, email: 'hr@nxzen.com', role: 'hr' }
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔍 GET /api/expenses/all - 2025-10-01T09:41:20.851Z
+🔍 JWT decoded payload: {
+  userId: 1,
+  email: 'hr@nxzen.com',
+  role: 'hr',
+  iat: 1759311601,
+  exp: 1759916401
+}
+🔍 User from database: { id: 1, email: 'hr@nxzen.com', role: 'hr', temp_password: null }
+🔍 Set req.user: { userId: 1, email: 'hr@nxzen.com', role: 'hr' }
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔍 GET /api/expenses/hr/pending - 2025-10-01T09:41:22.476Z
+🔍 JWT decoded payload: {
+  userId: 1,
+  email: 'hr@nxzen.com',
+  role: 'hr',
+  iat: 1759311601,
+  exp: 1759916401
+}
+🔍 User from database: { id: 1, email: 'hr@nxzen.com', role: 'hr', temp_password: null }
+🔍 Set req.user: { userId: 1, email: 'hr@nxzen.com', role: 'hr' }
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔍 GET /api/expenses/all - 2025-10-01T09:41:23.178Z
+🔍 JWT decoded payload: {
+  userId: 1,
+  email: 'hr@nxzen.com',
+  role: 'hr',
+  iat: 1759311601,
+  exp: 1759916401
+}
+🔍 User from database: { id: 1, email: 'hr@nxzen.com', role: 'hr', temp_password: null }
+🔍 Set req.user: { userId: 1, email: 'hr@nxzen.com', role: 'hr' }
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔍 GET /api/expenses/analytics - 2025-10-01T09:41:24.138Z
+🔍 JWT decoded payload: {
+  userId: 1,
+  email: 'hr@nxzen.com',
+  role: 'hr',
+  iat: 1759311601,
+  exp: 1759916401
+}
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔍 GET /api/expenses/analytics - 2025-10-01T09:41:24.139Z
+🔍 JWT decoded payload: {
+  userId: 1,
+  email: 'hr@nxzen.com',
+  role: 'hr',
+  iat: 1759311601,
+  exp: 1759916401
+}
+🔍 User from database: { id: 1, email: 'hr@nxzen.com', role: 'hr', temp_password: null }
+🔍 Set req.user: { userId: 1, email: 'hr@nxzen.com', role: 'hr' }
+🔍 User from database: { id: 1, email: 'hr@nxzen.com', role: 'hr', temp_password: null }
+🔍 Set req.user: { userId: 1, email: 'hr@nxzen.com', role: 'hr' }
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔍 GET /api/hr/pnc-monitoring - 2025-10-01T09:41:26.810Z
+🔍 HR route middleware hit: GET /pnc-monitoring
+🔍 JWT decoded payload: {
+  userId: 1,
+  email: 'hr@nxzen.com',
+  role: 'hr',
+  iat: 1759311601,
+  exp: 1759916401
+}
+🔍 User from database: { id: 1, email: 'hr@nxzen.com', role: 'hr', temp_password: null }
+🔍 Set req.user: { userId: 1, email: 'hr@nxzen.com', role: 'hr' }
+🔍 Role check - User ID: 1, Role: hr, Required roles: hr
+✅ Access granted - User role 'hr' has required permissions
+📊 Generating P&C Monthly Monitoring Report for 2025-10
+❌ Error generating P&C Monthly Monitoring Report: error: function get_pnc_monitoring_report(unknown) does not exist
+    at /Users/stalin_j/onboard/onboard/backend/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async /Users/stalin_j/onboard/onboard/backend/routes/hr.js:5102:26 {
+  length: 226,
+  severity: 'ERROR',
+  code: '42883',
+  detail: undefined,
+  hint: 'No function matches the given name and argument types. You might need to add explicit type casts.',
+  position: '8',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_func.c',
+  line: '636',
+  routine: 'ParseFuncOrColumn'
+}
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔍 GET /api/adp-payroll/all - 2025-10-01T09:41:28.764Z
+🔍 JWT decoded payload: {
+  userId: 1,
+  email: 'hr@nxzen.com',
+  role: 'hr',
+  iat: 1759311601,
+  exp: 1759916401
+}
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔍 GET /api/adp-payroll/all - 2025-10-01T09:41:28.766Z
+🔍 JWT decoded payload: {
+  userId: 1,
+  email: 'hr@nxzen.com',
+  role: 'hr',
+  iat: 1759311601,
+  exp: 1759916401
+}
+🔍 User from database: { id: 1, email: 'hr@nxzen.com', role: 'hr', temp_password: null }
+🔍 Set req.user: { userId: 1, email: 'hr@nxzen.com', role: 'hr' }
+🔍 Role check - User ID: 1, Role: hr, Required roles: hr
+✅ Access granted - User role 'hr' has required permissions
+🔍 User from database: { id: 1, email: 'hr@nxzen.com', role: 'hr', temp_password: null }
+🔍 Set req.user: { userId: 1, email: 'hr@nxzen.com', role: 'hr' }
+🔍 Role check - User ID: 1, Role: hr, Required roles: hr
+✅ Access granted - User role 'hr' has required permissions
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔍 GET /api/hr-config/leave-types/all - 2025-10-01T09:41:29.745Z
+🔍 JWT decoded payload: {
+  userId: 1,
+  email: 'hr@nxzen.com',
+  role: 'hr',
+  iat: 1759311601,
+  exp: 1759916401
+}
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔍 GET /api/hr-config/system-settings - 2025-10-01T09:41:29.748Z
+🔍 JWT decoded payload: {
+  userId: 1,
+  email: 'hr@nxzen.com',
+  role: 'hr',
+  iat: 1759311601,
+  exp: 1759916401
+}
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔍 GET /api/hr-config/managers/all - 2025-10-01T09:41:29.749Z
+🔍 JWT decoded payload: {
+  userId: 1,
+  email: 'hr@nxzen.com',
+  role: 'hr',
+  iat: 1759311601,
+  exp: 1759916401
+}
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔍 GET /api/hr-config/departments/all - 2025-10-01T09:41:29.750Z
+🔍 JWT decoded payload: {
+  userId: 1,
+  email: 'hr@nxzen.com',
+  role: 'hr',
+  iat: 1759311601,
+  exp: 1759916401
+}
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔍 GET /api/hr-config/departments/all - 2025-10-01T09:41:29.750Z
+🔍 JWT decoded payload: {
+  userId: 1,
+  email: 'hr@nxzen.com',
+  role: 'hr',
+  iat: 1759311601,
+  exp: 1759916401
+}
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔍 GET /api/hr-config/system-settings - 2025-10-01T09:41:29.750Z
+🔍 JWT decoded payload: {
+  userId: 1,
+  email: 'hr@nxzen.com',
+  role: 'hr',
+  iat: 1759311601,
+  exp: 1759916401
+}
+🔍 User from database: { id: 1, email: 'hr@nxzen.com', role: 'hr', temp_password: null }
+🔍 Set req.user: { userId: 1, email: 'hr@nxzen.com', role: 'hr' }
+🔍 User from database: { id: 1, email: 'hr@nxzen.com', role: 'hr', temp_password: null }
+🔍 Set req.user: { userId: 1, email: 'hr@nxzen.com', role: 'hr' }
+🔍 User from database: { id: 1, email: 'hr@nxzen.com', role: 'hr', temp_password: null }
+🔍 Set req.user: { userId: 1, email: 'hr@nxzen.com', role: 'hr' }
+🔍 User from database: { id: 1, email: 'hr@nxzen.com', role: 'hr', temp_password: null }
+🔍 Set req.user: { userId: 1, email: 'hr@nxzen.com', role: 'hr' }
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔍 GET /api/hr-config/leave-types/all - 2025-10-01T09:41:29.752Z
+🔍 JWT decoded payload: {
+  userId: 1,
+  email: 'hr@nxzen.com',
+  role: 'hr',
+  iat: 1759311601,
+  exp: 1759916401
+}
+🔍 User from database: { id: 1, email: 'hr@nxzen.com', role: 'hr', temp_password: null }
+🔍 Set req.user: { userId: 1, email: 'hr@nxzen.com', role: 'hr' }
+🔍 User from database: { id: 1, email: 'hr@nxzen.com', role: 'hr', temp_password: null }
+🔍 Set req.user: { userId: 1, email: 'hr@nxzen.com', role: 'hr' }
+🚀 MANAGERS ROUTE HIT!
+🔍 Fetching all managers...
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔍 GET /api/hr-config/managers/all - 2025-10-01T09:41:29.753Z
+🔍 JWT decoded payload: {
+  userId: 1,
+  email: 'hr@nxzen.com',
+  role: 'hr',
+  iat: 1759311601,
+  exp: 1759916401
+}
+🔍 User from database: { id: 1, email: 'hr@nxzen.com', role: 'hr', temp_password: null }
+🔍 Set req.user: { userId: 1, email: 'hr@nxzen.com', role: 'hr' }
+🔍 User from database: { id: 1, email: 'hr@nxzen.com', role: 'hr', temp_password: null }
+🔍 Set req.user: { userId: 1, email: 'hr@nxzen.com', role: 'hr' }
+🚀 MANAGERS ROUTE HIT!
+🔍 Fetching all managers...
+🔍 Managers result: [
+  {
+    id: 'aa142d',
+    employee_name: 'Luthen S',
+    email: 'stalinnithin31@gmail.com',
+    role: 'manager',
+    department_id: null,
+    status: 'active',
+    created_at: 2025-09-12T13:04:28.771Z,
+    updated_at: 2025-09-11T18:30:00.000Z
+  }
+]
+🔍 Managers result length: 1
+🔍 Fetching departments...
+🔍 Managers result: [
+  {
+    id: 'aa142d',
+    employee_name: 'Luthen S',
+    email: 'stalinnithin31@gmail.com',
+    role: 'manager',
+    department_id: null,
+    status: 'active',
+    created_at: 2025-09-12T13:04:28.771Z,
+    updated_at: 2025-09-11T18:30:00.000Z
+  }
+]
+🔍 Managers result length: 1
+🔍 Fetching departments...
+🔍 Departments result: [
+  { id: 1, name: 'Engineering', manager_id: null },
+  { id: 2, name: 'Product', manager_id: null },
+  { id: 3, name: 'Design', manager_id: null },
+  { id: 4, name: 'Marketing', manager_id: null },
+  { id: 5, name: 'Human Resources', manager_id: null }
+]
+🔍 Starting response formatting...
+🔍 Processing manager: {
+  id: 'aa142d',
+  employee_name: 'Luthen S',
+  email: 'stalinnithin31@gmail.com',
+  role: 'manager',
+  department_id: null,
+  status: 'active',
+  created_at: 2025-09-12T13:04:28.771Z,
+  updated_at: 2025-09-11T18:30:00.000Z
+}
+🔍 Formatted manager: {
+  id: 'aa142d',
+  employee_name: 'Luthen S',
+  email: 'stalinnithin31@gmail.com',
+  role: 'manager',
+  department_id: null,
+  status: 'active',
+  created_at: 2025-09-12T13:04:28.771Z,
+  updated_at: 2025-09-11T18:30:00.000Z,
+  first_name: 'Luthen',
+  last_name: 'S',
+  full_name: 'Luthen S',
+  department_name: null,
+  is_assigned: false
+}
+🔍 Final managers array: [
+  {
+    id: 'aa142d',
+    employee_name: 'Luthen S',
+    email: 'stalinnithin31@gmail.com',
+    role: 'manager',
+    department_id: null,
+    status: 'active',
+    created_at: 2025-09-12T13:04:28.771Z,
+    updated_at: 2025-09-11T18:30:00.000Z,
+    first_name: 'Luthen',
+    last_name: 'S',
+    full_name: 'Luthen S',
+    department_name: null,
+    is_assigned: false
+  }
+]
+🔍 Departments result: [
+  { id: 1, name: 'Engineering', manager_id: null },
+  { id: 2, name: 'Product', manager_id: null },
+  { id: 3, name: 'Design', manager_id: null },
+  { id: 4, name: 'Marketing', manager_id: null },
+  { id: 5, name: 'Human Resources', manager_id: null }
+]
+🔍 Starting response formatting...
+🔍 Processing manager: {
+  id: 'aa142d',
+  employee_name: 'Luthen S',
+  email: 'stalinnithin31@gmail.com',
+  role: 'manager',
+  department_id: null,
+  status: 'active',
+  created_at: 2025-09-12T13:04:28.771Z,
+  updated_at: 2025-09-11T18:30:00.000Z
+}
+🔍 Formatted manager: {
+  id: 'aa142d',
+  employee_name: 'Luthen S',
+  email: 'stalinnithin31@gmail.com',
+  role: 'manager',
+  department_id: null,
+  status: 'active',
+  created_at: 2025-09-12T13:04:28.771Z,
+  updated_at: 2025-09-11T18:30:00.000Z,
+  first_name: 'Luthen',
+  last_name: 'S',
+  full_name: 'Luthen S',
+  department_name: null,
+  is_assigned: false
+}
+🔍 Final managers array: [
+  {
+    id: 'aa142d',
+    employee_name: 'Luthen S',
+    email: 'stalinnithin31@gmail.com',
+    role: 'manager',
+    department_id: null,
+    status: 'active',
+    created_at: 2025-09-12T13:04:28.771Z,
+    updated_at: 2025-09-11T18:30:00.000Z,
+    first_name: 'Luthen',
+    last_name: 'S',
+    full_name: 'Luthen S',
+    department_name: null,
+    is_assigned: false
+  }
+]
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔍 GET /api/hr/pnc-monitoring - 2025-10-01T09:41:30.708Z
+🔍 HR route middleware hit: GET /pnc-monitoring
+🔍 JWT decoded payload: {
+  userId: 1,
+  email: 'hr@nxzen.com',
+  role: 'hr',
+  iat: 1759311601,
+  exp: 1759916401
+}
+🔍 User from database: { id: 1, email: 'hr@nxzen.com', role: 'hr', temp_password: null }
+🔍 Set req.user: { userId: 1, email: 'hr@nxzen.com', role: 'hr' }
+🔍 Role check - User ID: 1, Role: hr, Required roles: hr
+✅ Access granted - User role 'hr' has required permissions
+📊 Generating P&C Monthly Monitoring Report for 2025-10
+❌ Error generating P&C Monthly Monitoring Report: error: function get_pnc_monitoring_report(unknown) does not exist
+    at /Users/stalin_j/onboard/onboard/backend/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async /Users/stalin_j/onboard/onboard/backend/routes/hr.js:5102:26 {
+  length: 226,
+  severity: 'ERROR',
+  code: '42883',
+  detail: undefined,
+  hint: 'No function matches the given name and argument types. You might need to add explicit type casts.',
+  position: '8',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_func.c',
+  line: '636',
+  routine: 'ParseFuncOrColumn'
+}
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔍 GET /api/hr/employees - 2025-10-01T09:41:46.093Z
+🔍 HR route middleware hit: GET /employees
+🔍 JWT decoded payload: {
+  userId: 1,
+  email: 'hr@nxzen.com',
+  role: 'hr',
+  iat: 1759311601,
+  exp: 1759916401
+}
+🔍 User from database: { id: 1, email: 'hr@nxzen.com', role: 'hr', temp_password: null }
+🔍 Set req.user: { userId: 1, email: 'hr@nxzen.com', role: 'hr' }
+🔍 Role check - User ID: 1, Role: hr, Required roles: hr
+✅ Access granted - User role 'hr' has required permissions
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔍 GET /api/hr/employees - 2025-10-01T09:41:46.099Z
+🔍 HR route middleware hit: GET /employees
+🔍 JWT decoded payload: {
+  userId: 1,
+  email: 'hr@nxzen.com',
+  role: 'hr',
+  iat: 1759311601,
+  exp: 1759916401
+}
+🔍 User from database: { id: 1, email: 'hr@nxzen.com', role: 'hr', temp_password: null }
+🔍 Set req.user: { userId: 1, email: 'hr@nxzen.com', role: 'hr' }
+🔍 Role check - User ID: 1, Role: hr, Required roles: hr
+✅ Access granted - User role 'hr' has required permissions
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔍 GET /api/auth/me - 2025-10-01T09:51:44.485Z
+🔍 JWT decoded payload: {
+  userId: 1,
+  email: 'hr@nxzen.com',
+  role: 'hr',
+  iat: 1759311601,
+  exp: 1759916401
+}
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔍 GET /api/auth/me - 2025-10-01T09:51:44.494Z
+🔍 JWT decoded payload: {
+  userId: 1,
+  email: 'hr@nxzen.com',
+  role: 'hr',
+  iat: 1759311601,
+  exp: 1759916401
+}
+🔍 User from database: { id: 1, email: 'hr@nxzen.com', role: 'hr', temp_password: null }
+🔍 Set req.user: { userId: 1, email: 'hr@nxzen.com', role: 'hr' }
+🔍 /api/auth/me - Request from user: { userId: 1, email: 'hr@nxzen.com', role: 'hr' }
+🔍 User from database: { id: 1, email: 'hr@nxzen.com', role: 'hr', temp_password: null }
+🔍 Set req.user: { userId: 1, email: 'hr@nxzen.com', role: 'hr' }
+🔍 /api/auth/me - Request from user: { userId: 1, email: 'hr@nxzen.com', role: 'hr' }
+✅ /api/auth/me - User from users table: {
+  id: 1,
+  email: 'hr@nxzen.com',
+  role: 'hr',
+  first_name: 'HR',
+  last_name: 'Manager',
+  temp_password: null
+}
+✅ /api/auth/me - User from users table: {
+  id: 1,
+  email: 'hr@nxzen.com',
+  role: 'hr',
+  first_name: 'HR',
+  last_name: 'Manager',
+  temp_password: null
+}
+✅ /api/auth/me - Combined user data: {
+  id: 1,
+  email: 'hr@nxzen.com',
+  role: 'hr',
+  first_name: 'HR',
+  last_name: 'Manager',
+  temp_password: null
+}
+✅ /api/auth/me - Response sent successfully
+✅ /api/auth/me - Combined user data: {
+  id: 1,
+  email: 'hr@nxzen.com',
+  role: 'hr',
+  first_name: 'HR',
+  last_name: 'Manager',
+  temp_password: null
+}
+✅ /api/auth/me - Response sent successfully
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔍 GET /api/hr/employees - 2025-10-01T09:51:44.730Z
+🔍 HR route middleware hit: GET /employees
+🔍 JWT decoded payload: {
+  userId: 1,
+  email: 'hr@nxzen.com',
+  role: 'hr',
+  iat: 1759311601,
+  exp: 1759916401
+}
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔍 GET /api/hr/employees - 2025-10-01T09:51:44.732Z
+🔍 HR route middleware hit: GET /employees
+🔍 JWT decoded payload: {
+  userId: 1,
+  email: 'hr@nxzen.com',
+  role: 'hr',
+  iat: 1759311601,
+  exp: 1759916401
+}
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔍 GET /api/hr/employees - 2025-10-01T09:51:44.733Z
+🔍 HR route middleware hit: GET /employees
+🔍 JWT decoded payload: {
+  userId: 1,
+  email: 'hr@nxzen.com',
+  role: 'hr',
+  iat: 1759311601,
+  exp: 1759916401
+}
+🔍 User from database: { id: 1, email: 'hr@nxzen.com', role: 'hr', temp_password: null }
+🔍 Set req.user: { userId: 1, email: 'hr@nxzen.com', role: 'hr' }
+🔍 Role check - User ID: 1, Role: hr, Required roles: hr
+✅ Access granted - User role 'hr' has required permissions
+🔍 User from database: { id: 1, email: 'hr@nxzen.com', role: 'hr', temp_password: null }
+🔍 Set req.user: { userId: 1, email: 'hr@nxzen.com', role: 'hr' }
+🔍 Role check - User ID: 1, Role: hr, Required roles: hr
+✅ Access granted - User role 'hr' has required permissions
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔍 GET /api/hr/master - 2025-10-01T09:51:44.735Z
+🔍 HR route middleware hit: GET /master
+🔍 JWT decoded payload: {
+  userId: 1,
+  email: 'hr@nxzen.com',
+  role: 'hr',
+  iat: 1759311601,
+  exp: 1759916401
+}
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔍 GET /api/hr/master - 2025-10-01T09:51:44.736Z
+🔍 HR route middleware hit: GET /master
+🔍 JWT decoded payload: {
+  userId: 1,
+  email: 'hr@nxzen.com',
+  role: 'hr',
+  iat: 1759311601,
+  exp: 1759916401
+}
+🔍 User from database: { id: 1, email: 'hr@nxzen.com', role: 'hr', temp_password: null }
+🔍 Set req.user: { userId: 1, email: 'hr@nxzen.com', role: 'hr' }
+🔍 Role check - User ID: 1, Role: hr, Required roles: hr
+✅ Access granted - User role 'hr' has required permissions
+🔍 User from database: { id: 1, email: 'hr@nxzen.com', role: 'hr', temp_password: null }
+🔍 Set req.user: { userId: 1, email: 'hr@nxzen.com', role: 'hr' }
+🔍 Role check - User ID: 1, Role: hr, Required roles: hr
+✅ Access granted - User role 'hr' has required permissions
+🔍 User from database: { id: 1, email: 'hr@nxzen.com', role: 'hr', temp_password: null }
+🔍 Set req.user: { userId: 1, email: 'hr@nxzen.com', role: 'hr' }
+🔍 Role check - User ID: 1, Role: hr, Required roles: hr
+✅ Access granted - User role 'hr' has required permissions
+🔧 CORS - Request origin: http://localhost:3001
+🔧 CORS - Allowed origins: [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5001',
+  'http://149.102.158.71:3001',
+  'http://149.102.158.71:5001'
+]
+🔍 GET /api/hr/employees - 2025-10-01T09:51:44.769Z
+🔍 HR route middleware hit: GET /employees
+🔍 JWT decoded payload: {
+  userId: 1,
+  email: 'hr@nxzen.com',
+  role: 'hr',
+  iat: 1759311601,
+  exp: 1759916401
+}
+🔍 User from database: { id: 1, email: 'hr@nxzen.com', role: 'hr', temp_password: null }
+🔍 Set req.user: { userId: 1, email: 'hr@nxzen.com', role: 'hr' }
+🔍 Role check - User ID: 1, Role: hr, Required roles: hr
+✅ Access granted - User role 'hr' has required permissions

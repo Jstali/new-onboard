@@ -4,8 +4,6 @@
 # Environment-based configuration for flexible deployment
 # =============================================================================
 
-version: '3.8'
-
 services:
   # PostgreSQL Database
   postgres:

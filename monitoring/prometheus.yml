@@ -1,0 +1,83 @@
+# =============================================================================
+# NXZEN EMPLOYEE MANAGEMENT SYSTEM - PROMETHEUS CONFIGURATION
+# =============================================================================
+# Production monitoring configuration for Prometheus
+# =============================================================================
+
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  external_labels:
+    cluster: 'nxzen-production'
+    environment: 'production'
+
+rule_files:
+  - "alert_rules.yml"
+
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+          - alertmanager:9093
+
+scrape_configs:
+  # Prometheus itself
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+    scrape_interval: 5s
+    metrics_path: /metrics
+
+  # Node Exporter (if available)
+  - job_name: 'node-exporter'
+    static_configs:
+      - targets: ['node-exporter:9100']
+    scrape_interval: 15s
+
+  # PostgreSQL Exporter (if available)
+  - job_name: 'postgres-exporter'
+    static_configs:
+      - targets: ['postgres-exporter:9187']
+    scrape_interval: 15s
+
+  # Redis Exporter (if available)
+  - job_name: 'redis-exporter'
+    static_configs:
+      - targets: ['redis-exporter:9121']
+    scrape_interval: 15s
+
+  # Backend API Health Check
+  - job_name: 'nxzen-backend'
+    static_configs:
+      - targets: ['backend:5001']
+    scrape_interval: 30s
+    metrics_path: /api/metrics
+    scheme: http
+
+  # Frontend Health Check
+  - job_name: 'nxzen-frontend'
+    static_configs:
+      - targets: ['frontend:80']
+    scrape_interval: 30s
+    metrics_path: /health
+    scheme: http
+
+  # Docker Container Metrics
+  - job_name: 'docker-containers'
+    static_configs:
+      - targets: ['host.docker.internal:9323']
+    scrape_interval: 30s
+    metrics_path: /metrics
+    scheme: http
+
+# =============================================================================
+# MONITORING TARGETS
+# =============================================================================
+# - Prometheus: Self-monitoring
+# - Node Exporter: System metrics (CPU, memory, disk)
+# - PostgreSQL Exporter: Database metrics
+# - Redis Exporter: Cache metrics
+# - Backend API: Application metrics
+# - Frontend: Health check metrics
+# - Docker: Container metrics
+# =============================================================================

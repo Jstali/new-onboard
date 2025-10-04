@@ -1,0 +1,109 @@
+# =============================================================================
+# NXZEN EMPLOYEE MANAGEMENT SYSTEM - PRODUCTION BACKEND DOCKERFILE
+# =============================================================================
+# Multi-stage build optimized for production deployment
+# Features: Security, Performance, Monitoring, Health Checks
+# =============================================================================
+
+# Stage 1: Build stage
+FROM node:18-alpine AS builder
+
+# Set working directory
+WORKDIR /app
+
+# Install system dependencies for building
+RUN apk add --no-cache \
+    python3 \
+    make \
+    g++ \
+    postgresql-client \
+    git \
+    && rm -rf /var/cache/apk/*
+
+# Copy package files
+COPY package*.json ./
+
+# Install dependencies with optimizations
+RUN npm ci --only=production --no-audit --no-fund --silent \
+    && npm cache clean --force \
+    && rm -rf /tmp/*
+
+# Stage 2: Production stage
+FROM node:18-alpine AS production
+
+# Metadata
+LABEL maintainer="NXZEN Development Team" \
+      version="1.0.0" \
+      description="NXZEN Employee Management System - Backend API" \
+      org.opencontainers.image.source="https://github.com/nxzen/employee-management"
+
+# Create app user for security (non-root)
+RUN addgroup -g 1001 -S nodejs && \
+    adduser -S nxzen -u 1001 -G nodejs
+
+# Set working directory
+WORKDIR /app
+
+# Install production system dependencies
+RUN apk add --no-cache \
+    postgresql-client \
+    curl \
+    tzdata \
+    dumb-init \
+    && rm -rf /var/cache/apk/*
+
+# Set timezone
+ENV TZ=UTC
+
+# Copy built dependencies from builder stage
+COPY --from=builder /app/node_modules ./node_modules
+
+# Copy application code
+COPY . .
+
+# Create necessary directories with proper permissions
+RUN mkdir -p /app/uploads/documents \
+    /app/uploads/expenses \
+    /app/logs \
+    /app/backups \
+    /app/ssl \
+    /app/tmp \
+    && chown -R nxzen:nodejs /app \
+    && chmod -R 755 /app \
+    && chmod +x /app/server.js
+
+# Copy environment configuration
+COPY main.env .env
+COPY production.env .env.production
+
+# Create production environment file with overrides
+RUN echo "NODE_ENV=production" >> .env.production && \
+    echo "PORT=${BACKEND_PORT:-2035}" >> .env.production && \
+    echo "HOST=0.0.0.0" >> .env.production
+
+# Switch to non-root user
+USER nxzen
+
+# Expose port
+EXPOSE 2035
+
+# Health check with retry logic
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+    CMD curl -f http://localhost:2035/api/health || exit 1
+
+# Use dumb-init to handle signals properly
+ENTRYPOINT ["dumb-init", "--"]
+
+# Start the application
+CMD ["node", "server.js"]
+
+# =============================================================================
+# PRODUCTION OPTIMIZATIONS
+# =============================================================================
+# - Multi-stage build reduces image size
+# - Non-root user for security
+# - Health checks for monitoring
+# - Proper signal handling with dumb-init
+# - Optimized layer caching
+# - Security hardening
+# =============================================================================

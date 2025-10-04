@@ -1,0 +1,300 @@
+# =============================================================================
+# NXZEN EMPLOYEE MANAGEMENT SYSTEM - PRODUCTION DOCKER COMPOSE
+# =============================================================================
+# Production deployment configuration optimized for server 149.102.158.71
+# Features: Security, Performance, Monitoring, Health Checks, Backup
+# =============================================================================
+
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: nxzen_postgres_prod
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-nxzen_hrms_prod}
+      POSTGRES_USER: ${POSTGRES_USER:-nxzen_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-NxzenSecurePass2025!}
+      POSTGRES_INITDB_ARGS: "--encoding=UTF-8 --lc-collate=C --lc-ctype=C"
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - postgres_data_prod:/var/lib/postgresql/data
+      - ./backend/DATA_MIGRATION.sql:/docker-entrypoint-initdb.d/01-migration.sql:ro
+      - ./scripts/backup.sh:/backup.sh:ro
+    ports:
+      - "127.0.0.1:5432:5432"  # Only accessible from localhost
+    networks:
+      - nxzen_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-nxzen_user} -d ${POSTGRES_DB:-nxzen_hrms_prod}"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+          cpus: '1.0'
+        reservations:
+          memory: 1G
+          cpus: '0.5'
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # Redis for sessions and caching
+  redis:
+    image: redis:7-alpine
+    container_name: nxzen_redis_prod
+    restart: unless-stopped
+    command: redis-server --requirepass ${REDIS_PASSWORD:-nxzen_redis_password_2024} --appendonly yes --maxmemory 512mb --maxmemory-policy allkeys-lru
+    volumes:
+      - redis_data_prod:/data
+    ports:
+      - "127.0.0.1:6379:6379"  # Only accessible from localhost
+    networks:
+      - nxzen_network
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: '0.5'
+        reservations:
+          memory: 256M
+          cpus: '0.25'
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # Backend API
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.prod
+    container_name: nxzen_backend_prod
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=${POSTGRES_DB:-nxzen_hrms_prod}
+      - DB_USER=${POSTGRES_USER:-nxzen_user}
+      - DB_PASSWORD=${POSTGRES_PASSWORD:-NxzenSecurePass2025!}
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD=${REDIS_PASSWORD:-nxzen_redis_password_2024}
+      - JWT_SECRET=${JWT_SECRET:-nxzen_jwt_secret_key_production_2024_secure}
+      - JWT_EXPIRES_IN=${JWT_EXPIRES_IN:-24h}
+      - PORT=${BACKEND_PORT:-2035}
+      - HOST=0.0.0.0
+      - CORS_ORIGIN=${CORS_ORIGIN:-http://149.102.158.71:2035,https://149.102.158.71:2035,https://nxzen.com,https://www.nxzen.com}
+      - FRONTEND_URL=${FRONTEND_URL:-http://149.102.158.71:2035}
+      - BACKEND_URL=${BACKEND_URL:-http://149.102.158.71:2035/api}
+      - EMAIL_USER=${EMAIL_USER:-noreply@nxzen.com}
+      - EMAIL_PASS=${EMAIL_PASS:-nxzen_email_password_2024}
+      - LOG_LEVEL=${LOG_LEVEL:-info}
+      - ENABLE_MONITORING=${ENABLE_MONITORING:-true}
+    volumes:
+      - backend_uploads_prod:/app/uploads
+      - backend_logs_prod:/app/logs
+      - backend_backups_prod:/app/backups
+    ports:
+      - "127.0.0.1:${BACKEND_PORT:-2035}:${BACKEND_PORT:-2035}"  # Only accessible from localhost
+    networks:
+      - nxzen_network
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:${BACKEND_PORT:-2035}/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 120s
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+          cpus: '2.0'
+        reservations:
+          memory: 1G
+          cpus: '1.0'
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # Frontend React App
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.prod
+      args:
+        - REACT_APP_API_URL=${REACT_APP_API_URL:-http://149.102.158.71:2035/api}
+        - REACT_APP_BASE_URL=${REACT_APP_BASE_URL:-http://149.102.158.71:2036}
+        - REACT_APP_VERSION=${REACT_APP_VERSION:-1.0.0}
+        - REACT_APP_BUILD_DATE=${REACT_APP_BUILD_DATE}
+        - REACT_APP_GIT_COMMIT=${REACT_APP_GIT_COMMIT}
+    container_name: nxzen_frontend_prod
+    restart: unless-stopped
+    ports:
+      - "${FRONTEND_PORT:-2036}:80"
+      - "443:443"  # HTTPS port
+    networks:
+      - nxzen_network
+    depends_on:
+      backend:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+          cpus: '1.0'
+        reservations:
+          memory: 512M
+          cpus: '0.5'
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # Database Backup Service
+  backup:
+    image: postgres:15-alpine
+    container_name: nxzen_backup_prod
+    restart: "no"
+    environment:
+      PGPASSWORD: ${POSTGRES_PASSWORD:-NxzenSecurePass2025!}
+    volumes:
+      - backend_backups_prod:/backups
+      - ./scripts/backup.sh:/backup.sh:ro
+    networks:
+      - nxzen_network
+    depends_on:
+      - postgres
+    command: /bin/sh -c "while true; do sleep 86400; /backup.sh; done"
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '0.25'
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # Monitoring with Prometheus (optional)
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: nxzen_prometheus_prod
+    restart: unless-stopped
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=200h'
+      - '--web.enable-lifecycle'
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data_prod:/prometheus
+    ports:
+      - "127.0.0.1:9090:9090"
+    networks:
+      - nxzen_network
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: '0.5'
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+# Networks
+networks:
+  nxzen_network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+    driver_opts:
+      com.docker.network.bridge.name: nxzen-br0
+
+# Volumes
+volumes:
+  postgres_data_prod:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /opt/nxzen/data/postgres
+  redis_data_prod:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /opt/nxzen/data/redis
+  backend_uploads_prod:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /opt/nxzen/data/uploads
+  backend_logs_prod:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /opt/nxzen/data/logs
+  backend_backups_prod:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /opt/nxzen/data/backups
+  prometheus_data_prod:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /opt/nxzen/data/prometheus
+
+# =============================================================================
+# PRODUCTION DEPLOYMENT FEATURES
+# =============================================================================
+# - Environment variable configuration
+# - Health checks for all services
+# - Resource limits and reservations
+# - Logging configuration
+# - Backup service
+# - Monitoring with Prometheus
+# - Security hardening
+# - Performance optimizations
+# - Proper networking
+# - Volume management
+# =============================================================================

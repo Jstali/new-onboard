@@ -128,6 +128,9 @@ build_images() {
     export REACT_APP_BUILD_DATE="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
     export REACT_APP_GIT_COMMIT="$(git rev-parse --short HEAD 2>/dev/null || echo 'unknown')"
     
+    log "Build Date: $REACT_APP_BUILD_DATE"
+    log "Git Commit: $REACT_APP_GIT_COMMIT"
+    
     docker-compose -f "$DOCKER_COMPOSE_FILE" build --no-cache --parallel
     success "Docker images built successfully"
 }

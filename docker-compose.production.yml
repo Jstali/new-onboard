@@ -7,10 +7,6 @@
 
 version: '3.8'
 
-# Load server environment variables
-env_file:
-  - server.env
-
 services:
   # PostgreSQL Database
   postgres:
@@ -89,6 +85,8 @@ services:
       dockerfile: Dockerfile.prod
     container_name: nxzen_backend_prod
     restart: unless-stopped
+    env_file:
+      - server.env
     environment:
       - NODE_ENV=production
       - DB_HOST=postgres
@@ -156,6 +154,8 @@ services:
         - REACT_APP_GIT_COMMIT=${REACT_APP_GIT_COMMIT}
     container_name: nxzen_frontend_prod
     restart: unless-stopped
+    env_file:
+      - server.env
     ports:
       - "${FRONTEND_PORT:-2036}:80"
       - "443:443"  # HTTPS port

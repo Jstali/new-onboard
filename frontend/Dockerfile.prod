@@ -34,7 +34,7 @@ RUN npm ci --legacy-peer-deps --no-audit --no-fund --silent \
 COPY . .
 
 # Create production environment file with build args
-ARG REACT_APP_API_URL=http://149.102.158.71:2036/api
+ARG REACT_APP_API_URL=http://149.102.158.71:2035/api
 ARG REACT_APP_BASE_URL=http://149.102.158.71:2036
 ARG REACT_APP_VERSION=1.0.0
 ARG REACT_APP_BUILD_DATE
